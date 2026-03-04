@@ -119,7 +119,7 @@ const Footer = () => {
 				<div className="footer__grid">
 					{/* Brand Column */}
 					<div className="footer__col footer__col--brand">
-						<div className="footer__logo">MILANA</div>
+						<div className="footer__logo">SHOP.CO</div>
 
 						<div className="footer__contact">
 							<div className="footer__contact-item">
@@ -132,7 +132,7 @@ const Footer = () => {
 							</div>
 							<div className="footer__contact-item">
 								<EmailIcon />
-								<span>Milana@Example.com</span>
+								<span>Shop.Co@gmail.com</span>
 							</div>
 						</div>
 
@@ -153,7 +153,7 @@ const Footer = () => {
 
 				{/* Bottom Bar */}
 				<div className="footer__bottom">
-					<p className="footer__copyright">Copyright &copy; 2026 RisingBamboo. All Rights Reserved.</p>
+					<p className="footer__copyright">Copyright &copy; 2026 ShopCo. All Rights Reserved.</p>
 					<div className="footer__payments">
 						<span className="footer__pay-badge footer__pay-badge--visa">VISA</span>
 						<MastercardIcon />

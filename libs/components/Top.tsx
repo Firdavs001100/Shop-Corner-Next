@@ -196,7 +196,7 @@ export default function Header() {
 			{/* ── Primary Navigation ── */}
 			<header className="navbar">
 				<a href="/" className="navbar__logo">
-					MILANA
+					SHOP.CO
 				</a>
 
 				<nav className="nav" aria-label="Primary navigation">
