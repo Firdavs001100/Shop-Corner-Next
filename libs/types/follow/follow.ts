@@ -1,92 +1,44 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import type { ObjectId } from 'mongoose';
 import { Member, TotalCounter } from '../member/member';
 import { MeLiked } from '../like/like';
 
-@ObjectType()
-export class MeFollowed {
-	@Field(() => String)
-	followingId: ObjectId;
-
-	@Field(() => String)
-	followerId: ObjectId;
-
-	@Field(() => Boolean)
+export interface MeFollowed {
+	followingId: string;
+	followerId: string;
 	myFollowing: boolean;
 }
 
-@ObjectType()
-export class Follower {
-	@Field(() => String)
-	_id: ObjectId;
-
-	@Field(() => String)
-	followingId: ObjectId;
-
-	@Field(() => String)
-	followerId: ObjectId;
-
-	@Field(() => Date)
+export interface Follower {
+	_id: string;
+	followingId: string;
+	followerId: string;
 	createdAt: Date;
-
-	@Field(() => Date)
 	updatedAt: Date;
 
 	/** from aggregation **/
-
-	@Field(() => [MeLiked], { nullable: true })
 	meLiked?: MeLiked[];
-
-	@Field(() => [MeFollowed], { nullable: true })
 	meFollowed?: MeFollowed[];
-
-	@Field(() => Member, { nullable: true })
 	followerData?: Member;
 }
 
-@ObjectType()
-export class Following {
-	@Field(() => String)
-	_id: ObjectId;
-
-	@Field(() => String)
-	followingId: ObjectId;
-
-	@Field(() => String)
-	followerId: ObjectId;
-
-	@Field(() => Date)
+export interface Following {
+	_id: string;
+	followingId: string;
+	followerId: string;
 	createdAt: Date;
-
-	@Field(() => Date)
 	updatedAt: Date;
 
 	/** from aggregation **/
-
-	@Field(() => [MeLiked], { nullable: true })
 	meLiked?: MeLiked[];
-
-	@Field(() => [MeFollowed], { nullable: true })
 	meFollowed?: MeFollowed[];
-
-	@Field(() => Member, { nullable: true })
 	followingData?: Member;
 }
 
-@ObjectType()
-export class Followings {
-	@Field(() => [Following])
+export interface Followings {
 	list: Following[];
-
-	@Field(() => [TotalCounter], { nullable: true })
 	metaCounter: TotalCounter[];
 }
 
-@ObjectType()
-export class Followers {
-	@Field(() => [Follower])
+export interface Followers {
 	list: Follower[];
-
-	@Field(() => [TotalCounter], { nullable: true })
 	metaCounter: TotalCounter[];
 }

@@ -1,40 +1,18 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import type { ObjectId } from 'mongoose';
 import { TotalCounter } from '../member/member';
 import { NoticeCategory, NoticeStatus } from '../../enums/notice.enum';
 
-@ObjectType()
-export class Notice {
-	@Field(() => String)
-	_id: ObjectId;
-
-	@Field(() => NoticeCategory)
+export interface Notice {
+	_id: string;
 	noticeCategory: NoticeCategory;
-
-	@Field(() => NoticeStatus)
 	noticeStatus: NoticeStatus;
-
-	@Field(() => String)
 	noticeTitle: string;
-
-	@Field(() => String)
 	noticeContent: string;
-
-	@Field(() => String)
-	memberId: ObjectId;
-
-	@Field(() => Date)
+	memberId: string;
 	createdAt: Date;
-
-	@Field(() => Date)
 	updatedAt: Date;
 }
 
-@ObjectType()
-export class Notices {
-	@Field(() => [Notice])
+export interface Notices {
 	list: Notice[];
-
-	@Field(() => [TotalCounter], { nullable: true })
 	metaCounter?: TotalCounter[];
 }

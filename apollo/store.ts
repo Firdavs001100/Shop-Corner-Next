@@ -25,3 +25,29 @@ export const userVar = makeVar<CustomJwtPayload>({
 
 // @ts-ignore
 export const socketVar = makeVar<WebSocket>();
+
+/* CART TYPE */
+
+export interface CartItem {
+	_id: string;
+	name: string;
+	price: number;
+	image: string;
+	quantity: number;
+}
+
+/* INITIAL CART (RESTORE FROM LOCALSTORAGE) */
+
+const initialCart = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('cart') || '[]') : [];
+
+/* REACTIVE VAR */
+
+export const cartVar = makeVar<CartItem[]>(initialCart);
+
+/* PERSIST CART */
+
+if (typeof window !== 'undefined') {
+	cartVar.onNextChange((cart) => {
+		localStorage.setItem('cart', JSON.stringify(cart));
+	});
+}

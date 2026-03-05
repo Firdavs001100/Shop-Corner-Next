@@ -2,6 +2,10 @@
 @import '/scss/variables.scss';
 @import '/scss/pc/general.scss';
 
+@import '/scss/pc/homepage/homepage.scss';
+
+@import '/scss/pc/basket/basket.scss';
+
 body {
 	-ms-overflow-style: none; /* for Internet Explorer, Edge */
 	scrollbar-width: none; /* for Firefox */

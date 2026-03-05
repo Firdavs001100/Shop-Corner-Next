@@ -1,38 +1,16 @@
-import { Field, ObjectType } from '@nestjs/graphql';
 import { LikeGroup } from '../../enums/like.enum';
-import type { ObjectId } from 'mongoose';
 
-@ObjectType()
-export class MeLiked {
-	@Field(() => String)
-	memberId: ObjectId;
-
-	@Field(() => String)
-	likeRefId: ObjectId;
-
-	@Field(() => Boolean)
+export interface MeLiked {
+	memberId: string;
+	likeRefId: string;
 	myFavorite: boolean;
 }
 
-@ObjectType()
-export class Like {
-	@Field(() => String)
-	_id: ObjectId;
-
-	@Field(() => LikeGroup)
+export interface Like {
+	_id: string;
 	likeGroup: LikeGroup;
-
-	@Field(() => String)
-	likeRefId: ObjectId;
-
-	@Field(() => String)
-	memberId: ObjectId;
-
-	@Field(() => Date)
+	likeRefId: string;
+	memberId: string;
 	createdAt: Date;
-
-	@Field(() => Date)
 	updatedAt: Date;
 }
-
-

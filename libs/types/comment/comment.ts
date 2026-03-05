@@ -1,49 +1,23 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import type { ObjectId } from 'mongoose';
 import { CommentGroup, CommentStatus } from '../../enums/comment.enum';
 import { Member, TotalCounter } from '../member/member';
 import { MeLiked } from '../like/like';
 
-@ObjectType()
-export class Comment {
-	@Field(() => String)
-	_id: ObjectId;
-
-	@Field(() => CommentStatus)
+export interface Comment {
+	_id: string;
 	commentStatus: CommentStatus;
-
-	@Field(() => CommentGroup)
 	commentGroup: CommentGroup;
-
-	@Field(() => String)
 	commentContent: string;
-
-	@Field(() => String)
-	commentRefId: ObjectId;
-
-	@Field(() => String)
-	memberId: ObjectId;
-
-	@Field(() => Date)
+	commentRefId: string;
+	memberId: string;
 	createdAt: Date;
-
-	@Field(() => Date)
 	updatedAt: Date;
 
 	/** from aggregation **/
-
-	@Field(() => [MeLiked], { nullable: true })
 	meLiked?: MeLiked[];
-
-	@Field(() => Member, { nullable: true })
 	memberData?: Member;
 }
 
-@ObjectType()
-export class Comments {
-	@Field(() => [Comment])
+export interface Comments {
 	list: Comment[];
-
-	@Field(() => [TotalCounter], { nullable: true })
 	metaCounter: TotalCounter[];
 }

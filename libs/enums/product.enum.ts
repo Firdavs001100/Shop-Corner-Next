@@ -1,5 +1,3 @@
-import { registerEnumType } from '@nestjs/graphql';
-
 export enum ProductStatus {
 	ACTIVE = 'ACTIVE',
 	DRAFT = 'DRAFT',
@@ -7,9 +5,6 @@ export enum ProductStatus {
 	HIDDEN = 'HIDDEN',
 	DISCONTINUED = 'DISCONTINUED',
 }
-registerEnumType(ProductStatus, {
-	name: 'ProductStatus',
-});
 
 export enum ProductCategory {
 	TSHIRT = 'TSHIRT',
@@ -48,9 +43,6 @@ export enum ProductCategory {
 	SANDALS = 'SANDALS',
 	BOOTS = 'BOOTS',
 }
-registerEnumType(ProductCategory, {
-	name: 'ProductCategory',
-});
 
 export enum ProductDressStyle {
 	CASUAL = 'CASUAL',
@@ -68,9 +60,6 @@ export enum ProductDressStyle {
 	// VINTAGE = 'VINTAGE',
 	// SPORTY = 'SPORTY',
 }
-registerEnumType(ProductDressStyle, {
-	name: 'ProductDressStyle',
-});
 
 export enum ProductSize {
 	XXS = 'XXS',
@@ -86,6 +75,3 @@ export enum ProductSize {
 	ONE_SIZE = 'ONE_SIZE',
 	FREE_SIZE = 'FREE_SIZE',
 }
-registerEnumType(ProductSize, {
-	name: 'ProductSize',
-});

@@ -1,52 +1,22 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import type { ObjectId } from 'mongoose';
 import { TotalCounter } from '../member/member';
 import { NotificationGroup, NotificationStatus, NotificationType } from '../../enums/notification.enum';
 
-@ObjectType()
-export class Notification {
-	@Field(() => String)
-	_id: ObjectId;
-
-	@Field(() => NotificationType)
+export interface Notification {
+	_id: string;
 	notificationType: NotificationType;
-
-	@Field(() => NotificationStatus)
 	notificationStatus: NotificationStatus;
-
-	@Field(() => NotificationGroup)
 	notificationGroup: NotificationGroup;
-
-	@Field(() => String)
 	notificationTitle: string;
-
-	@Field(() => String, { nullable: true })
 	notificationDesc?: string;
-
-	@Field(() => String)
-	authorId: ObjectId;
-
-	@Field(() => String)
-	receiverId: ObjectId;
-
-	@Field(() => String, { nullable: true })
-	productId?: ObjectId;
-
-	@Field(() => String, { nullable: true })
-	articleId?: ObjectId;
-
-	@Field(() => Date)
+	authorId: string;
+	receiverId: string;
+	productId?: string;
+	articleId?: string;
 	createdAt: Date;
-
-	@Field(() => Date)
 	updatedAt: Date;
 }
 
-@ObjectType()
-export class Notifications {
-	@Field(() => [Notification])
+export interface Notifications {
 	list: Notification[];
-
-	@Field(() => [TotalCounter], { nullable: true })
 	metaCounter?: TotalCounter[];
 }

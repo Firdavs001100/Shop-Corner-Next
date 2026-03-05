@@ -1,0 +1,30 @@
+#mobile-wrap {
+	.home-page {
+		position: relative;
+		width: 100%;
+		height: auto;
+		.home-showcase {
+			.showcase-grid {
+				flex-direction: column;
+				gap: 50px;
+			}
+
+			.showcase-images {
+				padding-bottom: 60px;
+			}
+
+			.showcase-content {
+				text-align: center;
+				max-width: 100%;
+			}
+
+			.showcase-title {
+				font-size: 30px !important;
+			}
+
+			.showcase-button {
+				margin: 0 auto;
+			}
+		}
+	}
+}

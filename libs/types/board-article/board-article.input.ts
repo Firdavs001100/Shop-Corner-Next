@@ -1,107 +1,37 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
-import { IsIn, IsNotEmpty, IsOptional, Length, Min } from 'class-validator';
-import type { ObjectId } from 'mongoose';
 import { BoardArticleCategory, BoardArticleStatus } from '../../enums/board-article.enum';
 import { Direction } from '../../enums/common.enum';
-import { boardArticleSortOptions } from '../../config';
 
-@InputType()
-export class BoardArticleInput {
-	@IsNotEmpty()
-	@Field(() => BoardArticleCategory)
+export interface BoardArticleInput {
 	articleCategory: BoardArticleCategory;
-
-	@IsNotEmpty()
-	@Length(3, 50)
-	@Field(() => String)
 	articleTitle: string;
-
-	@IsNotEmpty()
-	@Length(3, 250)
-	@Field(() => String)
 	articleContent: string;
-
-	@IsOptional()
-	@Field(() => [String], { nullable: true })
 	articleImage?: string[];
-
-	memberId?: ObjectId;
+	memberId?: string;
 }
 
-@InputType()
-class BAISearch {
-	@IsOptional()
-	@Field(() => BoardArticleCategory, { nullable: true })
+interface BAISearch {
 	articleCategory?: BoardArticleCategory;
-
-	@IsOptional()
-	@Field(() => String, { nullable: true })
 	text?: string;
-
-	@IsOptional()
-	@Field(() => String, { nullable: true })
-	memberId?: ObjectId;
+	memberId?: string;
 }
 
-@InputType()
-export class BoardArticlesInquiry {
-	@IsNotEmpty()
-	@Min(1)
-	@Field(() => Int)
+export interface BoardArticlesInquiry {
 	page: number;
-
-	@IsNotEmpty()
-	@Min(1)
-	@Field(() => Int)
 	limit: number;
-
-	@IsOptional()
-	@IsIn(boardArticleSortOptions)
-	@Field(() => String, { nullable: true })
 	sort?: string;
-
-	@IsOptional()
-	@Field(() => Direction, { nullable: true })
 	direction?: Direction;
-
-	@IsNotEmpty()
-	@Field(() => BAISearch)
 	search: BAISearch;
 }
 
-@InputType()
-class ABAISearch {
-	@IsOptional()
-	@Field(() => BoardArticleStatus, { nullable: true })
+interface ABAISearch {
 	articleStatus?: BoardArticleStatus;
-
-	@IsOptional()
-	@Field(() => BoardArticleCategory, { nullable: true })
 	articleCategory?: BoardArticleCategory;
 }
 
-@InputType()
-export class AllBoardArticlesInquiry {
-	@IsNotEmpty()
-	@Min(1)
-	@Field(() => Int)
+export interface AllBoardArticlesInquiry {
 	page: number;
-
-	@IsNotEmpty()
-	@Min(1)
-	@Field(() => Int)
 	limit: number;
-
-	@IsOptional()
-	@IsIn(boardArticleSortOptions)
-	@Field(() => String, { nullable: true })
 	sort?: string;
-
-	@IsOptional()
-	@Field(() => Direction, { nullable: true })
 	direction?: Direction;
-
-	@IsNotEmpty()
-	@Field(() => ABAISearch)
 	search: ABAISearch;
 }
