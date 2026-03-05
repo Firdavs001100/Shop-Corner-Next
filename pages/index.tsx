@@ -5,6 +5,7 @@ import { Stack } from '@mui/material';
 import HomeShowcase from '../libs/components/homepage/HomeShowcase';
 import withLayoutMain from '../libs/components/layout/LayoutHome';
 import NewProducts from '../libs/components/homepage/NewProducts';
+import PromoSection from '../libs/components/homepage/PromoSection';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -20,6 +21,7 @@ const Home: NextPage = () => {
 			<Stack className={'home-page'}>
 				<HomeShowcase />
 				<NewProducts />
+				<PromoSection />
 			</Stack>
 		);
 	} else {
@@ -27,6 +29,7 @@ const Home: NextPage = () => {
 			<Stack className={'home-page'}>
 				<HomeShowcase />
 				<NewProducts />
+				<PromoSection />
 			</Stack>
 		);
 	}

@@ -4,7 +4,7 @@
 		width: 100%;
 		height: auto;
 		.home-showcase {
-			padding: 100px 0;
+			padding: 120px 0 0 0;
 
 			.showcase-grid {
 				align-items: center;
@@ -103,7 +103,7 @@
 			}
 		}
 		.new-products-section {
-			padding: 80px 0;
+			padding: 120px 0 0 0;
 
 			.section-header {
 				text-align: center;
@@ -353,6 +353,229 @@
 						color: #2f425d;
 						font-weight: 600;
 					}
+				}
+			}
+		}
+
+		.promo-section {
+			font-family: 'DM Sans', sans-serif;
+			padding: 120px 0 0 0;
+
+			/* ── Hero Banner ───────────────── */
+			.promo-hero {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				min-height: 480px;
+
+				@media (max-width: 768px) {
+					grid-template-columns: 1fr;
+				}
+
+				&__left {
+					background: #f0f4f8;
+					display: flex;
+					flex-direction: column;
+					align-items: flex-start;
+					justify-content: center;
+					padding: 60px 64px;
+
+					@media (max-width: 768px) {
+						padding: 40px 28px;
+					}
+				}
+
+				&__right {
+					position: relative;
+					overflow: hidden;
+					background: #c8cdd6;
+					min-height: 400px;
+				}
+
+				&__img {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+					object-position: center top;
+					display: block;
+				}
+
+				&__overlay {
+					position: absolute;
+					inset: 0;
+					background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100%);
+				}
+
+				&__img-text {
+					position: absolute;
+					bottom: 36px;
+					left: 36px;
+					right: 36px;
+					color: #fff;
+				}
+
+				&__img-title {
+					font-size: clamp(28px, 3.5vw, 44px);
+					font-weight: 800;
+					line-height: 1.1;
+					letter-spacing: -0.02em;
+					margin-bottom: 8px;
+				}
+
+				&__img-sub {
+					font-size: 13px;
+					font-weight: 300;
+					opacity: 0.88;
+					letter-spacing: 0.01em;
+				}
+
+				&__eyebrow {
+					font-size: 11px;
+					font-weight: 500;
+					letter-spacing: 0.18em;
+					color: #6b7fa3;
+					text-transform: uppercase;
+					margin-bottom: 16px;
+				}
+
+				&__heading {
+					font-size: clamp(36px, 4vw, 52px);
+					font-weight: 800;
+					color: #1a2332;
+					line-height: 1.1;
+					letter-spacing: -0.02em;
+					margin-bottom: 16px;
+				}
+
+				&__subtext {
+					font-size: 14px;
+					color: #5a6a7a;
+					line-height: 1.7;
+					max-width: 380px;
+					margin-bottom: 32px;
+				}
+
+				&__cta {
+					display: inline-flex;
+					align-items: center;
+					gap: 6px;
+					font-size: 14px;
+					font-weight: 600;
+					color: #1a2332;
+					text-decoration: none;
+					border-bottom: 1.5px solid #1a2332;
+					padding-bottom: 2px;
+					background: none;
+					cursor: pointer;
+					transition: gap 0.2s ease, opacity 0.2s ease;
+
+					&:hover {
+						gap: 10px;
+						opacity: 0.7;
+					}
+
+					&-arrow {
+						font-size: 16px;
+						line-height: 1;
+					}
+				}
+			}
+
+			/* ── Weekly Deals ───────────────── */
+			.weekly-deals {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 48px 64px;
+				background: #fff;
+				gap: 32px;
+				flex-wrap: wrap;
+				border-top: 1px solid #eef1f4;
+
+				@media (max-width: 768px) {
+					padding: 36px 28px;
+					flex-direction: column;
+					align-items: flex-start;
+				}
+
+				&__left {
+					flex-shrink: 0;
+				}
+
+				&__title {
+					font-size: clamp(28px, 3vw, 40px);
+					font-weight: 800;
+					color: #1a2332;
+					letter-spacing: -0.02em;
+					margin-bottom: 8px;
+				}
+
+				&__sub {
+					font-size: 13px;
+					color: #8a9aaa;
+				}
+
+				&__timer {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+				}
+
+				&__cta {
+					background: #1a2332;
+					color: #fff;
+					border: none;
+					border-radius: 999px;
+					padding: 16px 36px;
+					font-size: 14px;
+					font-weight: 600;
+					font-family: 'DM Sans', sans-serif;
+					cursor: pointer;
+					transition: background 0.2s ease, transform 0.2s ease;
+					white-space: nowrap;
+
+					&:hover {
+						background: #2c3e55;
+						transform: translateY(-1px);
+					}
+				}
+			}
+
+			/* ── Timer Separator ────────────── */
+			.timer-sep {
+				font-size: 22px;
+				font-weight: 700;
+				color: #1a2332;
+				opacity: 0.3;
+				align-self: flex-start;
+				padding-top: 12px;
+			}
+
+			/* ── Count Box ──────────────────── */
+			.count-box {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				background: #fff;
+				border: 1px solid #e8ecf0;
+				border-radius: 12px;
+				padding: 16px 24px;
+				min-width: 80px;
+				box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+
+				&__value {
+					font-weight: 700;
+					font-size: 28px;
+					color: #1a2332;
+					line-height: 1;
+					letter-spacing: -0.02em;
+				}
+
+				&__label {
+					font-size: 11px;
+					color: #888;
+					margin-top: 6px;
+					letter-spacing: 0.04em;
 				}
 			}
 		}
