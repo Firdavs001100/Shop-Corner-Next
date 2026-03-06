@@ -6,7 +6,7 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '../../../apollo/user/query';
 import { T } from '../../types/common';
-import NewProductCard from './NewProductsCard';
+import ProductCard from './ProductCard';
 import { Product } from '../../types/product/product';
 import { ProductsInquiry } from '../../types/product/product.input';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
@@ -92,7 +92,7 @@ const NewProducts = (props: NewProductsProps) => {
 								{products.length > 0
 									? products.map((product) => (
 											<SwiperSlide key={product._id}>
-												<NewProductCard product={product} likeProductHandler={likeProductHandler} />
+												<ProductCard product={product} likeProductHandler={likeProductHandler} />
 											</SwiperSlide>
 									  ))
 									: renderEmptyState()}
@@ -101,7 +101,7 @@ const NewProducts = (props: NewProductsProps) => {
 							<Stack className="product-grid">
 								{products.length > 0
 									? products.map((product) => (
-											<NewProductCard key={product._id} product={product} likeProductHandler={likeProductHandler} />
+											<ProductCard key={product._id} product={product} likeProductHandler={likeProductHandler} />
 									  ))
 									: renderEmptyState()}
 							</Stack>

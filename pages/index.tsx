@@ -6,6 +6,8 @@ import HomeShowcase from '../libs/components/homepage/HomeShowcase';
 import withLayoutMain from '../libs/components/layout/LayoutHome';
 import NewProducts from '../libs/components/homepage/NewProducts';
 import PromoSection from '../libs/components/homepage/PromoSection';
+import BestSellers from '../libs/components/homepage/BestSellers';
+import VideoBanner from '../libs/components/homepage/VideoBanner';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -22,6 +24,8 @@ const Home: NextPage = () => {
 				<HomeShowcase />
 				<NewProducts />
 				<PromoSection />
+				<BestSellers />
+				<VideoBanner />
 			</Stack>
 		);
 	} else {
@@ -30,6 +34,8 @@ const Home: NextPage = () => {
 				<HomeShowcase />
 				<NewProducts />
 				<PromoSection />
+				<BestSellers />
+				<VideoBanner />
 			</Stack>
 		);
 	}

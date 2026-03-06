@@ -3,6 +3,7 @@
 		position: relative;
 		width: 100%;
 		height: auto;
+
 		.home-showcase {
 			padding: 120px 0 0 0;
 
@@ -102,6 +103,7 @@
 				transition: all 0.5s ease;
 			}
 		}
+
 		.new-products-section {
 			padding: 120px 0 0 0;
 
@@ -576,6 +578,248 @@
 					color: #888;
 					margin-top: 6px;
 					letter-spacing: 0.04em;
+				}
+			}
+		}
+
+		.best-sellers {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			padding: 120px 0 0 0;
+			min-height: 700px;
+			font-family: 'DM Sans', sans-serif;
+
+			@media (max-width: 900px) {
+				grid-template-columns: 1fr;
+			}
+
+			&__left {
+				background: #e6e5e2;
+				overflow: hidden;
+			}
+
+			&__hero-img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			&__right {
+				padding: 50px;
+				background: #fff;
+				display: flex;
+				flex-direction: column;
+				gap: 24px;
+				overflow: hidden;
+			}
+
+			&__header {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+
+			&__title {
+				font-size: 42px;
+				font-weight: 800;
+				color: #1a2332;
+			}
+
+			&__desc {
+				font-size: 14px;
+				color: #6b7a8a;
+				line-height: 1.7;
+				max-width: 480px;
+			}
+
+			&__view-all {
+				display: inline-flex;
+				align-items: center;
+				gap: 6px;
+				font-size: 14px;
+				font-weight: 600;
+				border: none;
+				background: none;
+				cursor: pointer;
+
+				&:hover {
+					opacity: 0.7;
+				}
+			}
+
+			/* SLIDER */
+
+			&__slider-wrap {
+				overflow: hidden;
+				position: relative;
+			}
+
+			&__slider {
+				display: flex;
+				gap: 20px;
+				will-change: transform;
+			}
+
+			/* 2.5 cards */
+
+			&__slide {
+				flex: 0 0 40%;
+				max-width: 40%;
+			}
+
+			/* NAVIGATION */
+
+			&__nav {
+				display: flex;
+				gap: 10px;
+			}
+
+			&__nav-btn {
+				width: 44px;
+				height: 44px;
+				border-radius: 50%;
+				border: 1px solid #ddd;
+				background: white;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+
+				&:hover {
+					background: #1a2332;
+					color: white;
+				}
+			}
+
+			&__loading {
+				display: flex;
+				justify-content: center;
+				padding: 60px 0;
+			}
+
+			/* Resize ProductCard */
+
+			.best-sellers__slide .new-product-card {
+				transform: scale(0.88);
+				transform-origin: top left;
+				width: 100%;
+			}
+
+			.best-sellers__slide .info {
+				padding: 14px;
+			}
+
+			.best-sellers__slide .title {
+				font-size: 14px;
+			}
+
+			.best-sellers__slide .current {
+				font-size: 14px;
+			}
+
+			.best-sellers__slide .product-add {
+				height: 42px;
+				line-height: 42px;
+				font-size: 12px;
+			}
+		}
+
+		.video-banner {
+			position: relative;
+			width: 100%;
+			height: 680px;
+			overflow: hidden;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 140px 0 0 0;
+
+			@media (max-width: 768px) {
+				height: 500px;
+			}
+
+			// ── Video / poster ────────────────────────────────────
+			&__video {
+				position: absolute;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				object-position: center top;
+			}
+
+			// ── Dark overlay ──────────────────────────────────────
+			&__overlay {
+				position: absolute;
+				inset: 0;
+				background: rgba(0, 0, 0, 0.38);
+			}
+
+			// ── Centered content ──────────────────────────────────
+			&__content {
+				position: relative;
+				z-index: 10;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				text-align: center;
+				gap: 20px;
+				padding: 0 24px;
+				max-width: 680px;
+			}
+
+			&__title {
+				font-family: 'DM Sans', sans-serif;
+				font-size: clamp(40px, 6vw, 72px);
+				font-weight: 800;
+				color: #fff;
+				letter-spacing: -0.02em;
+				line-height: 1.05;
+				margin: 0;
+			}
+
+			&__desc {
+				font-family: 'DM Sans', sans-serif;
+				font-size: 16px;
+				font-weight: 400;
+				color: rgba(255, 255, 255, 0.88);
+				line-height: 1.7;
+				max-width: 560px;
+				margin: 0;
+
+				@media (max-width: 768px) {
+					font-size: 14px;
+				}
+			}
+
+			// ── Play button ───────────────────────────────────────
+			&__play {
+				width: 70px;
+				height: 70px;
+				border-radius: 50%;
+				background: rgba(255, 255, 255, 0.92);
+				border: none;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				color: #1a2332;
+				margin-top: 8px;
+				transition: transform 0.25s ease, background 0.25s ease, opacity 0.25s ease;
+				box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+
+				svg {
+					margin-left: 3px; // optical centering for play icon
+				}
+
+				&:hover {
+					transform: scale(1.08);
+					background: #fff;
+				}
+
+				&--hide {
+					opacity: 0;
+					pointer-events: none;
 				}
 			}
 		}
