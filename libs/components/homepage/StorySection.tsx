@@ -12,8 +12,8 @@ const StorySection = () => {
 	const next = () => setIndex((i) => (i + 1) % SLIDES.length);
 
 	return (
-		<div className="container">
-			<div className="story-section">
+		<div className="story-section">
+			<div className="container">
 				{/* Left — text */}
 				<div className="story-section__left">
 					<span className="story-section__eyebrow">STORY</span>

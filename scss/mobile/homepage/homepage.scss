@@ -72,4 +72,134 @@
 			}
 		}
 	}
+
+	.testimonials {
+		background-color: #ffffff;
+		padding: 60px 0 0 0;
+
+		.testimonials__wrap {
+			width: 100%;
+		}
+
+		.testimonials__inner {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 32px;
+			width: 100%;
+		}
+
+		.testimonials__left {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			padding: 0 20px;
+		}
+
+		.testimonials__eyebrow {
+			font-family: 'DM Sans', sans-serif;
+			font-size: 11px;
+			font-weight: 500;
+			letter-spacing: 0.18em;
+			color: #6b7a8a;
+			text-transform: uppercase;
+			margin-bottom: 12px;
+		}
+
+		.testimonials__heading {
+			font-family: 'DM Sans', sans-serif;
+			font-size: 28px;
+			font-weight: 800;
+			color: #1a2332;
+			letter-spacing: -0.02em;
+			line-height: 1.1;
+			margin-bottom: 24px;
+		}
+
+		.testimonials__avatar {
+			width: 56px !important;
+			height: 56px !important;
+			margin-bottom: 16px;
+			border: 2px solid #eee;
+		}
+
+		.testimonials__stars {
+			display: flex;
+			gap: 4px;
+			margin-bottom: 16px;
+
+			.star {
+				font-size: 18px;
+				color: #d0d0d0;
+
+				&.filled {
+					color: #1a2332;
+				}
+			}
+		}
+
+		.testimonials__review {
+			font-family: 'DM Sans', sans-serif;
+			font-size: 15px;
+			font-weight: 400;
+			color: #1a2332;
+			line-height: 1.7;
+			margin-bottom: 20px;
+		}
+
+		.testimonials__name {
+			font-family: 'DM Sans', sans-serif;
+			font-size: 14px;
+			font-weight: 700;
+			color: #1a2332;
+			margin-bottom: 4px;
+		}
+
+		.testimonials__from {
+			font-family: 'DM Sans', sans-serif;
+			font-size: 10px;
+			font-weight: 500;
+			letter-spacing: 0.12em;
+			color: #6b7a8a;
+			text-transform: uppercase;
+			margin-bottom: 28px;
+		}
+
+		.testimonials__controls {
+			display: flex;
+			gap: 10px;
+
+			.arrow-btn {
+				width: 44px;
+				height: 44px;
+				border: 1px solid #e0e0e0;
+				border-radius: 50%;
+				color: #1a2332;
+				background: #fff;
+				transition: all 0.2s ease;
+
+				svg {
+					font-size: 12px;
+				}
+
+				&:hover {
+					background: #1a2332;
+					color: #fff;
+					border-color: #1a2332;
+				}
+			}
+		}
+
+		.testimonials__right {
+			height: 380px;
+			overflow: hidden;
+		}
+
+		.testimonials__img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			object-position: top center;
+			display: block;
+		}
+	}
 }
