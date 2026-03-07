@@ -414,7 +414,6 @@ body::-webkit-scrollbar {
 	// ─── Variables ────────────────────────────────────────────────────────────────
 
 	$color-bg: #0f2035;
-	$color-bg-page: #0d1b2e;
 	$color-text: #ffffff;
 	$color-text-muted: #8fa8bf;
 	$color-text-contact: #c5d3e0;
@@ -434,12 +433,8 @@ body::-webkit-scrollbar {
 
 	$transition-base: 0.2s ease;
 
-	// ─── Breakpoints ──────────────────────────────────────────────────────────────
-
 	$bp-md: 768px;
 	$bp-lg: 1024px;
-
-	// ─── Mixins ───────────────────────────────────────────────────────────────────
 
 	@mixin flex-center {
 		display: flex;
@@ -466,10 +461,6 @@ body::-webkit-scrollbar {
 			@media (max-width: $bp-lg) {
 				padding: $spacing-3xl 32px 0;
 			}
-
-			@media (max-width: $bp-md) {
-				padding: $spacing-2xl 20px 0;
-			}
 		}
 
 		// ─── Grid ─────────────────────────────────────────────────────────────────
@@ -483,11 +474,6 @@ body::-webkit-scrollbar {
 			@media (max-width: $bp-lg) {
 				grid-template-columns: 1fr 1fr;
 				gap: $spacing-xl;
-			}
-
-			@media (max-width: $bp-md) {
-				grid-template-columns: 1fr;
-				gap: $spacing-2xl;
 			}
 		}
 
@@ -506,7 +492,7 @@ body::-webkit-scrollbar {
 			font-weight: 600;
 			font-size: 16px;
 			color: $color-text;
-			margin-bottom: $spacing-lg;
+			margin: 0 0 $spacing-lg;
 			letter-spacing: 0.02em;
 		}
 
@@ -587,17 +573,13 @@ body::-webkit-scrollbar {
 			justify-content: space-between;
 			flex-wrap: wrap;
 			gap: $spacing-md;
-
-			@media (max-width: $bp-md) {
-				flex-direction: column;
-				align-items: flex-start;
-			}
 		}
 
 		&__copyright {
 			font-size: 13px;
 			color: #6b8299;
 			font-weight: 300;
+			margin: 0;
 		}
 
 		// ─── Payment Badges ───────────────────────────────────────────────────────
@@ -639,7 +621,6 @@ body::-webkit-scrollbar {
 			}
 		}
 
-		// .payment-icon targets the SVG mastercard component
 		.payment-icon {
 			display: block;
 			height: 26px;

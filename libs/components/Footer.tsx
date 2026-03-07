@@ -1,4 +1,8 @@
 import React, { ReactNode } from 'react';
+import { Box } from '@mui/material';
+import useDeviceDetect from '../hooks/useDeviceDetect';
+
+// ── Icons ─────────────────────────────────────────────────
 
 const FacebookIcon = () => (
 	<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -53,6 +57,8 @@ const MastercardIcon = () => (
 	</svg>
 );
 
+// ── Data ──────────────────────────────────────────────────
+
 interface NavLink {
 	label: string;
 	href: string;
@@ -92,13 +98,15 @@ const socialLinks: SocialLink[] = [
 	{ icon: <TikTokIcon />, label: 'TikTok', href: '#' },
 ];
 
+// ── Sub-components ────────────────────────────────────────
+
 interface FooterNavColumnProps {
 	title: string;
 	links: NavLink[];
 }
 
 const FooterNavColumn: React.FC<FooterNavColumnProps> = ({ title, links }) => (
-	<div className="footer__col">
+	<Box className="footer__col">
 		<h4 className="footer__col-title">{title}</h4>
 		<ul className="footer__nav-list">
 			{links.map(({ label, href }) => (
@@ -109,62 +117,82 @@ const FooterNavColumn: React.FC<FooterNavColumnProps> = ({ title, links }) => (
 				</li>
 			))}
 		</ul>
-	</div>
+	</Box>
 );
 
-const Footer = () => {
-	return (
-		<footer className="footer">
-			<div className="footer__inner">
-				<div className="footer__grid">
-					{/* Brand Column */}
-					<div className="footer__col footer__col--brand">
-						<div className="footer__logo">SHOP.CO</div>
+const FooterBrand = () => (
+	<Box className="footer__col footer__col--brand">
+		<div className="footer__logo">SHOP.CO</div>
 
-						<div className="footer__contact">
-							<div className="footer__contact-item">
-								<LocationIcon />
-								<span>368 Ocean Ave, Seaside, CA 12345</span>
-							</div>
-							<div className="footer__contact-item">
-								<PhoneIcon />
-								<span>+ (555) – 123-6868</span>
-							</div>
-							<div className="footer__contact-item">
-								<EmailIcon />
-								<span>Shop.Co@gmail.com</span>
-							</div>
-						</div>
+		<Box className="footer__contact">
+			<Box className="footer__contact-item">
+				<LocationIcon />
+				<span>368 Ocean Ave, Seaside, CA 12345</span>
+			</Box>
+			<Box className="footer__contact-item">
+				<PhoneIcon />
+				<span>+ (555) – 123-6868</span>
+			</Box>
+			<Box className="footer__contact-item">
+				<EmailIcon />
+				<span>Shop.Co@gmail.com</span>
+			</Box>
+		</Box>
 
-						<div className="footer__social">
-							{socialLinks.map(({ icon, label, href }) => (
-								<a key={label} href={href} className="footer__social-link" aria-label={label}>
-									{icon}
-								</a>
-							))}
-						</div>
-					</div>
+		<Box className="footer__social">
+			{socialLinks.map(({ icon, label, href }) => (
+				<a key={label} href={href} className="footer__social-link" aria-label={label}>
+					{icon}
+				</a>
+			))}
+		</Box>
+	</Box>
+);
 
-					{/* Nav Columns */}
-					<FooterNavColumn title="Let Us Help" links={helpLinks} />
-					<FooterNavColumn title="Categories" links={categoryLinks} />
-					<FooterNavColumn title="Our Policies" links={policyLinks} />
-				</div>
+const FooterBottom = () => (
+	<Box className="footer__bottom">
+		<p className="footer__copyright">Copyright &copy; 2026 ShopCo. All Rights Reserved.</p>
+		<Box className="footer__payments">
+			<span className="footer__pay-badge footer__pay-badge--visa">VISA</span>
+			<MastercardIcon />
+			<span className="footer__pay-badge footer__pay-badge--amex">AMEX</span>
+			<span className="footer__pay-badge footer__pay-badge--rupay">RuPay</span>
+			<span className="footer__pay-badge footer__pay-badge--paypal">P</span>
+		</Box>
+	</Box>
+);
 
-				{/* Bottom Bar */}
-				<div className="footer__bottom">
-					<p className="footer__copyright">Copyright &copy; 2026 ShopCo. All Rights Reserved.</p>
-					<div className="footer__payments">
-						<span className="footer__pay-badge footer__pay-badge--visa">VISA</span>
-						<MastercardIcon />
-						<span className="footer__pay-badge footer__pay-badge--amex">AMEX</span>
-						<span className="footer__pay-badge footer__pay-badge--rupay">RuPay</span>
-						<span className="footer__pay-badge footer__pay-badge--paypal">P</span>
-					</div>
-				</div>
-			</div>
-		</footer>
+// ── Main Component ────────────────────────────────────────
+
+export default function Footer() {
+	const device = useDeviceDetect();
+
+	const gridContent = (
+		<Box className="footer__grid">
+			<FooterBrand />
+			<FooterNavColumn title="Let Us Help" links={helpLinks} />
+			<FooterNavColumn title="Categories" links={categoryLinks} />
+			<FooterNavColumn title="Our Policies" links={policyLinks} />
+		</Box>
 	);
-};
 
-export default Footer;
+	if (device === 'mobile') {
+		return (
+			<footer className="footer">
+				<Box className="footer__inner">
+					{gridContent}
+					<FooterBottom />
+				</Box>
+			</footer>
+		);
+	} else {
+		return (
+			<footer className="footer">
+				<Box className="footer__inner">
+					{gridContent}
+					<FooterBottom />
+				</Box>
+			</footer>
+		);
+	}
+}
