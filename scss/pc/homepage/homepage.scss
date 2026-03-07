@@ -247,7 +247,7 @@
 						}
 					}
 
-					.view-cnt {
+					.like-cnt {
 						font-size: 13px;
 						font-weight: 600;
 						color: #1e2a3b;
@@ -353,7 +353,7 @@
 						}
 					}
 
-					.view-cnt {
+					.like-cnt {
 						font-size: 14px;
 						color: #2f425d;
 						font-weight: 600;
@@ -1262,13 +1262,14 @@
 			.testimonials__right {
 				overflow: hidden;
 				border-radius: 4px;
+				width: 620px;
+				height: 620px;
 			}
 
 			.testimonials__img {
 				width: 100%;
 				height: 100%;
 				object-fit: cover;
-				object-position: top center;
 				display: block;
 			}
 		}

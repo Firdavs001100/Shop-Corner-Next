@@ -14,18 +14,10 @@ export default function HomeShowcase() {
 					{/* LEFT IMAGE BLOCK */}
 					<Stack className="home-showcase__images">
 						<Box className="home-showcase__img-1">
-							<Box
-								component="img"
-								src="https://milana.risingbamboo.com/wp-content/uploads/2025/10/bn2-1.avif"
-								alt="Fashion Look 1"
-							/>
+							<Box component="img" src="/img/banner/hw2.avif" alt="Fashion Look 1" />
 						</Box>
 						<Box className="home-showcase__img-2">
-							<Box
-								component="img"
-								src="https://milana.risingbamboo.com/wp-content/uploads/2025/10/bn2-2.avif"
-								alt="Fashion Look 2"
-							/>
+							<Box component="img" src="/img/banner/hw1.avif" alt="Fashion Look 2" />
 						</Box>
 					</Stack>
 

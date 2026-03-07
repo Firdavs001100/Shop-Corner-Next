@@ -146,8 +146,8 @@ export default function Header() {
 	}, [router]);
 
 	useEffect(() => {
-		const handleScroll = () => setColorChange(window.scrollY >= 50);
-		window.addEventListener('scroll', handleScroll);
+		const handleScroll = () => setColorChange(window.scrollY >= window.innerHeight * 0.8);
+		window.addEventListener('scroll', handleScroll, { passive: true });
 		return () => window.removeEventListener('scroll', handleScroll);
 	}, []);
 
@@ -203,10 +203,6 @@ export default function Header() {
 				<MenuItem disableRipple onClick={langChoice} id="kr">
 					<img src="/img/flag/langkr.png" alt="Korean" />
 					{t('Korean')}
-				</MenuItem>
-				<MenuItem disableRipple onClick={langChoice} id="ru">
-					<img src="/img/flag/langru.png" alt="Russian" />
-					{t('Russian')}
 				</MenuItem>
 			</StyledMenu>
 		</>
@@ -292,7 +288,7 @@ export default function Header() {
 		return (
 			<>
 				<div className={`site-header site-header--mobile${colorChange ? ' site-header--scrolled' : ''}`}>
-					<div className="announcement-bar">Free shipping in orders over $50</div>
+					<div className="announcement-bar">Free shipping in orders over ₩200,000</div>
 
 					<header className="navbar-mobile">
 						<button
@@ -354,7 +350,7 @@ export default function Header() {
 	return (
 		<>
 			<div className={`site-header${colorChange ? ' site-header--scrolled' : ''}`}>
-				<div className="announcement-bar">Free shipping in orders over $50</div>
+				<div className="announcement-bar">Free shipping in orders over ₩200,000</div>
 
 				<header className="navbar">
 					<a href="/" className="navbar__logo">

@@ -82,7 +82,7 @@ const BestSellers = ({ initialInput }: BestSellersProps) => {
 
 	const leftContent = (
 		<Box className="best-sellers__left">
-			<img src="/img/banner/ps2.avif" alt="Best Sellers" className="best-sellers__hero-img" />
+			<img src="/img/banner/bs9.jpg" alt="Best Sellers" className="best-sellers__hero-img" />
 		</Box>
 	);
 
@@ -91,7 +91,7 @@ const BestSellers = ({ initialInput }: BestSellersProps) => {
 			<Box className="best-sellers__header">
 				<Typography className="best-sellers__title">Best Sellers</Typography>
 				<Typography className="best-sellers__desc">
-					Pair text with an image to focus on your chosen product, collection, or blog post.
+					Discover the products our customers love the most. Tried, trusted, and chosen again and again.
 				</Typography>
 				<button className="best-sellers__view-all" onClick={() => router.push('/product')}>
 					View All Collection

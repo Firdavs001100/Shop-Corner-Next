@@ -5,7 +5,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useRouter } from 'next/router';
 
-const SLIDES = ['/img/story/st2.avif', '/img/story/st3.avif', '/img/story/st1.avif'];
+const SLIDES = ['/img/story/st5.jpg', '/img/story/st2.avif', '/img/story/st1.avif'];
 
 const StorySection = () => {
 	const device = useDeviceDetect();

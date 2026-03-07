@@ -39,6 +39,8 @@ const ProductCard = (props: NewProductCardProps) => {
 		});
 	};
 
+	const formatLikes = (count: number) => (count >= 1000 ? `${(count / 1000).toFixed(1).replace(/\.0$/, '')}k` : count);
+
 	// component
 	const discountPercent =
 		product.isDiscounted && product.productPrice > 0 && product.productSalePrice !== undefined
@@ -90,7 +92,7 @@ const ProductCard = (props: NewProductCardProps) => {
 								: product.productPrice.toLocaleString()}
 						</span>
 
-						{product.isDiscounted && <span className="old">${product.productPrice.toLocaleString()}</span>}
+						{product.isDiscounted && <span className="old">₩{product.productPrice.toLocaleString()}</span>}
 					</div>
 					<div className="like-box">
 						<IconButton color={'default'} onClick={() => likeProductHandler(user, product?._id)}>
@@ -100,7 +102,7 @@ const ProductCard = (props: NewProductCardProps) => {
 								<FavoriteIcon />
 							)}
 						</IconButton>
-						<Typography className="view-cnt">{product?.productLikes}</Typography>
+						<Typography className="like-cnt">{formatLikes(product?.productLikes)}</Typography>
 					</div>
 				</div>
 			</div>

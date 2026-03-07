@@ -11,7 +11,6 @@ interface Testimonial {
 	avatar: string;
 	rating: number;
 	review: string;
-	image: string;
 }
 
 const testimonials: Testimonial[] = [
@@ -22,7 +21,6 @@ const testimonials: Testimonial[] = [
 		rating: 5,
 		review:
 			'"An elevated essential for any wardrobe. Thoughtful details, flawless fit, and exceptional quality. Designed to feel polished in every moment."',
-		image: 'https://nov-milana.myshopify.com/cdn/shop/files/img-6-12.jpg?v=1768279188&width=768',
 	},
 	{
 		name: 'James Carter',
@@ -31,7 +29,6 @@ const testimonials: Testimonial[] = [
 		rating: 5,
 		review:
 			'"Absolutely stunning craftsmanship. The attention to detail is unmatched and the fit is perfect. I get compliments every time I wear it."',
-		image: 'https://nov-milana.myshopify.com/cdn/shop/files/img-6-12.jpg?v=1768279188&width=768',
 	},
 	{
 		name: 'Sofia Rossi',
@@ -40,7 +37,6 @@ const testimonials: Testimonial[] = [
 		rating: 4,
 		review:
 			'"This piece has become a staple in my wardrobe. Versatile, elegant, and incredibly comfortable. Worth every penny."',
-		image: 'https://nov-milana.myshopify.com/cdn/shop/files/img-6-12.jpg?v=1768279188&width=768',
 	},
 ];
 
@@ -98,7 +94,7 @@ export default function Testimonials() {
 							{leftContent}
 
 							<Box className="testimonials__right">
-								<img src={testimonials[0].image} alt="Testimonial" className="testimonials__img" />
+								<img src="/img/banner/ts1.jpg" alt="Testimonial" className="testimonials__img" />
 							</Box>
 						</Box>
 					</Box>
@@ -114,7 +110,7 @@ export default function Testimonials() {
 							{leftContent}
 
 							<Box className="testimonials__right">
-								<img src={testimonials[0].image} alt="Testimonial" className="testimonials__img" />
+								<img src="/img/banner/ts1.jpg" alt="Testimonial" className="testimonials__img" />
 							</Box>
 						</Box>
 					</Box>

@@ -4,11 +4,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 
-const SLIDES = [
-	'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=700&q=80',
-	'https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=700&q=80',
-	'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=700&q=80',
-];
+const SLIDES = ['/img/banner/ns1.jpg', '/img/banner/ns2.jpg', '/img/banner/ns3.jpg'];
 
 const NewsletterSection = () => {
 	const device = useDeviceDetect();

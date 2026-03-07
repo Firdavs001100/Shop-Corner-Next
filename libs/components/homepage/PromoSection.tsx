@@ -38,7 +38,7 @@ export default function PromoSection() {
 					40% Off
 				</h2>
 				<p className="promo-hero__subtext">
-					Exceptional Products Meticulously Crafted with Unparalleled Expertise and Care
+					Exceptional Products Meticulously Crafted with Unparalleled Expertise and Care.
 				</p>
 				<button className="promo-hero__cta" onClick={() => pushAllProductsHandler()}>
 					Shop Now <span className="promo-hero__cta-arrow">›</span>

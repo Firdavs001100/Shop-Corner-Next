@@ -32,16 +32,24 @@ body::-webkit-scrollbar {
 	$c-badge-bg: #1a1a1a;
 	$c-badge-text: #ffffff;
 
+	$c-sticky-bg: #0f2035;
+
 	$font-display: 'Bebas Neue', sans-serif;
 	$font-body: 'DM Sans', sans-serif;
 
 	$announcement-height: 44px;
 	$navbar-height: 72px;
-	$hero-height: calc(100vh - #{$navbar-height} - #{$announcement-height});
+	$hero-height: 100vh;
 
 	$t-fast: 0.2s ease;
 	$t-base: 0.25s ease;
 	$t-slide: 0.5s ease;
+
+	// ─── Site Header ─────────────────────────────────────────────────────────────
+
+	.site-header {
+		position: relative;
+	}
 
 	// ─── Announcement Bar ─────────────────────────────────────────────────────────
 
@@ -57,6 +65,11 @@ body::-webkit-scrollbar {
 		font-weight: 400;
 		letter-spacing: 0.01em;
 		border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 101;
 	}
 
 	// ─── Navbar ───────────────────────────────────────────────────────────────────
@@ -66,18 +79,23 @@ body::-webkit-scrollbar {
 		align-items: center;
 		height: $navbar-height;
 		padding: 0 40px;
-		background-color: $c-navbar-bg;
-		box-shadow: 0 1px 0 $c-navbar-shadow;
-		position: relative;
+		background-color: rgba(255, 255, 255, 0.12);
+		backdrop-filter: blur(1px);
+		-webkit-backdrop-filter: blur(1px);
+		position: absolute;
+		top: $announcement-height;
+		left: 0;
+		right: 0;
 		z-index: 100;
 
 		&__logo {
 			font-family: $font-display;
 			font-size: 28px;
 			letter-spacing: 2px;
-			color: $c-text-primary;
+			color: #ffffff;
 			text-decoration: none;
 			flex: 1;
+			transition: color $t-base;
 		}
 	}
 
@@ -109,7 +127,7 @@ body::-webkit-scrollbar {
 			font-family: $font-body;
 			font-size: 14px;
 			font-weight: 400;
-			color: $c-text-muted;
+			color: rgba(255, 255, 255, 0.8);
 			text-decoration: none;
 			white-space: nowrap;
 			transition: color $t-base;
@@ -120,14 +138,14 @@ body::-webkit-scrollbar {
 			}
 
 			&:hover {
-				color: $c-text-primary;
+				color: #ffffff;
 				svg {
 					transform: rotate(180deg);
 				}
 			}
 
 			&--active {
-				color: $c-text-primary;
+				color: #ffffff;
 				font-weight: 500;
 				text-decoration: underline;
 				text-underline-offset: 5px;
@@ -142,10 +160,9 @@ body::-webkit-scrollbar {
 		display: flex;
 		align-items: center;
 		gap: 4px;
-		margin-left: auto;
 		flex: 1;
-		justify-content: flex-end; // pushes to right third
-		margin-left: 0; // remove the auto margin
+		justify-content: flex-end;
+		margin-left: 0;
 
 		&__btn {
 			position: relative;
@@ -157,33 +174,30 @@ body::-webkit-scrollbar {
 			background: none;
 			border: none;
 			cursor: pointer;
-			color: $c-text-primary;
+			color: #ffffff;
 			border-radius: 8px;
-			transition: background $t-fast;
+			transition: background $t-fast, color $t-base;
 			padding: 0;
 			flex-shrink: 0;
 
 			&:hover {
-				background: rgba(0, 0, 0, 0.05);
+				background: rgba(255, 255, 255, 0.1);
 			}
 
-			// Lang button overrides — wider to fit flag + caret
 			&--lang {
 				width: auto;
 				gap: 5px;
 				padding: 0 8px;
 			}
 
-			// Avatar button
 			&--avatar {
 				width: 36px;
 				height: 36px;
 			}
 
-			// Login link button
 			&--login {
 				text-decoration: none;
-				color: $c-text-primary;
+				color: #ffffff;
 			}
 		}
 
@@ -221,6 +235,64 @@ body::-webkit-scrollbar {
 			justify-content: center;
 			padding: 0 3px;
 			line-height: 1;
+		}
+	}
+
+	// ─── Sticky Scrolled State ────────────────────────────────────────────────────
+
+	.site-header--scrolled {
+		.announcement-bar {
+			display: none;
+		}
+
+		.navbar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 999;
+			background-color: $c-sticky-bg;
+			box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+			animation: navbarSlideDown 0.3s ease forwards;
+
+			.navbar__logo {
+				color: #ffffff;
+			}
+
+			.nav__link {
+				color: rgba(255, 255, 255, 0.7);
+
+				&:hover {
+					color: #ffffff;
+				}
+
+				&--active {
+					color: #ffffff;
+				}
+			}
+
+			.toolbar__btn {
+				color: #ffffff;
+
+				&:hover {
+					background: rgba(255, 255, 255, 0.1);
+				}
+
+				&--login {
+					color: #ffffff;
+				}
+			}
+		}
+	}
+
+	@keyframes navbarSlideDown {
+		from {
+			transform: translateY(-100%);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
 		}
 	}
 
@@ -395,6 +467,7 @@ body::-webkit-scrollbar {
 		&--prev {
 			left: 24px;
 		}
+
 		&--next {
 			right: 24px;
 		}
