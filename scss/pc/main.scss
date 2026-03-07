@@ -297,7 +297,7 @@ body::-webkit-scrollbar {
 
 		&__heading {
 			font-family: $font-display;
-			font-size: clamp(52px, 7vw, 90px);
+			font-size: clamp(40px, 5vw, 70px);
 			line-height: 0.95;
 			color: $c-hero-text;
 			margin: 0 0 20px;

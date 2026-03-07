@@ -7,19 +7,20 @@
 		.home-showcase {
 			padding: 120px 0 0 0;
 
-			.showcase-grid {
+			&__grid {
 				align-items: center;
 				gap: 30px;
 			}
 
-			/* LEFT IMAGE BLOCK */
-			.banner-left-image {
+			// ─── Images ───────────────────────────────────────────
+
+			&__images {
 				width: 58%;
 				position: relative;
 				padding-bottom: 100px;
 			}
 
-			.banner-img-1 {
+			&__img-1 {
 				width: 55.556%;
 				position: relative;
 				z-index: 10;
@@ -36,7 +37,7 @@
 				}
 			}
 
-			.banner-img-2 {
+			&__img-2 {
 				width: 56.791%;
 				position: absolute;
 				bottom: 0;
@@ -55,16 +56,14 @@
 				}
 			}
 
-			/* RIGHT TEXT BLOCK */
-			.banner-right-text {
-				width: 42%;
-			}
+			// ─── Content ──────────────────────────────────────────
 
-			.text-content {
+			&__content {
+				width: 42%;
 				padding-left: 30px;
 			}
 
-			.title {
+			&__title {
 				font-size: 40px;
 				line-height: 60px;
 				font-weight: 900;
@@ -73,19 +72,15 @@
 				color: #132742;
 			}
 
-			.desc {
+			&__desc {
 				font-size: 16px;
 				line-height: 1.5;
 				font-weight: 500;
 				margin-bottom: 24px;
 				color: #132742;
-
-				p {
-					margin: 0;
-				}
 			}
 
-			.shop-btn {
+			&__btn {
 				padding-left: 32px;
 				padding-right: 28px;
 				height: 50px;
@@ -99,7 +94,7 @@
 				}
 			}
 
-			.button-text {
+			&__btn-text {
 				transition: all 0.5s ease;
 			}
 		}
@@ -179,6 +174,7 @@
 					width: 100%;
 					height: 360px;
 					object-fit: cover;
+					object-position: center top;
 					display: block;
 					transition: all 0.7s linear;
 				}
@@ -190,6 +186,7 @@
 					width: 100%;
 					height: 100%;
 					object-fit: cover;
+					object-position: center top;
 					opacity: 0;
 					transition: all 0.7s linear;
 				}
@@ -577,12 +574,17 @@
 
 		.best-sellers {
 			display: flex;
-			padding: 120px 0 0 0;
-			min-height: 700px;
+			flex-direction: column;
+			padding: 80px 0 0 0;
 			font-family: 'DM Sans', sans-serif;
 
+			.container {
+				gap: 80px;
+			}
+
 			&__left {
-				flex: 1;
+				width: 42%;
+				flex-shrink: 0;
 				background: #e6e5e2;
 				overflow: hidden;
 			}
@@ -591,16 +593,16 @@
 				width: 100%;
 				height: 100%;
 				object-fit: cover;
+				display: block;
 			}
 
 			&__right {
 				flex: 1;
-				padding: 50px;
-				padding-right: 0;
+				padding: 48px 0px;
 				background: #fff;
 				display: flex;
 				flex-direction: column;
-				gap: 24px;
+				gap: 28px;
 				overflow: hidden;
 			}
 
@@ -611,7 +613,7 @@
 			}
 
 			&__title {
-				font-size: 42px;
+				font-size: 32px;
 				font-weight: 800;
 				color: #1a2332;
 			}
@@ -620,25 +622,27 @@
 				font-size: 14px;
 				color: #6b7a8a;
 				line-height: 1.7;
-				max-width: 480px;
+				max-width: 400px;
 			}
 
 			&__view-all {
 				display: inline-flex;
 				align-items: center;
 				gap: 6px;
-				font-size: 14px;
+				font-size: 13px;
 				font-weight: 600;
 				border: none;
 				background: none;
 				cursor: pointer;
+				color: #1a2332;
+				transition: opacity 0.2s ease;
 
 				&:hover {
-					opacity: 0.7;
+					opacity: 0.6;
 				}
 			}
 
-			/* SLIDER */
+			// ─── Slider ───────────────────────────────────────────
 
 			&__slider-wrap {
 				overflow: hidden;
@@ -651,22 +655,23 @@
 				will-change: transform;
 			}
 
-			/* 2 cards */
+			// 2 cards visible on desktop
 			&__slide {
-				flex: 0 0 calc(50% - 10px);
-				max-width: calc(50% - 10px);
+				flex: 0 0 calc((100% - 20px) / 2);
+				max-width: calc((100% - 20px) / 2);
 			}
 
-			/* NAVIGATION */
+			// ─── Navigation ───────────────────────────────────────
 
 			&__nav {
 				display: flex;
 				gap: 10px;
+				margin-top: 20px;
 			}
 
 			&__nav-btn {
-				width: 44px;
-				height: 44px;
+				width: 42px;
+				height: 42px;
 				border-radius: 50%;
 				border: 1px solid #ddd;
 				background: white;
@@ -674,6 +679,7 @@
 				align-items: center;
 				justify-content: center;
 				cursor: pointer;
+				transition: background 0.2s ease, color 0.2s ease;
 
 				&:hover {
 					background: #1a2332;
@@ -684,33 +690,31 @@
 			&__loading {
 				display: flex;
 				justify-content: center;
-				padding: 60px 0;
+				padding: 40px 0;
 			}
 
-			/* Resize ProductCard */
+			// ─── ProductCard overrides ────────────────────────────
 
-			.best-sellers__slide .new-product-card {
-				transform: scale(0.88);
-				transform-origin: top left;
+			.new-product-card {
 				width: 100%;
 			}
 
-			.best-sellers__slide .info {
-				padding: 14px;
+			.info {
+				padding: 12px;
 			}
 
-			.best-sellers__slide .title {
-				font-size: 14px;
+			.title {
+				font-size: 13px;
 			}
 
-			.best-sellers__slide .current {
-				font-size: 14px;
+			.current {
+				font-size: 13px;
 			}
 
-			.best-sellers__slide .product-add {
-				height: 42px;
-				line-height: 42px;
-				font-size: 12px;
+			.product-add {
+				height: 40px;
+				line-height: 40px;
+				font-size: 11px;
 			}
 		}
 
@@ -724,11 +728,13 @@
 			justify-content: center;
 			margin: 140px 0 0 0;
 
-			@media (max-width: 768px) {
-				height: 500px;
+			@media (max-width: 1024px) {
+				height: 560px;
+				margin: 100px 0 0 0;
 			}
 
-			// ── Video / poster ────────────────────────────────────
+			// ── Video ─────────────────────────────────────────────
+
 			&__video {
 				position: absolute;
 				inset: 0;
@@ -739,6 +745,7 @@
 			}
 
 			// ── Dark overlay ──────────────────────────────────────
+
 			&__overlay {
 				position: absolute;
 				inset: 0;
@@ -746,6 +753,7 @@
 			}
 
 			// ── Centered content ──────────────────────────────────
+
 			&__content {
 				position: relative;
 				z-index: 10;
@@ -776,41 +784,6 @@
 				line-height: 1.7;
 				max-width: 560px;
 				margin: 0;
-
-				@media (max-width: 768px) {
-					font-size: 14px;
-				}
-			}
-
-			// ── Play button ───────────────────────────────────────
-			&__play {
-				width: 70px;
-				height: 70px;
-				border-radius: 50%;
-				background: rgba(255, 255, 255, 0.92);
-				border: none;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				cursor: pointer;
-				color: #1a2332;
-				margin-top: 8px;
-				transition: transform 0.25s ease, background 0.25s ease, opacity 0.25s ease;
-				box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-
-				svg {
-					margin-left: 3px; // optical centering for play icon
-				}
-
-				&:hover {
-					transform: scale(1.08);
-					background: #fff;
-				}
-
-				&--hide {
-					opacity: 0;
-					pointer-events: none;
-				}
 			}
 		}
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -22,14 +22,17 @@ interface BestSellersProps {
 	initialInput: ProductsInquiry;
 }
 
+const CARD_GAP = 20;
+
 const BestSellers = ({ initialInput }: BestSellersProps) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const [products, setProducts] = useState<Product[]>([]);
 	const [slideIndex, setSlideIndex] = useState(0);
+	const slideRef = useRef<HTMLDivElement>(null);
 
-	const visibleCards = 2;
-	const cardWidth = 100 / visibleCards;
+	const isMobile = device === 'mobile';
+	const visibleCards = isMobile ? 1 : 2;
 
 	const { loading: getProductsLoading, refetch } = useQuery(GET_PRODUCTS, {
 		fetchPolicy: 'cache-and-network',
@@ -52,6 +55,13 @@ const BestSellers = ({ initialInput }: BestSellersProps) => {
 		}
 	};
 
+	const getStepPx = () => {
+		if (!slideRef.current) return 0;
+		const firstSlide = slideRef.current.firstElementChild as HTMLElement;
+		if (!firstSlide) return 0;
+		return firstSlide.offsetWidth + CARD_GAP;
+	};
+
 	const next = () => {
 		setSlideIndex((prev) => {
 			if (prev + visibleCards >= products.length) return 0;
@@ -65,6 +75,10 @@ const BestSellers = ({ initialInput }: BestSellersProps) => {
 			return prev - 1;
 		});
 	};
+
+	const translateX = isMobile
+		? `translateX(${-slideIndex * getStepPx()}px)`
+		: `translateX(calc(-${slideIndex} * (${100 / visibleCards}% + ${CARD_GAP}px)))`;
 
 	const leftContent = (
 		<Box className="best-sellers__left">
@@ -92,9 +106,10 @@ const BestSellers = ({ initialInput }: BestSellersProps) => {
 			) : (
 				<Box className="best-sellers__slider-wrap">
 					<Box
+						ref={slideRef}
 						className="best-sellers__slider"
 						style={{
-							transform: `translateX(calc(-${slideIndex * cardWidth}% - ${slideIndex * 20}px))`,
+							transform: translateX,
 							transition: 'transform .45s cubic-bezier(.25,.8,.25,1)',
 						}}
 					>
@@ -118,18 +133,22 @@ const BestSellers = ({ initialInput }: BestSellersProps) => {
 		</Box>
 	);
 
-	if (device === 'mobile') {
+	if (isMobile) {
 		return (
 			<Box className="best-sellers">
-				{leftContent}
-				{rightContent}
+				<div className="container">
+					{leftContent}
+					{rightContent}
+				</div>
 			</Box>
 		);
 	} else {
 		return (
 			<Box className="best-sellers">
-				{leftContent}
-				{rightContent}
+				<div className="container">
+					{leftContent}
+					{rightContent}
+				</div>
 			</Box>
 		);
 	}
