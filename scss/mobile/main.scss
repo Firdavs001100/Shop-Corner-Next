@@ -3,4 +3,252 @@
 @import '/scss/mobile/homepage/homepage.scss';
 
 #mobile-wrap {
+	// ─── Variables ────────────────────────────────────────────────────────────────
+
+	$c-announcement-bg: #fdf6e3;
+	$c-announcement-text: #333333;
+	$c-navbar-bg: #ffffff;
+	$c-navbar-shadow: rgba(0, 0, 0, 0.06);
+	$c-text-primary: #1a1a1a;
+	$c-text-muted: #555555;
+	$c-hero-overlay: rgba(0, 0, 0, 0.25);
+	$c-hero-text: #ffffff;
+	$c-cta-bg: #ffffff;
+	$c-cta-text: #1a1a1a;
+	$c-badge-bg: #1a1a1a;
+	$c-badge-text: #ffffff;
+
+	$font-display: 'Bebas Neue', sans-serif;
+	$font-body: 'DM Sans', sans-serif;
+
+	$announcement-height: 40px;
+	$navbar-height: 60px;
+	$hero-height: calc(100vh - #{$navbar-height} - #{$announcement-height});
+
+	$t-fast: 0.2s ease;
+	$t-base: 0.25s ease;
+
+	// ─── Announcement Bar ─────────────────────────────────────────────────────────
+
+	.announcement-bar {
+		background-color: $c-announcement-bg;
+		color: $c-announcement-text;
+		height: $announcement-height;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-family: $font-body;
+		font-size: 12px;
+		font-weight: 400;
+		letter-spacing: 0.01em;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+		text-align: center;
+		padding: 0 16px;
+	}
+
+	// ─── Navbar ───────────────────────────────────────────────────────────────────
+
+	.navbar {
+		display: flex;
+		align-items: center;
+		height: $navbar-height;
+		padding: 0 20px;
+		background-color: $c-navbar-bg;
+		box-shadow: 0 1px 0 $c-navbar-shadow;
+		position: relative;
+		z-index: 100;
+
+		&__logo {
+			font-family: $font-display;
+			font-size: 22px;
+			letter-spacing: 2px;
+			color: $c-text-primary;
+			text-decoration: none;
+			flex-shrink: 0;
+		}
+	}
+
+	// ─── Nav — hidden on mobile ───────────────────────────────────────────────────
+
+	.nav {
+		display: none;
+	}
+
+	// ─── Toolbar ──────────────────────────────────────────────────────────────────
+
+	.toolbar {
+		display: flex;
+		align-items: center;
+		gap: 2px;
+		margin-left: auto;
+
+		&__btn {
+			position: relative;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 36px;
+			height: 36px;
+			background: none;
+			border: none;
+			cursor: pointer;
+			color: $c-text-primary;
+			border-radius: 8px;
+			transition: background $t-fast;
+
+			&:hover {
+				background: rgba(0, 0, 0, 0.05);
+			}
+		}
+
+		&__badge {
+			position: absolute;
+			top: 3px;
+			right: 3px;
+			background: $c-badge-bg;
+			color: $c-badge-text;
+			font-family: $font-body;
+			font-size: 8px;
+			font-weight: 700;
+			min-width: 14px;
+			height: 14px;
+			border-radius: 999px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0 2px;
+			line-height: 1;
+		}
+	}
+
+	// ─── Hero ─────────────────────────────────────────────────────────────────────
+
+	.hero {
+		position: relative;
+		height: $hero-height;
+		min-height: 420px;
+		overflow: hidden;
+
+		&__backdrop {
+			position: absolute;
+			inset: 0;
+			background-size: cover;
+			background-position: center top;
+		}
+
+		&__overlay {
+			position: absolute;
+			inset: 0;
+			background: $c-hero-overlay;
+			pointer-events: none;
+		}
+
+		// On mobile all alignments collapse to bottom-left
+		&__content {
+			position: absolute;
+			bottom: 60px;
+			left: 0;
+			right: 0;
+			z-index: 10;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			text-align: left;
+			padding: 0 28px;
+
+			&--center {
+				align-items: flex-start;
+				text-align: left;
+			}
+
+			&--right {
+				align-items: flex-start;
+				text-align: left;
+			}
+		}
+
+		&__eyebrow {
+			font-family: $font-body;
+			font-size: 11px;
+			font-weight: 500;
+			letter-spacing: 0.2em;
+			color: $c-hero-text;
+			opacity: 0.9;
+			margin-bottom: 12px;
+			text-transform: uppercase;
+		}
+
+		&__heading {
+			font-family: $font-display;
+			font-size: clamp(24px, 3vw, 40px);
+			line-height: 0.95;
+			color: $c-hero-text;
+			margin: 0 0 14px;
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+
+			span {
+				display: block;
+			}
+		}
+
+		&__subtext {
+			font-family: $font-body;
+			font-size: 13px;
+			font-weight: 300;
+			color: rgba(255, 255, 255, 0.88);
+			margin-bottom: 24px;
+			line-height: 1.6;
+			max-width: 320px;
+		}
+
+		&__cta {
+			display: inline-flex;
+			align-items: center;
+			padding: 12px 24px;
+			background: $c-cta-bg;
+			color: $c-cta-text;
+			font-family: $font-body;
+			font-size: 13px;
+			font-weight: 500;
+			text-decoration: none;
+			border-radius: 999px;
+			letter-spacing: 0.02em;
+		}
+
+		// ── Dot indicators ──
+		&__dots {
+			position: absolute;
+			bottom: 20px;
+			left: 50%;
+			transform: translateX(-50%);
+			z-index: 20;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		&__dot {
+			width: 7px;
+			height: 7px;
+			border-radius: 999px;
+			border: none;
+			background: rgba(255, 255, 255, 0.45);
+			cursor: pointer;
+			padding: 0;
+			transition: background $t-base, width $t-base;
+
+			&--active {
+				background: #ffffff;
+				width: 20px;
+			}
+		}
+	}
+
+	// ─── Slider Controls — hidden on mobile ───────────────────────────────────────
+
+	.slider-btn {
+		display: none;
+	}
 }

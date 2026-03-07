@@ -1,5 +1,5 @@
 import { useReactiveVar } from '@apollo/client';
-import React, { useState, ReactNode, useEffect } from 'react';
+import React, { useState, ReactNode, useEffect, useCallback } from 'react';
 import { cartVar } from '../../apollo/store';
 import Basket from './Basket';
 import { ChevronDownIcon } from './icons/ChevronDownIcon';
@@ -11,6 +11,7 @@ import { ChevronLeftIcon } from './icons/ChevronLeftIcon';
 import { ChevronRightIcon } from './icons/ChevronRightIcon';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+
 interface NavItemProps {
 	label: string;
 	href: string;
@@ -26,6 +27,7 @@ interface IconButtonProps {
 }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
+
 const NAV_ITEMS: NavItemProps[] = [
 	{ label: 'Home', href: '#', active: true, hasDropdown: true },
 	{ label: 'Shop', href: '#', active: false, hasDropdown: true },
@@ -34,6 +36,7 @@ const NAV_ITEMS: NavItemProps[] = [
 	{ label: 'Blog', href: '#', active: false, hasDropdown: true },
 ];
 
+// align: 'left' | 'center' | 'right'
 const SLIDES = [
 	{
 		eyebrow: 'FASHION',
@@ -41,6 +44,7 @@ const SLIDES = [
 		subtext: "Fashion isn't just clothes, it's a statement.",
 		cta: 'Shop The Collection',
 		image: '/img/banner/main3.webp',
+		align: 'left',
 	},
 	{
 		eyebrow: 'NEW ARRIVALS',
@@ -48,6 +52,7 @@ const SLIDES = [
 		subtext: 'Explore the latest trends in contemporary fashion.',
 		cta: 'Shop New Arrivals',
 		image: '/img/banner/main2.webp',
+		align: 'center',
 	},
 	{
 		eyebrow: 'COLLECTION',
@@ -55,10 +60,12 @@ const SLIDES = [
 		subtext: 'Curated pieces for every moment in your life.',
 		cta: 'View Collection',
 		image: '/img/banner/main1.webp',
+		align: 'right',
 	},
 ];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
+
 const NavItem: React.FC<NavItemProps> = ({ label, href, active, hasDropdown }) => (
 	<li className="nav__item">
 		<a href={href} className={`nav__link${active ? ' nav__link--active' : ''}`}>
@@ -76,6 +83,7 @@ const IconButton: React.FC<IconButtonProps> = ({ label, children, count, onClick
 );
 
 // ─── Main Component ───────────────────────────────────────────────────────────
+
 export default function Header() {
 	const [activeSlide, setActiveSlide] = useState(0);
 	const [isBasketOpen, setIsBasketOpen] = useState(false);
@@ -84,13 +92,19 @@ export default function Header() {
 	const cart = useReactiveVar(cartVar);
 	const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
-	// Only enable client-side rendering for dynamic counts
 	useEffect(() => setIsClient(true), []);
 
-	const goToPrev = () => setActiveSlide((i) => (i === 0 ? SLIDES.length - 1 : i - 1));
-	const goToNext = () => setActiveSlide((i) => (i === SLIDES.length - 1 ? 0 : i + 1));
+	const goToNext = useCallback(() => setActiveSlide((i) => (i === SLIDES.length - 1 ? 0 : i + 1)), []);
 
-	const { eyebrow, heading, subtext, cta, image } = SLIDES[activeSlide];
+	const goToPrev = () => setActiveSlide((i) => (i === 0 ? SLIDES.length - 1 : i - 1));
+
+	// Auto-advance every 8 seconds
+	useEffect(() => {
+		const timer = setInterval(goToNext, 8000);
+		return () => clearInterval(timer);
+	}, [goToNext]);
+
+	const { eyebrow, heading, subtext, cta, image, align } = SLIDES[activeSlide];
 
 	return (
 		<>
@@ -120,8 +134,6 @@ export default function Header() {
 						<IconButton label="Wishlist" count={0}>
 							<WishlistIcon />
 						</IconButton>
-
-						{/* Cart Button */}
 						<IconButton label="Cart" count={isClient ? cartCount : 0} onClick={() => setIsBasketOpen(true)}>
 							<CartIcon />
 						</IconButton>
@@ -136,7 +148,9 @@ export default function Header() {
 						aria-label={eyebrow}
 					/>
 					<div className="hero__overlay" />
-					<div className="hero__content">
+
+					{/* align class drives layout via CSS */}
+					<div className={`hero__content hero__content--${align}`}>
 						<span className="hero__eyebrow">{eyebrow}</span>
 						<h1 className="hero__heading">
 							{heading.map((line, i) => (
@@ -148,6 +162,19 @@ export default function Header() {
 							{cta}
 						</a>
 					</div>
+
+					{/* Dot indicators */}
+					<div className="hero__dots">
+						{SLIDES.map((_, i) => (
+							<button
+								key={i}
+								className={`hero__dot${i === activeSlide ? ' hero__dot--active' : ''}`}
+								onClick={() => setActiveSlide(i)}
+								aria-label={`Go to slide ${i + 1}`}
+							/>
+						))}
+					</div>
+
 					<button className="slider-btn slider-btn--prev" onClick={goToPrev} aria-label="Previous slide">
 						<ChevronLeftIcon />
 					</button>
@@ -156,7 +183,7 @@ export default function Header() {
 					</button>
 				</section>
 			</div>
-			{/* Basket Drawer */}
+
 			<Basket isOpen={isBasketOpen} onClose={() => setIsBasketOpen(false)} />
 		</>
 	);

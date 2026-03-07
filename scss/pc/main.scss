@@ -19,7 +19,6 @@ body::-webkit-scrollbar {
 #pc-wrap {
 	// ─── Variables ────────────────────────────────────────────────────────────────
 
-	// Colors
 	$c-announcement-bg: #fdf6e3;
 	$c-announcement-text: #333333;
 	$c-navbar-bg: #ffffff;
@@ -33,23 +32,16 @@ body::-webkit-scrollbar {
 	$c-badge-bg: #1a1a1a;
 	$c-badge-text: #ffffff;
 
-	// Typography
 	$font-display: 'Bebas Neue', sans-serif;
 	$font-body: 'DM Sans', sans-serif;
 
-	// Layout
 	$announcement-height: 44px;
 	$navbar-height: 72px;
 	$hero-height: calc(100vh - #{$navbar-height} - #{$announcement-height});
 
-	// Transitions
 	$t-fast: 0.2s ease;
 	$t-base: 0.25s ease;
 	$t-slide: 0.5s ease;
-
-	// Breakpoints
-	$bp-md: 768px;
-	$bp-lg: 1024px;
 
 	// ─── Announcement Bar ─────────────────────────────────────────────────────────
 
@@ -79,14 +71,9 @@ body::-webkit-scrollbar {
 		position: relative;
 		z-index: 100;
 
-		@media (max-width: $bp-md) {
-			padding: 0 20px;
-		}
-
 		&__logo {
 			font-family: $font-display;
 			font-size: 28px;
-			// font-weight: 700;
 			letter-spacing: 2px;
 			color: $c-text-primary;
 			text-decoration: none;
@@ -99,10 +86,6 @@ body::-webkit-scrollbar {
 
 	.nav {
 		flex: 1;
-
-		@media (max-width: $bp-lg) {
-			display: none;
-		}
 
 		&__list {
 			display: flex;
@@ -137,7 +120,6 @@ body::-webkit-scrollbar {
 
 			&:hover {
 				color: $c-text-primary;
-
 				svg {
 					transform: rotate(180deg);
 				}
@@ -224,19 +206,42 @@ body::-webkit-scrollbar {
 			pointer-events: none;
 		}
 
+		// ── Base content block ──
 		&__content {
-			position: relative;
+			position: absolute;
+			top: 0;
+			bottom: 0;
 			z-index: 10;
 			display: flex;
 			flex-direction: column;
-			align-items: flex-start;
 			justify-content: center;
-			height: 100%;
 			padding: 0 60px;
-			max-width: 680px;
+			transition: all 0.4s ease;
 
-			@media (max-width: $bp-md) {
-				padding: 0 28px;
+			// Slide 1 — left
+			&--left {
+				left: 0;
+				right: auto;
+				align-items: flex-start;
+				text-align: left;
+			}
+
+			// Slide 2 — center
+			&--center {
+				left: 50%;
+				right: auto;
+				transform: translateX(-50%);
+				align-items: center;
+				text-align: center;
+				padding: 0 40px;
+			}
+
+			// Slide 3 — right
+			&--right {
+				left: auto;
+				right: 0;
+				align-items: flex-end;
+				text-align: right;
 			}
 		}
 
@@ -248,11 +253,12 @@ body::-webkit-scrollbar {
 			color: $c-hero-text;
 			opacity: 0.9;
 			margin-bottom: 16px;
+			text-transform: uppercase;
 		}
 
 		&__heading {
 			font-family: $font-display;
-			font-size: clamp(52px, 7vw, 90px);
+			font-size: clamp(32px, 4vw, 56px);
 			line-height: 0.95;
 			color: $c-hero-text;
 			margin: 0 0 20px;
@@ -291,6 +297,34 @@ body::-webkit-scrollbar {
 			&:hover {
 				background: #f0f0f0;
 				transform: translateY(-1px);
+			}
+		}
+
+		// ── Dot indicators ──
+		&__dots {
+			position: absolute;
+			bottom: 28px;
+			left: 50%;
+			transform: translateX(-50%);
+			z-index: 20;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		&__dot {
+			width: 8px;
+			height: 8px;
+			border-radius: 999px;
+			border: none;
+			background: rgba(255, 255, 255, 0.45);
+			cursor: pointer;
+			padding: 0;
+			transition: background $t-base, width $t-base;
+
+			&--active {
+				background: #ffffff;
+				width: 24px;
 			}
 		}
 	}
@@ -338,6 +372,7 @@ body::-webkit-scrollbar {
 			transform: scale(1.04);
 		}
 	}
+
 	// ─── Variables ────────────────────────────────────────────────────────────────
 
 	$color-bg: #0f2035;
