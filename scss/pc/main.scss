@@ -77,8 +77,7 @@ body::-webkit-scrollbar {
 			letter-spacing: 2px;
 			color: $c-text-primary;
 			text-decoration: none;
-			flex-shrink: 0;
-			margin-right: 48px;
+			flex: 1;
 		}
 	}
 
@@ -86,6 +85,8 @@ body::-webkit-scrollbar {
 
 	.nav {
 		flex: 1;
+		display: flex;
+		justify-content: center;
 
 		&__list {
 			display: flex;
@@ -142,6 +143,9 @@ body::-webkit-scrollbar {
 		align-items: center;
 		gap: 4px;
 		margin-left: auto;
+		flex: 1;
+		justify-content: flex-end; // pushes to right third
+		margin-left: 0; // remove the auto margin
 
 		&__btn {
 			position: relative;
@@ -156,10 +160,48 @@ body::-webkit-scrollbar {
 			color: $c-text-primary;
 			border-radius: 8px;
 			transition: background $t-fast;
+			padding: 0;
+			flex-shrink: 0;
 
 			&:hover {
 				background: rgba(0, 0, 0, 0.05);
 			}
+
+			// Lang button overrides — wider to fit flag + caret
+			&--lang {
+				width: auto;
+				gap: 5px;
+				padding: 0 8px;
+			}
+
+			// Avatar button
+			&--avatar {
+				width: 36px;
+				height: 36px;
+			}
+
+			// Login link button
+			&--login {
+				text-decoration: none;
+				color: $c-text-primary;
+			}
+		}
+
+		&__flag-img {
+			width: 20px;
+			height: 14px;
+			object-fit: cover;
+			border-radius: 2px;
+			flex-shrink: 0;
+			display: block;
+		}
+
+		&__avatar {
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			object-fit: cover;
+			display: block;
 		}
 
 		&__badge {
@@ -206,7 +248,6 @@ body::-webkit-scrollbar {
 			pointer-events: none;
 		}
 
-		// ── Base content block ──
 		&__content {
 			position: absolute;
 			top: 0;
@@ -216,9 +257,9 @@ body::-webkit-scrollbar {
 			flex-direction: column;
 			justify-content: center;
 			padding: 0 60px;
+			max-width: 580px;
 			transition: all 0.4s ease;
 
-			// Slide 1 — left
 			&--left {
 				left: 0;
 				right: auto;
@@ -226,7 +267,6 @@ body::-webkit-scrollbar {
 				text-align: left;
 			}
 
-			// Slide 2 — center
 			&--center {
 				left: 50%;
 				right: auto;
@@ -236,7 +276,6 @@ body::-webkit-scrollbar {
 				padding: 0 40px;
 			}
 
-			// Slide 3 — right
 			&--right {
 				left: auto;
 				right: 0;
@@ -258,7 +297,7 @@ body::-webkit-scrollbar {
 
 		&__heading {
 			font-family: $font-display;
-			font-size: clamp(32px, 4vw, 56px);
+			font-size: clamp(52px, 7vw, 90px);
 			line-height: 0.95;
 			color: $c-hero-text;
 			margin: 0 0 20px;
@@ -300,7 +339,6 @@ body::-webkit-scrollbar {
 			}
 		}
 
-		// ── Dot indicators ──
 		&__dots {
 			position: absolute;
 			bottom: 28px;

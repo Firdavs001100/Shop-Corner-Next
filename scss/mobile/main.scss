@@ -22,7 +22,7 @@
 	$font-body: 'DM Sans', sans-serif;
 
 	$announcement-height: 40px;
-	$navbar-height: 60px;
+	$navbar-height: 56px;
 	$hero-height: calc(100vh - #{$navbar-height} - #{$announcement-height});
 
 	$t-fast: 0.2s ease;
@@ -38,62 +38,38 @@
 		align-items: center;
 		justify-content: center;
 		font-family: $font-body;
-		font-size: 12px;
+		font-size: 11px;
 		font-weight: 400;
 		letter-spacing: 0.01em;
 		border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-		text-align: center;
 		padding: 0 16px;
+		text-align: center;
 	}
 
-	// ─── Navbar ───────────────────────────────────────────────────────────────────
+	// ─── Mobile Navbar ────────────────────────────────────────────────────────────
 
-	.navbar {
+	.navbar-mobile {
 		display: flex;
 		align-items: center;
 		height: $navbar-height;
-		padding: 0 20px;
+		padding: 0 16px;
 		background-color: $c-navbar-bg;
 		box-shadow: 0 1px 0 $c-navbar-shadow;
 		position: relative;
-		z-index: 100;
+		z-index: 200;
 
-		&__logo {
-			font-family: $font-display;
-			font-size: 22px;
-			letter-spacing: 2px;
-			color: $c-text-primary;
-			text-decoration: none;
-			flex-shrink: 0;
-		}
-	}
-
-	// ─── Nav — hidden on mobile ───────────────────────────────────────────────────
-
-	.nav {
-		display: none;
-	}
-
-	// ─── Toolbar ──────────────────────────────────────────────────────────────────
-
-	.toolbar {
-		display: flex;
-		align-items: center;
-		gap: 2px;
-		margin-left: auto;
-
-		&__btn {
-			position: relative;
-			display: inline-flex;
+		// hamburger — left
+		&__menu-btn {
+			flex: 1;
+			display: flex;
 			align-items: center;
-			justify-content: center;
-			width: 36px;
-			height: 36px;
+			justify-content: flex-start;
 			background: none;
 			border: none;
 			cursor: pointer;
 			color: $c-text-primary;
-			border-radius: 8px;
+			padding: 4px;
+			border-radius: 6px;
 			transition: background $t-fast;
 
 			&:hover {
@@ -101,23 +77,159 @@
 			}
 		}
 
-		&__badge {
-			position: absolute;
-			top: 3px;
-			right: 3px;
-			background: $c-badge-bg;
-			color: $c-badge-text;
-			font-family: $font-body;
-			font-size: 8px;
-			font-weight: 700;
-			min-width: 14px;
-			height: 14px;
-			border-radius: 999px;
+		// logo — center
+		&__logo {
+			flex: 1;
+			display: flex;
+			justify-content: center;
+			font-family: $font-display;
+			font-size: 22px;
+			letter-spacing: 2px;
+			color: $c-text-primary;
+			text-decoration: none;
+		}
+
+		// actions (cart, notifications) — right
+		&__actions {
+			flex: 1;
 			display: flex;
 			align-items: center;
-			justify-content: center;
-			padding: 0 2px;
-			line-height: 1;
+			justify-content: flex-end;
+			gap: 2px;
+		}
+	}
+
+	// ─── Toolbar buttons (shared) ─────────────────────────────────────────────────
+
+	.toolbar__btn {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: $c-text-primary;
+		border-radius: 8px;
+		padding: 0;
+		transition: background $t-fast;
+
+		&:hover {
+			background: rgba(0, 0, 0, 0.05);
+		}
+
+		&--lang {
+			width: auto;
+			gap: 5px;
+			padding: 0 8px;
+		}
+
+		&--avatar {
+			width: 32px;
+			height: 32px;
+		}
+
+		&--login {
+			text-decoration: none;
+			color: $c-text-primary;
+		}
+	}
+
+	.toolbar__flag-img {
+		width: 20px;
+		height: 14px;
+		object-fit: cover;
+		border-radius: 2px;
+		flex-shrink: 0;
+		display: block;
+	}
+
+	.toolbar__avatar {
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.toolbar__badge {
+		position: absolute;
+		top: 3px;
+		right: 3px;
+		background: $c-badge-bg;
+		color: $c-badge-text;
+		font-family: $font-body;
+		font-size: 8px;
+		font-weight: 700;
+		min-width: 14px;
+		height: 14px;
+		border-radius: 999px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0 2px;
+		line-height: 1;
+	}
+
+	// ─── Mobile Drawer ────────────────────────────────────────────────────────────
+
+	.mobile-drawer {
+		position: fixed;
+		top: calc(#{$announcement-height} + #{$navbar-height});
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: #ffffff;
+		z-index: 150;
+		display: flex;
+		flex-direction: column;
+		overflow-y: auto;
+
+		&__nav {
+			flex: 1;
+			padding: 8px 0;
+		}
+
+		&__list {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		&__item {
+			border-bottom: 1px solid #f0f0f0;
+		}
+
+		&__link {
+			display: block;
+			padding: 16px 24px;
+			font-family: $font-body;
+			font-size: 16px;
+			font-weight: 400;
+			color: $c-text-muted;
+			text-decoration: none;
+			transition: color $t-base, background $t-base;
+
+			&:hover {
+				color: $c-text-primary;
+				background: #fafafa;
+			}
+
+			&--active {
+				color: $c-text-primary;
+				font-weight: 600;
+			}
+		}
+
+		&__footer {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 20px 24px;
+			border-top: 1px solid #f0f0f0;
+			flex-wrap: wrap;
 		}
 	}
 
@@ -143,10 +255,10 @@
 			pointer-events: none;
 		}
 
-		// On mobile all alignments collapse to bottom-left
+		// All alignments collapse to bottom-left on mobile
 		&__content {
 			position: absolute;
-			bottom: 60px;
+			bottom: 64px;
 			left: 0;
 			right: 0;
 			z-index: 10;
@@ -154,13 +266,9 @@
 			flex-direction: column;
 			align-items: flex-start;
 			text-align: left;
-			padding: 0 28px;
+			padding: 0 24px;
 
-			&--center {
-				align-items: flex-start;
-				text-align: left;
-			}
-
+			&--center,
 			&--right {
 				align-items: flex-start;
 				text-align: left;
@@ -174,7 +282,7 @@
 			letter-spacing: 0.2em;
 			color: $c-hero-text;
 			opacity: 0.9;
-			margin-bottom: 12px;
+			margin-bottom: 10px;
 			text-transform: uppercase;
 		}
 
@@ -183,7 +291,7 @@
 			font-size: clamp(24px, 3vw, 40px);
 			line-height: 0.95;
 			color: $c-hero-text;
-			margin: 0 0 14px;
+			margin: 0 0 12px;
 			display: flex;
 			flex-direction: column;
 			gap: 4px;
@@ -198,9 +306,9 @@
 			font-size: 13px;
 			font-weight: 300;
 			color: rgba(255, 255, 255, 0.88);
-			margin-bottom: 24px;
+			margin-bottom: 20px;
 			line-height: 1.6;
-			max-width: 320px;
+			max-width: 300px;
 		}
 
 		&__cta {
@@ -217,7 +325,6 @@
 			letter-spacing: 0.02em;
 		}
 
-		// ── Dot indicators ──
 		&__dots {
 			position: absolute;
 			bottom: 20px;
@@ -246,7 +353,7 @@
 		}
 	}
 
-	// ─── Slider Controls — hidden on mobile ───────────────────────────────────────
+	// ─── Slider buttons — hidden on mobile ────────────────────────────────────────
 
 	.slider-btn {
 		display: none;
