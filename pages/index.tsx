@@ -12,6 +12,7 @@ import StorySection from '../libs/components/homepage/StorySection';
 import FeaturesBanner from '../libs/components/homepage/FeatureBanner';
 import Testimonials from '../libs/components/homepage/Testimonials';
 import BlogSection from '../libs/components/homepage/BlogSection';
+import NewsletterSection from '../libs/components/homepage/NewsletterSection';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -31,6 +32,7 @@ const Home: NextPage = () => {
 				<BestSellers />
 				<VideoBanner />
 				<StorySection />
+				<NewsletterSection />
 				<FeaturesBanner />
 				<Testimonials />
 				<BlogSection />
@@ -45,6 +47,7 @@ const Home: NextPage = () => {
 				<BestSellers />
 				<VideoBanner />
 				<StorySection />
+				<NewsletterSection />
 				<FeaturesBanner />
 				<Testimonials />
 				<BlogSection />

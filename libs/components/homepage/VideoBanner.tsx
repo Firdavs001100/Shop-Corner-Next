@@ -19,8 +19,8 @@ const VideoBanner = () => {
 			<div className="video-banner__content">
 				<h2 className="video-banner__title">Feel Pretty</h2>
 				<p className="video-banner__desc">
-					Pair text with an image to focus on your chosen product, collection, or blog post. Add details on
-					availability, style, or even provide a review.
+					Dress for the version of yourself you're becoming. Every piece is crafted to make you feel as good as you
+					look.
 				</p>
 			</div>
 		</div>

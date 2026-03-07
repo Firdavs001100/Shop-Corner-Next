@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Stack, Box, Button, Container, CircularProgress } from '@mui/material';
+import { useState } from 'react';
+import { Box, Button, CircularProgress } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
@@ -18,19 +18,12 @@ interface NewProductsProps {
 	initialInput: ProductsInquiry;
 }
 
-const NewProducts = (props: NewProductsProps) => {
-	const { initialInput } = props;
+const NewProducts = ({ initialInput }: NewProductsProps) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
-
 	const [products, setProducts] = useState<Product[]>([]);
 
-	const {
-		loading: getProductsLoading,
-		data: getProductsData,
-		error: getProductsError,
-		refetch: getProductsRefetch,
-	} = useQuery(GET_PRODUCTS, {
+	const { loading: getProductsLoading, refetch: getProductsRefetch } = useQuery(GET_PRODUCTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: initialInput },
 		notifyOnNetworkStatusChange: true,
@@ -48,14 +41,10 @@ const NewProducts = (props: NewProductsProps) => {
 			if (!id) return;
 			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
 
-			await likeTargetProduct({
-				variables: { input: id },
-			});
+			await likeTargetProduct({ variables: { input: id } });
 			await getProductsRefetch({ input: initialInput });
-
 			toastSmallSuccess('Success', 800);
 		} catch (err: any) {
-			console.log('Error, likeProductHandler:', err.message);
 			toastErrorHandling(err.message);
 		}
 	};
@@ -64,24 +53,23 @@ const NewProducts = (props: NewProductsProps) => {
 		await router.push({ pathname: '/product' });
 	};
 
-	// component
 	const renderEmptyState = () => <Box className="empty-list">Products aren't available</Box>;
 
-	return (
-		<Box className="new-products-section">
-			<Container maxWidth="lg">
-				<Stack className="section-header">
-					<span className="sub-title">NEW ARRIVALS</span>
-					<h2 className="main-title">Our Newest Product</h2>
-				</Stack>
-
-				{getProductsLoading ? (
-					<Box className="loading-box">
-						<CircularProgress />
+	if (device === 'mobile') {
+		return (
+			<Box className="new-products-section">
+				<div className="container">
+					<Box className="section-header">
+						<span className="sub-title">NEW ARRIVALS</span>
+						<h2 className="main-title">Our Newest Product</h2>
 					</Box>
-				) : (
-					<>
-						{device === 'mobile' ? (
+
+					{getProductsLoading ? (
+						<Box className="loading-box">
+							<CircularProgress />
+						</Box>
+					) : (
+						<>
 							<Swiper
 								slidesPerView={1.2}
 								spaceBetween={20}
@@ -97,26 +85,51 @@ const NewProducts = (props: NewProductsProps) => {
 									  ))
 									: renderEmptyState()}
 							</Swiper>
-						) : (
-							<Stack className="product-grid">
+
+							<Box className="bottom-box">
+								<Button className="view-all-btn" onClick={() => pushAllProductsHandler()}>
+									View All
+								</Button>
+							</Box>
+						</>
+					)}
+				</div>
+			</Box>
+		);
+	} else {
+		return (
+			<Box className="new-products-section">
+				<div className="container">
+					<Box className="section-header">
+						<span className="sub-title">NEW ARRIVALS</span>
+						<h2 className="main-title">Our Newest Product</h2>
+					</Box>
+
+					{getProductsLoading ? (
+						<Box className="loading-box">
+							<CircularProgress />
+						</Box>
+					) : (
+						<>
+							<Box className="product-grid">
 								{products.length > 0
 									? products.map((product) => (
 											<ProductCard key={product._id} product={product} likeProductHandler={likeProductHandler} />
 									  ))
 									: renderEmptyState()}
-							</Stack>
-						)}
+							</Box>
 
-						<Box className="bottom-box">
-							<Button className="view-all-btn" onClick={() => pushAllProductsHandler()}>
-								View All
-							</Button>
-						</Box>
-					</>
-				)}
-			</Container>
-		</Box>
-	);
+							<Box className="bottom-box">
+								<Button className="view-all-btn" onClick={() => pushAllProductsHandler()}>
+									View All
+								</Button>
+							</Box>
+						</>
+					)}
+				</div>
+			</Box>
+		);
+	}
 };
 
 NewProducts.defaultProps = {

@@ -70,7 +70,7 @@ const HomeShowcase = () => {
 						<Stack className={'banner-right-text'}>
 							<Stack className={'text-content'}>
 								<Typography className={'title'}>
-									Elevate women's <br /> beauty
+									Elevate your <br /> beauty
 								</Typography>
 
 								<Typography className={'desc'}>

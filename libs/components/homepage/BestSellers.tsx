@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, CircularProgress, Stack } from '@mui/material';
+import { useState } from 'react';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -16,12 +16,14 @@ import { Message } from '../../enums/common.enum';
 
 import { toastErrorHandling, toastSmallSuccess } from '../../toast';
 import ProductCard from './ProductCard';
+import useDeviceDetect from '../../hooks/useDeviceDetect';
 
 interface BestSellersProps {
 	initialInput: ProductsInquiry;
 }
 
 const BestSellers = ({ initialInput }: BestSellersProps) => {
+	const device = useDeviceDetect();
 	const router = useRouter();
 	const [products, setProducts] = useState<Product[]>([]);
 	const [slideIndex, setSlideIndex] = useState(0);
@@ -50,10 +52,9 @@ const BestSellers = ({ initialInput }: BestSellersProps) => {
 		}
 	};
 
-	// Infinite scroll logic: goes back to start after last slide
 	const next = () => {
 		setSlideIndex((prev) => {
-			if (prev + visibleCards >= products.length) return 0; // loop to start
+			if (prev + visibleCards >= products.length) return 0;
 			return prev + 1;
 		});
 	};
@@ -65,60 +66,73 @@ const BestSellers = ({ initialInput }: BestSellersProps) => {
 		});
 	};
 
-	return (
-		<Stack className="container">
-			<Box className="best-sellers">
-				<div className="best-sellers__left">
-					<img src="/img/banner/ps2.avif" alt="Best Sellers" className="best-sellers__hero-img" />
-				</div>
-
-				<div className="best-sellers__right">
-					<div className="best-sellers__header">
-						<h2 className="best-sellers__title">Best Sellers</h2>
-						<p className="best-sellers__desc">
-							Pair text with an image to focus on your chosen product, collection, or blog post.
-						</p>
-						<button className="best-sellers__view-all" onClick={() => router.push('/product')}>
-							View All Collection
-							<ArrowForwardIcon sx={{ fontSize: 16 }} />
-						</button>
-					</div>
-
-					{getProductsLoading ? (
-						<Box className="best-sellers__loading">
-							<CircularProgress size={32} />
-						</Box>
-					) : (
-						<div className="best-sellers__slider-wrap">
-							<div
-								className="best-sellers__slider"
-								style={{
-									transform: `translateX(calc(-${slideIndex * cardWidth}% - ${slideIndex * 20}px))`,
-									transition: 'transform .45s cubic-bezier(.25,.8,.25,1)',
-								}}
-							>
-								{products.map((product) => (
-									<div className="best-sellers__slide" key={product._id}>
-										<ProductCard product={product} likeProductHandler={likeProductHandler} variant="slider" />
-									</div>
-								))}
-							</div>
-
-							<div className="best-sellers__nav">
-								<button className="best-sellers__nav-btn" onClick={prev}>
-									<ChevronLeftIcon />
-								</button>
-
-								<button className="best-sellers__nav-btn" onClick={next}>
-									<ChevronRightIcon />
-								</button>
-							</div>
-						</div>
-					)}
-				</div>
-			</Box>
-		</Stack>
+	const leftContent = (
+		<Box className="best-sellers__left">
+			<img src="/img/banner/ps2.avif" alt="Best Sellers" className="best-sellers__hero-img" />
+		</Box>
 	);
+
+	const rightContent = (
+		<Box className="best-sellers__right">
+			<Box className="best-sellers__header">
+				<Typography className="best-sellers__title">Best Sellers</Typography>
+				<Typography className="best-sellers__desc">
+					Pair text with an image to focus on your chosen product, collection, or blog post.
+				</Typography>
+				<button className="best-sellers__view-all" onClick={() => router.push('/product')}>
+					View All Collection
+					<ArrowForwardIcon sx={{ fontSize: 16 }} />
+				</button>
+			</Box>
+
+			{getProductsLoading ? (
+				<Box className="best-sellers__loading">
+					<CircularProgress size={32} />
+				</Box>
+			) : (
+				<Box className="best-sellers__slider-wrap">
+					<Box
+						className="best-sellers__slider"
+						style={{
+							transform: `translateX(calc(-${slideIndex * cardWidth}% - ${slideIndex * 20}px))`,
+							transition: 'transform .45s cubic-bezier(.25,.8,.25,1)',
+						}}
+					>
+						{products.map((product) => (
+							<Box className="best-sellers__slide" key={product._id}>
+								<ProductCard product={product} likeProductHandler={likeProductHandler} variant="slider" />
+							</Box>
+						))}
+					</Box>
+
+					<Box className="best-sellers__nav">
+						<button className="best-sellers__nav-btn" onClick={prev}>
+							<ChevronLeftIcon />
+						</button>
+						<button className="best-sellers__nav-btn" onClick={next}>
+							<ChevronRightIcon />
+						</button>
+					</Box>
+				</Box>
+			)}
+		</Box>
+	);
+
+	if (device === 'mobile') {
+		return (
+			<Box className="best-sellers">
+				{leftContent}
+				{rightContent}
+			</Box>
+		);
+	} else {
+		return (
+			<Box className="best-sellers">
+				{leftContent}
+				{rightContent}
+			</Box>
+		);
+	}
 };
 
 BestSellers.defaultProps = {
