@@ -27,4 +27,49 @@
 			}
 		}
 	}
+
+	.features-banner {
+		background-color: #fafadc;
+		padding: 32px 16px;
+
+		.features-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 16px;
+
+			.feature-item {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				text-align: center;
+				padding: 12px 8px;
+
+				.feature-icon {
+					color: #1a2340;
+					margin-bottom: 12px;
+
+					svg {
+						font-size: 40px;
+					}
+				}
+
+				.feature-title {
+					font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+					font-weight: 700;
+					font-size: 0.9rem;
+					color: #1a2340;
+					margin-bottom: 8px;
+				}
+
+				.feature-desc {
+					font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+					font-weight: 400;
+					font-size: 0.8rem;
+					color: #3a3a3a;
+					line-height: 1.5;
+					max-width: 160px;
+				}
+			}
+		}
+	}
 }

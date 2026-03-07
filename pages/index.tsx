@@ -8,6 +8,8 @@ import NewProducts from '../libs/components/homepage/NewProducts';
 import PromoSection from '../libs/components/homepage/PromoSection';
 import BestSellers from '../libs/components/homepage/BestSellers';
 import VideoBanner from '../libs/components/homepage/VideoBanner';
+import StorySection from '../libs/components/homepage/StorySection';
+import FeaturesBanner from '../libs/components/homepage/FeatureBanner';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -26,6 +28,8 @@ const Home: NextPage = () => {
 				<PromoSection />
 				<BestSellers />
 				<VideoBanner />
+				<StorySection />
+				<FeaturesBanner />
 			</Stack>
 		);
 	} else {
@@ -36,6 +40,8 @@ const Home: NextPage = () => {
 				<PromoSection />
 				<BestSellers />
 				<VideoBanner />
+				<StorySection />
+				<FeaturesBanner />
 			</Stack>
 		);
 	}
