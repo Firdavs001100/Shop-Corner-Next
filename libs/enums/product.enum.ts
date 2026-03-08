@@ -69,8 +69,8 @@ export enum ProductSize {
 	L = 'L',
 	XL = 'XL',
 	XXL = 'XXL',
-	_3XL = '3XL',
-	_4XL = '4XL',
+	_3XL = '_3XL',
+	_4XL = '_4XL',
 
 	ONE_SIZE = 'ONE_SIZE',
 	FREE_SIZE = 'FREE_SIZE',

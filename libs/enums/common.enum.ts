@@ -1,6 +1,6 @@
 export enum Direction {
-	ASC = 1,
-	DESC = -1,
+	ASC = 'ASC',
+	DESC = 'DESC',
 }
 
 // common.enum.ts

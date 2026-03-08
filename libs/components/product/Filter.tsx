@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Stack, Checkbox, Slider, OutlinedInput, IconButton, Tooltip } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ProductCategory, ProductDressStyle, ProductSize } from '../../enums/product.enum';
 import { ProductsInquiry } from '../../types/product/product.input';
-import { useRouter } from 'next/router';
+
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import SearchIcon from '@mui/icons-material/Search';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
@@ -12,7 +12,7 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 
 interface ProductFilterProps {
 	searchFilter: ProductsInquiry;
-	setSearchFilter: any;
+	setSearchFilter: (filter: ProductsInquiry) => void;
 	initialInput: ProductsInquiry;
 }
 
@@ -35,7 +35,8 @@ const COLORS = [
 
 const formatWon = (v: number) => v.toLocaleString('ko-KR');
 
-/* ------------------------------------------------ */
+/* SECTION */
+
 interface SectionProps {
 	title: string;
 	hasActive?: boolean;
@@ -74,98 +75,79 @@ const FilterSection = ({ title, hasActive, onReset, defaultOpen = true, children
 	);
 };
 
-/* ------------------------------------------------ */
+/* FILTER */
 
 const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductFilterProps) => {
 	const device = useDeviceDetect();
-	const router = useRouter();
 
-	const [searchText, setSearchText] = useState('');
+	const [searchText, setSearchText] = useState(searchFilter?.search?.text ?? '');
+
 	const [priceRange, setPriceRange] = useState<number[]>([
 		searchFilter?.search?.pricesRange?.start ?? 0,
 		searchFilter?.search?.pricesRange?.end ?? 5000000,
 	]);
 
 	useEffect(() => {
-		const keys = ['categoryList', 'sizeList', 'colorList', 'dressStyleList', 'brandList'] as const;
+		if (searchFilter?.search?.pricesRange) {
+			setPriceRange([searchFilter.search.pricesRange.start ?? 0, searchFilter.search.pricesRange.end ?? 5000000]);
+		}
 
-		keys.forEach((key) => {
-			if ((searchFilter?.search as any)?.[key]?.length === 0) {
-				const updated = { ...searchFilter, search: { ...searchFilter.search } };
-				delete (updated.search as any)[key];
+		if (searchFilter?.search?.text !== undefined) {
+			setSearchText(searchFilter.search.text);
+		}
+	}, [searchFilter?.search?.pricesRange, searchFilter?.search?.text]);
 
-				pushFilter(updated);
-			}
-		});
-	}, [searchFilter]);
+	const toggleListItem = (key: keyof ProductsInquiry['search'], value: string) => {
+		const current = (searchFilter?.search?.[key] ?? []) as string[];
 
-	const pushFilter = async (filter: ProductsInquiry) => {
-		await router.push(`/product?input=${JSON.stringify(filter)}`, `/product?input=${JSON.stringify(filter)}`, {
-			scroll: false,
-		});
-	};
+		const updatedList = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
 
-	const resetSection = async (key: string) => {
-		const updated = { ...searchFilter, search: { ...searchFilter.search } };
-
-		delete (updated.search as any)[key];
-
-		await pushFilter(updated);
-	};
-
-	const toggleListItem = async (key: string, value: string) => {
-		const current: string[] = (searchFilter?.search as any)?.[key] || [];
-
-		const exists = current.includes(value);
-
-		const updated = {
+		setSearchFilter({
 			...searchFilter,
 			search: {
 				...searchFilter.search,
-				[key]: exists ? current.filter((v) => v !== value) : [...current, value],
+				[key]: updatedList,
 			},
-		};
-
-		await pushFilter(updated);
+		});
 	};
 
-	const categoryHandler = useCallback(async (e: any) => toggleListItem('categoryList', e.target.value), [searchFilter]);
+	const resetSection = (key: keyof ProductsInquiry['search']) => {
+		const updated = { ...searchFilter, search: { ...searchFilter.search } };
+		delete updated.search[key];
+		setSearchFilter(updated);
+	};
 
-	const sizeHandler = useCallback(async (size: ProductSize) => toggleListItem('sizeList', size), [searchFilter]);
+	const priceCommitHandler = (_: any, value: number | number[]) => {
+		const [start, end] = value as number[];
 
-	const colorHandler = useCallback(async (color: string) => toggleListItem('colorList', color), [searchFilter]);
-
-	const dressStyleHandler = useCallback(
-		async (e: any) => toggleListItem('dressStyleList', e.target.value),
-		[searchFilter],
-	);
-
-	const brandHandler = useCallback(async (e: any) => toggleListItem('brandList', e.target.value), [searchFilter]);
-
-	const priceCommitHandler = useCallback(
-		async (_: any, value: number | number[]) => {
-			const [start, end] = value as number[];
-
-			await pushFilter({
-				...searchFilter,
-				search: { ...searchFilter.search, pricesRange: { start, end } },
-			});
-		},
-		[searchFilter],
-	);
-
-	const searchHandler = useCallback(async () => {
-		await pushFilter({
+		setSearchFilter({
 			...searchFilter,
-			search: { ...searchFilter.search, text: searchText },
+			search: {
+				...searchFilter.search,
+				pricesRange: { start, end },
+			},
 		});
-	}, [searchFilter, searchText]);
+	};
 
-	const refreshHandler = async () => {
+	const searchHandler = () => {
+		setSearchFilter({
+			...searchFilter,
+			page: 1, // reset page when searching
+			search: {
+				...searchFilter.search,
+				text: searchText,
+			},
+		});
+	};
+
+	const refreshHandler = () => {
 		setSearchText('');
 		setPriceRange([0, 5000000]);
 
-		await pushFilter(initialInput);
+		setSearchFilter({
+			...initialInput,
+			page: 1,
+		});
 	};
 
 	if (device === 'mobile') return <div>PRODUCT FILTER MOBILE</div>;
@@ -194,13 +176,25 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 						value={searchText}
 						onChange={(e) => setSearchText(e.target.value)}
 						placeholder="Search products..."
-						onKeyDown={(e) => {
-							if (e.key === 'Enter') searchHandler();
-						}}
+						onKeyDown={(e) => e.key === 'Enter' && searchHandler()}
 						endAdornment={
 							<>
 								{searchText && (
-									<IconButton size="small" onClick={() => setSearchText('')}>
+									<IconButton
+										size="small"
+										onClick={() => {
+											setSearchText('');
+
+											setSearchFilter({
+												...searchFilter,
+												page: 1,
+												search: {
+													...searchFilter.search,
+													text: '',
+												},
+											});
+										}}
+									>
 										<CancelRoundedIcon fontSize="small" />
 									</IconButton>
 								)}
@@ -213,12 +207,10 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					/>
 				</Stack>
 			</FilterSection>
-
 			{/* CATEGORY */}
 
 			<FilterSection
 				title="Category"
-				defaultOpen={false}
 				hasActive={(searchFilter?.search?.categoryList?.length ?? 0) > 0}
 				onReset={() => resetSection('categoryList')}
 			>
@@ -226,16 +218,11 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					{CATEGORIES.map((cat) => (
 						<div key={cat} className="product-filter__check-item">
 							<Checkbox
-								id={cat}
 								size="small"
-								value={cat}
 								checked={(searchFilter?.search?.categoryList || []).includes(cat)}
-								onChange={categoryHandler}
+								onChange={() => toggleListItem('categoryList', cat)}
 							/>
-
-							<label htmlFor={cat} className="product-filter__label">
-								{cat.replace(/_/g, ' ')}
-							</label>
+							<label className="product-filter__label">{cat.replace(/_/g, ' ')}</label>
 						</div>
 					))}
 				</div>
@@ -252,10 +239,10 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					{SIZES.map((size) => (
 						<button
 							key={size}
-							className={`product-filter__size-btn${
-								(searchFilter?.search?.sizeList || []).includes(size) ? ' product-filter__size-btn--active' : ''
+							className={`product-filter__size-btn ${
+								(searchFilter?.search?.sizeList || []).includes(size) ? 'product-filter__size-btn--active' : ''
 							}`}
-							onClick={() => sizeHandler(size)}
+							onClick={() => toggleListItem('sizeList', size)}
 						>
 							{size}
 						</button>
@@ -274,40 +261,13 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					{COLORS.map(({ label, value, hex }) => (
 						<Tooltip key={value} title={label}>
 							<button
-								className={`product-filter__color-btn${
-									(searchFilter?.search?.colorList || []).includes(value) ? ' product-filter__color-btn--active' : ''
+								className={`product-filter__color-btn ${
+									(searchFilter?.search?.colorList || []).includes(value) ? 'product-filter__color-btn--active' : ''
 								}`}
 								style={{ background: hex }}
-								onClick={() => colorHandler(value)}
+								onClick={() => toggleListItem('colorList', value)}
 							/>
 						</Tooltip>
-					))}
-				</div>
-			</FilterSection>
-
-			{/* BRAND */}
-
-			<FilterSection
-				title="Brand"
-				defaultOpen={false}
-				hasActive={(searchFilter?.search?.brandList?.length ?? 0) > 0}
-				onReset={() => resetSection('brandList')}
-			>
-				<div className="product-filter__check-list">
-					{BRANDS.map((brand) => (
-						<div key={brand} className="product-filter__check-item">
-							<Checkbox
-								id={brand}
-								size="small"
-								value={brand}
-								checked={(searchFilter?.search?.brandList || []).includes(brand)}
-								onChange={brandHandler}
-							/>
-
-							<label htmlFor={brand} className="product-filter__label">
-								{brand}
-							</label>
-						</div>
 					))}
 				</div>
 			</FilterSection>
@@ -330,6 +290,48 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					<span>₩{formatWon(priceRange[0])}</span>
 					<span>₩{formatWon(priceRange[1])}</span>
 				</Stack>
+			</FilterSection>
+
+			{/* DRESS STYLE */}
+
+			<FilterSection
+				title="Dress Style"
+				hasActive={(searchFilter?.search?.dressStyleList?.length ?? 0) > 0}
+				onReset={() => resetSection('dressStyleList')}
+			>
+				<div className="product-filter__check-list">
+					{DRESS_STYLES.map((style) => (
+						<div key={style} className="product-filter__check-item">
+							<Checkbox
+								size="small"
+								checked={(searchFilter?.search?.dressStyleList || []).includes(style)}
+								onChange={() => toggleListItem('dressStyleList', style)}
+							/>
+							<label className="product-filter__label">{style.replace(/_/g, ' ')}</label>
+						</div>
+					))}
+				</div>
+			</FilterSection>
+
+			{/* BRAND */}
+
+			<FilterSection
+				title="Brand"
+				hasActive={(searchFilter?.search?.brandList?.length ?? 0) > 0}
+				onReset={() => resetSection('brandList')}
+			>
+				<div className="product-filter__check-list">
+					{BRANDS.map((brand) => (
+						<div key={brand} className="product-filter__check-item">
+							<Checkbox
+								size="small"
+								checked={(searchFilter?.search?.brandList || []).includes(brand)}
+								onChange={() => toggleListItem('brandList', brand)}
+							/>
+							<label className="product-filter__label">{brand}</label>
+						</div>
+					))}
+				</div>
 			</FilterSection>
 		</div>
 	);

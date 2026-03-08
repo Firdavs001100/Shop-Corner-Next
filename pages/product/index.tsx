@@ -1,6 +1,6 @@
-import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography } from '@mui/material';
+import { Button, Menu, MenuItem, Pagination, Typography } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import ProductFilter from '../../libs/components/product/Filter';
@@ -9,17 +9,18 @@ import { useRouter } from 'next/router';
 import { ProductsInquiry } from '../../libs/types/product/product.input';
 import { Product } from '../../libs/types/product/product';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Direction, Message } from '../../libs/enums/common.enum';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { GET_PRODUCTS } from '../../apollo/user/query';
 import { T } from '../../libs/types/common';
 import { LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { toastErrorHandling, toastSmallSuccess } from '../../libs/toast';
-import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
 import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded';
+import { ProductDressStyle, ProductSize, ProductCategory } from '../../libs/enums/product.enum';
+import PolicyBanner from '../../libs/components/product/PolicyBanner';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -27,29 +28,24 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
-const ProductList: NextPage = ({ initialInput, ...props }: any) => {
+const ProductList: NextPage = ({ initialInput }: any) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 
-	const [searchFilter, setSearchFilter] = useState<ProductsInquiry>(
-		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
-	);
+	const [searchFilter, setSearchFilter] = useState<ProductsInquiry>(initialInput);
 	const [products, setProducts] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [currentPage, setCurrentPage] = useState<number>(1);
+
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [sortingOpen, setSortingOpen] = useState(false);
 	const [filterSortName, setFilterSortName] = useState('Newest');
+
 	const [gridView, setGridView] = useState<'grid' | 'list'>('grid');
 
-	/** APOLLO REQUESTS **/
-	const {
-		loading: getProductsLoading,
-		data: getProductsData,
-		error: getProductsError,
-		refetch: getProductsRefetch,
-	} = useQuery(GET_PRODUCTS, {
+	/** APOLLO **/
+	const { loading: getProductsLoading } = useQuery(GET_PRODUCTS, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
@@ -61,188 +57,236 @@ const ProductList: NextPage = ({ initialInput, ...props }: any) => {
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
-	/** LIFECYCLES **/
-	useEffect(() => {
-		if (router.query.input) {
-			const inputObj = JSON.parse(router?.query?.input as string);
-			setSearchFilter(inputObj);
-		}
-		setCurrentPage(searchFilter.page === undefined ? 1 : searchFilter.page);
-	}, [router]);
+	/** BUILD URL QUERY **/
+	const buildQuery = (filter: ProductsInquiry) => ({
+		page: filter.page,
+		limit: filter.limit,
+		sort: filter.sort,
+		direction: filter.direction,
+		text: filter.search?.text, // ✅ FIX
+		priceStart: filter.search?.pricesRange?.start,
+		priceEnd: filter.search?.pricesRange?.end,
+		category: filter.search?.categoryList,
+		size: filter.search?.sizeList,
+		color: filter.search?.colorList,
+		dressStyle: filter.search?.dressStyleList,
+		brand: filter.search?.brandList,
+	});
 
-	/** HANDLERS **/
+	/** UPDATE FILTER **/
+	const updateFilter = async (filter: ProductsInquiry) => {
+		await router.replace({ pathname: '/product', query: buildQuery(filter) }, undefined, { shallow: true });
+	};
+
+	/** URL → FILTER SYNC **/
+	useEffect(() => {
+		if (!router.isReady) return;
+
+		const query = router.query;
+
+		const rebuiltFilter: ProductsInquiry = {
+			page: Number(query.page) || 1,
+			limit: Number(query.limit) || 12,
+			sort: (query.sort as string) || 'createdAt',
+			direction: (query.direction as unknown as Direction) || Direction.DESC,
+			search: {
+				text: (query.text as string) || '', // ✅ FIX
+				pricesRange: {
+					start: Number(query.priceStart) || 0,
+					end: Number(query.priceEnd) || 5000000,
+				},
+				categoryList: query.category
+					? ((Array.isArray(query.category) ? query.category : [query.category]) as ProductCategory[])
+					: [],
+				sizeList: query.size ? ((Array.isArray(query.size) ? query.size : [query.size]) as ProductSize[]) : [],
+				colorList: query.color ? (Array.isArray(query.color) ? query.color : [query.color]) : [],
+				dressStyleList: query.dressStyle
+					? ((Array.isArray(query.dressStyle) ? query.dressStyle : [query.dressStyle]) as ProductDressStyle[])
+					: [],
+				brandList: query.brand ? (Array.isArray(query.brand) ? query.brand : [query.brand]) : [],
+			},
+		};
+
+		setSearchFilter((prev) => {
+			if (JSON.stringify(prev) === JSON.stringify(rebuiltFilter)) return prev;
+			return rebuiltFilter;
+		});
+
+		setCurrentPage(rebuiltFilter.page);
+	}, [router.isReady, router.query]);
+
+	/** LIKE **/
 	const likeProductHandler = async (user: T, id: string) => {
 		try {
-			if (!id) return;
 			if (!user?._id) throw new Error(Message.NOT_AUTHENTICATED);
 			await likeTargetProduct({ variables: { input: id } });
-			await getProductsRefetch({ input: searchFilter });
 			toastSmallSuccess('Success', 800);
 		} catch (err: any) {
 			toastErrorHandling(err.message);
 		}
 	};
 
-	const handlePaginationChange = async (event: ChangeEvent<unknown>, value: number) => {
-		searchFilter.page = value;
-		await router.push(
-			`/product?input=${JSON.stringify(searchFilter)}`,
-			`/product?input=${JSON.stringify(searchFilter)}`,
-			{ scroll: false },
-		);
+	/** PAGINATION **/
+	const handlePaginationChange = async (_: ChangeEvent<unknown>, value: number) => {
+		const updated = { ...searchFilter, page: value };
 		setCurrentPage(value);
+		await updateFilter(updated);
 	};
 
-	const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
-		setAnchorEl(e.currentTarget);
-		setSortingOpen(true);
-	};
-
-	const sortingCloseHandler = () => {
-		setSortingOpen(false);
-		setAnchorEl(null);
-	};
-
-	const sortingHandler = (e: React.MouseEvent<HTMLLIElement>) => {
+	/** SORT **/
+	const sortingHandler = async (e: React.MouseEvent<HTMLLIElement>) => {
+		let updated = { ...searchFilter };
 		switch (e.currentTarget.id) {
 			case 'newest':
-				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: Direction.DESC });
+				updated = { ...updated, sort: 'createdAt', direction: Direction.DESC };
 				setFilterSortName('Newest');
 				break;
 			case 'lowest':
-				setSearchFilter({ ...searchFilter, sort: 'productPrice', direction: Direction.ASC });
+				updated = { ...updated, sort: 'productPrice', direction: Direction.ASC };
 				setFilterSortName('Price: Low to High');
 				break;
 			case 'highest':
-				setSearchFilter({ ...searchFilter, sort: 'productPrice', direction: Direction.DESC });
+				updated = { ...updated, sort: 'productPrice', direction: Direction.DESC };
 				setFilterSortName('Price: High to Low');
 				break;
 			case 'popular':
-				setSearchFilter({ ...searchFilter, sort: 'productLikes', direction: Direction.DESC });
+				updated = { ...updated, sort: 'productLikes', direction: Direction.DESC };
 				setFilterSortName('Most Popular');
 				break;
 		}
+		await updateFilter(updated);
 		setSortingOpen(false);
 		setAnchorEl(null);
 	};
 
-	if (device === 'mobile') {
-		return <h1>PRODUCTS MOBILE</h1>;
-	} else {
-		return (
-			<div id="product-list-page">
-				<div className="container">
-					<div className="product-page__layout">
-						{/* FILTER SIDEBAR */}
-						<aside className="product-page__sidebar">
-							<ProductFilter
-								searchFilter={searchFilter}
-								setSearchFilter={setSearchFilter}
-								initialInput={initialInput}
-							/>
-						</aside>
+	if (device === 'mobile') return <h1>PRODUCTS MOBILE</h1>;
 
-						{/* MAIN CONTENT */}
-						<main className="product-page__main">
-							{/* TOOLBAR */}
-							<div className="product-page__toolbar">
-								<span className="product-page__count">
-									{total} {total === 1 ? 'item' : 'items'}
-								</span>
+	return (
+		<div id="product-list-page">
+			<div className="container">
+				<div className="product-page__layout">
+					<aside className="product-page__sidebar">
+						<ProductFilter searchFilter={searchFilter} setSearchFilter={updateFilter} initialInput={initialInput} />
+					</aside>
 
-								<div className="product-page__toolbar-right">
-									{/* View toggle */}
-									<div className="product-page__view-toggle">
-										<button
-											className={`product-page__view-btn${
-												gridView === 'grid' ? ' product-page__view-btn--active' : ''
-											}`}
-											onClick={() => setGridView('grid')}
-											aria-label="Grid view"
-										>
-											<GridViewRoundedIcon fontSize="small" />
-										</button>
-										<button
-											className={`product-page__view-btn${
-												gridView === 'list' ? ' product-page__view-btn--active' : ''
-											}`}
-											onClick={() => setGridView('list')}
-											aria-label="List view"
-										>
-											<ViewListRoundedIcon fontSize="small" />
-										</button>
-									</div>
+					<main className="product-page__main">
+						<div className="product-page__toolbar">
+							<span className="product-page__count">
+								{total} {total === 1 ? 'item' : 'items'}
+							</span>
 
-									{/* Sort */}
-									<div className="product-page__sort">
-										<span className="product-page__sort-label">Sort:</span>
-										<Button
-											className="product-page__sort-btn"
-											onClick={sortingClickHandler}
-											endIcon={<KeyboardArrowDownRoundedIcon />}
-										>
-											{filterSortName}
-										</Button>
-										<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ mt: '4px' }}>
-											<MenuItem onClick={sortingHandler} id="newest" disableRipple>
-												Newest
-											</MenuItem>
-											<MenuItem onClick={sortingHandler} id="lowest" disableRipple>
-												Price: Low to High
-											</MenuItem>
-											<MenuItem onClick={sortingHandler} id="highest" disableRipple>
-												Price: High to Low
-											</MenuItem>
-											<MenuItem onClick={sortingHandler} id="popular" disableRipple>
-												Most Popular
-											</MenuItem>
-										</Menu>
-									</div>
+							<div className="product-page__toolbar-right">
+								<div className="product-page__view-toggle">
+									<button
+										className={`product-page__view-btn${gridView === 'grid' ? ' product-page__view-btn--active' : ''}`}
+										onClick={() => setGridView('grid')}
+										aria-label="Grid view"
+									>
+										<GridViewRoundedIcon fontSize="small" />
+									</button>
+
+									<button
+										className={`product-page__view-btn${gridView === 'list' ? ' product-page__view-btn--active' : ''}`}
+										onClick={() => setGridView('list')}
+										aria-label="List view"
+									>
+										<ViewListRoundedIcon fontSize="small" />
+									</button>
+								</div>
+
+								<div className="product-page__sort">
+									<span className="product-page__sort-label">Sort:</span>
+
+									<Button
+										className="product-page__sort-btn"
+										onClick={(e) => {
+											setAnchorEl(e.currentTarget);
+											setSortingOpen(true);
+										}}
+										endIcon={<KeyboardArrowDownRoundedIcon />}
+									>
+										{filterSortName}
+									</Button>
+
+									<Menu
+										anchorEl={anchorEl}
+										open={sortingOpen}
+										onClose={() => {
+											setSortingOpen(false);
+											setAnchorEl(null);
+										}}
+										sx={{ mt: '4px' }}
+									>
+										<MenuItem id="newest" onClick={sortingHandler} disableRipple>
+											Newest
+										</MenuItem>
+
+										<MenuItem id="lowest" onClick={sortingHandler} disableRipple>
+											Price: Low to High
+										</MenuItem>
+
+										<MenuItem id="highest" onClick={sortingHandler} disableRipple>
+											Price: High to Low
+										</MenuItem>
+
+										<MenuItem id="popular" onClick={sortingHandler} disableRipple>
+											Most Popular
+										</MenuItem>
+									</Menu>
 								</div>
 							</div>
+						</div>
 
-							{/* PRODUCT GRID */}
-							{getProductsLoading ? (
-								<div className="product-page__loading">
-									{[...Array(9)].map((_, i) => (
-										<div key={i} className="product-page__skeleton" />
-									))}
-								</div>
-							) : products.length === 0 ? (
-								<div className="product-page__empty">
-									<img src="/img/icons/icoAlert.svg" alt="" />
-									<p>No products found</p>
-									<span>Try adjusting your filters</span>
-								</div>
-							) : (
-								<div className={`product-page__grid product-page__grid--${gridView}`}>
-									{products.map((product: Product) => (
-										<ProductCard key={product._id} product={product} likeProductHandler={likeProductHandler} />
-									))}
-								</div>
-							)}
-
-							{/* PAGINATION */}
-							{products.length > 0 && (
-								<div className="product-page__pagination">
-									<Pagination
-										page={currentPage}
-										count={Math.ceil(total / searchFilter.limit)}
-										onChange={handlePaginationChange}
-										shape="circular"
-										color="primary"
+						{getProductsLoading ? (
+							<div className="product-page__loading">
+								{[...Array(9)].map((_, i) => (
+									<div key={i} className="product-page__skeleton" />
+								))}
+							</div>
+						) : products.length === 0 ? (
+							<div className="product-page__empty">
+								<p>No products found</p>
+								<span>
+									Use fewer filters or{' '}
+									<button className="product-page__empty-clear" onClick={() => updateFilter(initialInput)}>
+										clear all
+									</button>
+								</span>
+							</div>
+						) : (
+							<div className={`product-page__grid product-page__grid--${gridView}`}>
+								{products.map((product: Product) => (
+									<ProductCard
+										key={product._id}
+										product={product}
+										likeProductHandler={likeProductHandler}
+										listView={gridView === 'list'}
 									/>
-									<Typography className="product-page__total">
-										Total {total} product{total !== 1 ? 's' : ''}
-									</Typography>
-								</div>
-							)}
-						</main>
-					</div>
+								))}
+							</div>
+						)}
+
+						{products.length > 0 && (
+							<div className="product-page__pagination">
+								<Typography className="product-page__showing">
+									Showing <strong>{products.length}</strong> of <strong>{total}</strong> products
+								</Typography>
+
+								<Pagination
+									page={currentPage}
+									count={Math.ceil(total / searchFilter.limit)}
+									onChange={handlePaginationChange}
+									shape="rounded"
+									color="primary"
+								/>
+							</div>
+						)}
+					</main>
 				</div>
+				<PolicyBanner />
 			</div>
-		);
-	}
+		</div>
+	);
 };
 
 ProductList.defaultProps = {
