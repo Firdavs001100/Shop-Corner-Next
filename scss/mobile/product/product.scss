@@ -48,9 +48,13 @@
 			min-width: 0 !important;
 			white-space: nowrap !important;
 
-			&:hover { border-color: #1a1a1a !important; }
+			&:hover {
+				border-color: #1a1a1a !important;
+			}
 
-			.MuiButton-endIcon { margin-left: 2px !important; }
+			.MuiButton-endIcon {
+				margin-left: 2px !important;
+			}
 		}
 
 		.mobile-filter-btn {
@@ -71,7 +75,9 @@
 			flex-shrink: 0;
 			transition: background 0.2s ease;
 
-			&:hover { background: #1a3a5c; }
+			&:hover {
+				background: #1a3a5c;
+			}
 
 			&__badge {
 				display: inline-flex;
@@ -92,14 +98,14 @@
 			padding: 16px 16px 40px;
 		}
 
-		// ─── Product Grid ────────────────────────────────────────────────────────
+		// // ─── Product Grid ────────────────────────────────────────────────────────
 
-		.product-page__grid {
-			display: grid;
-			gap: 14px;
+		// .product-page__grid {
+		// 	display: grid;
+		// 	gap: 14px;
 
-			&--grid { grid-template-columns: repeat(2, 1fr); }
-		}
+		// 	&--grid { grid-template-columns: repeat(2, 1fr); }
+		// }
 
 		// ─── Loading Skeletons ───────────────────────────────────────────────────
 
@@ -118,8 +124,12 @@
 		}
 
 		@keyframes skeletonShimmer {
-			0% { background-position: 200% 0; }
-			100% { background-position: -200% 0; }
+			0% {
+				background-position: 200% 0;
+			}
+			100% {
+				background-position: -200% 0;
+			}
 		}
 
 		// ─── Empty State ─────────────────────────────────────────────────────────
@@ -159,7 +169,9 @@
 			text-decoration: underline;
 			text-underline-offset: 2px;
 
-			&:hover { color: #0f2035; }
+			&:hover {
+				color: #0f2035;
+			}
 		}
 
 		// ─── Pagination ──────────────────────────────────────────────────────────
@@ -201,7 +213,10 @@
 			color: #aaa !important;
 			font-weight: 400 !important;
 
-			strong { color: #555 !important; font-weight: 600 !important; }
+			strong {
+				color: #555 !important;
+				font-weight: 600 !important;
+			}
 		}
 
 		// ─── Policy Banner ───────────────────────────────────────────────────────
@@ -224,12 +239,32 @@
 				text-align: center;
 				border-right: none;
 
-				&:not(:last-child) { border-bottom: 1px solid #ebebeb; }
+				&:not(:last-child) {
+					border-bottom: 1px solid #ebebeb;
+				}
 			}
 
-			&__icon { margin-bottom: 16px; color: #1a2c4e; svg { font-size: 32px !important; } }
-			&__title { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; color: #1a2c4e; margin: 0 0 8px; }
-			&__desc  { font-family: 'DM Sans', sans-serif; font-size: 13px; color: #5a6a7e; line-height: 1.6; margin: 0; }
+			&__icon {
+				margin-bottom: 16px;
+				color: #1a2c4e;
+				svg {
+					font-size: 32px !important;
+				}
+			}
+			&__title {
+				font-family: 'DM Sans', sans-serif;
+				font-size: 15px;
+				font-weight: 700;
+				color: #1a2c4e;
+				margin: 0 0 8px;
+			}
+			&__desc {
+				font-family: 'DM Sans', sans-serif;
+				font-size: 13px;
+				color: #5a6a7e;
+				line-height: 1.6;
+				margin: 0;
+			}
 		}
 	}
 }
@@ -287,7 +322,10 @@
 		cursor: pointer;
 		transition: all 0.2s ease;
 
-		&:hover { border-color: #1a1a1a; color: #1a1a1a; }
+		&:hover {
+			border-color: #1a1a1a;
+			color: #1a1a1a;
+		}
 	}
 
 	&__body {
@@ -297,8 +335,13 @@
 		-webkit-overflow-scrolling: touch;
 		scrollbar-width: thin;
 
-		&::-webkit-scrollbar { width: 4px; }
-		&::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+		&::-webkit-scrollbar {
+			width: 4px;
+		}
+		&::-webkit-scrollbar-thumb {
+			background: #ddd;
+			border-radius: 10px;
+		}
 	}
 
 	&__footer {
@@ -321,8 +364,12 @@
 		cursor: pointer;
 		transition: background 0.2s ease;
 
-		&:hover  { background: #1a3a5c; }
-		&:active { background: #0a1828; }
+		&:hover {
+			background: #1a3a5c;
+		}
+		&:active {
+			background: #0a1828;
+		}
 	}
 }
 
@@ -363,7 +410,9 @@
 		font-size: 11px;
 		cursor: pointer;
 
-		&:hover { background: #1a3a5c; }
+		&:hover {
+			background: #1a3a5c;
+		}
 	}
 
 	&__section {
@@ -400,7 +449,9 @@
 		cursor: pointer;
 		text-transform: uppercase;
 
-		&:hover { color: black; }
+		&:hover {
+			color: black;
+		}
 	}
 
 	&__section-body {
@@ -430,7 +481,10 @@
 		transition: all 0.15s ease;
 		white-space: nowrap;
 
-		&:hover { border-color: #1a1a1a; color: #1a1a1a; }
+		&:hover {
+			border-color: #1a1a1a;
+			color: #1a1a1a;
+		}
 
 		&--active {
 			background: #1a1a1a;
@@ -459,9 +513,15 @@
 		cursor: pointer;
 		transition: all 0.15s ease;
 
-		&:hover { border-color: black; }
+		&:hover {
+			border-color: black;
+		}
 
-		&--active { background: #1a1a1a; color: white; border-color: #1a1a1a; }
+		&--active {
+			background: #1a1a1a;
+			color: white;
+			border-color: #1a1a1a;
+		}
 	}
 
 	// ─── Color grid ────────────────────────────────────────────────────────────
@@ -480,9 +540,14 @@
 		cursor: pointer;
 		transition: transform 0.15s ease;
 
-		&:hover { transform: scale(1.1); }
+		&:hover {
+			transform: scale(1.1);
+		}
 
-		&--active { border-color: black; box-shadow: 0 0 0 2px white inset; }
+		&--active {
+			border-color: black;
+			box-shadow: 0 0 0 2px white inset;
+		}
 	}
 
 	// ─── Price slider ──────────────────────────────────────────────────────────
@@ -490,9 +555,19 @@
 	&__slider {
 		color: #1a1a1a !important;
 
-		.MuiSlider-thumb { width: 16px; height: 16px; background: black; }
-		.MuiSlider-track { background: black; height: 2px; }
-		.MuiSlider-rail  { background: #ddd; height: 2px; }
+		.MuiSlider-thumb {
+			width: 16px;
+			height: 16px;
+			background: black;
+		}
+		.MuiSlider-track {
+			background: black;
+			height: 2px;
+		}
+		.MuiSlider-rail {
+			background: #ddd;
+			height: 2px;
+		}
 	}
 
 	&__price-labels {
@@ -500,6 +575,9 @@
 		justify-content: space-between;
 		margin-top: 8px;
 
-		span { font-size: 12px; color: #777; }
+		span {
+			font-size: 12px;
+			color: #777;
+		}
 	}
 }

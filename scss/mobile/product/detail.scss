@@ -1,0 +1,688 @@
+// ─── Import into your mobile scss entry (e.g. mobile.scss) ───────────────────
+// @import '/scss/mobile/product/detail.scss';
+
+#mobile-wrap {
+	#product-detail-page.product-detail--mobile {
+		font-family: 'DM Sans', sans-serif;
+		background: #ffffff;
+		min-height: 100vh;
+		position: relative;
+
+		// ─── Floating top bar ─────────────────────────────────────────────────────
+
+		.pdm-topbar {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 200;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 16px;
+			height: 52px;
+			background: transparent;
+
+			&__back {
+				width: 36px;
+				height: 36px;
+				border-radius: 50%;
+				background: rgba(255, 255, 255, 0.88);
+				border: none;
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: #1a2c4e;
+				box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+			}
+
+			&__actions {
+				display: flex;
+				gap: 8px;
+			}
+
+			&__btn {
+				width: 36px;
+				height: 36px;
+				border-radius: 50%;
+				background: rgba(255, 255, 255, 0.88);
+				border: none;
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: #1a2c4e;
+				box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+			}
+		}
+
+		// ─── Gallery ──────────────────────────────────────────────────────────────
+
+		.pdm-gallery {
+			position: relative;
+			width: 100%;
+
+			background: #f7f7f7;
+			overflow: hidden;
+
+			&__main {
+				width: 100%;
+				height: 100%;
+
+				img {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+					display: block;
+					transition: opacity 0.2s ease;
+				}
+			}
+
+			&__dots {
+				position: absolute;
+				bottom: 14px;
+				left: 50%;
+				transform: translateX(-50%);
+				display: flex;
+				gap: 6px;
+				z-index: 10;
+			}
+
+			&__dot {
+				width: 7px;
+				height: 7px;
+				border-radius: 999px;
+				border: none;
+				background: rgba(255, 255, 255, 0.5);
+				cursor: pointer;
+				padding: 0;
+				transition: background 0.2s ease, width 0.2s ease;
+
+				&--active {
+					background: #ffffff;
+					width: 20px;
+				}
+			}
+		}
+
+		// ─── Info block ───────────────────────────────────────────────────────────
+
+		.pdm-info {
+			padding: 20px 16px 16px;
+			display: flex;
+			flex-direction: column;
+			gap: 0;
+
+			&__header {
+				display: flex;
+				align-items: flex-start;
+				justify-content: space-between;
+				gap: 12px;
+				margin-bottom: 10px;
+			}
+
+			&__category {
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: #5a6a7e;
+				margin: 0 0 4px;
+			}
+
+			&__title {
+				font-size: 20px;
+				font-weight: 700;
+				color: #1a2c4e;
+				margin: 0;
+				line-height: 1.25;
+				letter-spacing: -0.01em;
+			}
+
+			&__price-block {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-end;
+				flex-shrink: 0;
+			}
+
+			&__price {
+				font-size: 22px;
+				font-weight: 700;
+				color: #1a2c4e;
+				letter-spacing: -0.02em;
+				line-height: 1;
+
+				&--original {
+					font-size: 14px;
+					font-weight: 400;
+					color: #5a6a7e;
+					text-decoration: line-through;
+					opacity: 0.6;
+					margin-top: 2px;
+				}
+			}
+
+			// Rating
+			&__rating {
+				display: flex;
+				align-items: center;
+				gap: 3px;
+				margin-bottom: 10px;
+				cursor: pointer;
+			}
+
+			&__star {
+				font-size: 15px;
+				color: #e0e0e0;
+				line-height: 1;
+				&--filled {
+					color: #f5a623;
+				}
+			}
+
+			&__rating-count {
+				font-size: 12px;
+				color: #5a6a7e;
+				margin-left: 3px;
+			}
+
+			&__view-reviews {
+				font-size: 11px;
+				font-weight: 700;
+				color: #0f2035;
+				text-decoration: underline;
+				text-underline-offset: 2px;
+				margin-left: 6px;
+				letter-spacing: 0.04em;
+			}
+
+			// Stock badge
+			&__stock {
+				font-size: 12px;
+				font-weight: 600;
+				margin-bottom: 12px;
+
+				&--in {
+					color: #2e7d32;
+				}
+				&--out {
+					color: #c62828;
+				}
+			}
+
+			&__low-stock {
+				font-size: 12px;
+				color: #c62828;
+				font-weight: 400;
+			}
+
+			&__divider {
+				height: 1px;
+				background: #ebebeb;
+				margin: 14px 0;
+			}
+
+			// Sections (size, color, qty, desc)
+			&__section {
+				margin-bottom: 16px;
+			}
+
+			&__section-label {
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: #1a2c4e;
+				display: block;
+				margin-bottom: 10px;
+			}
+
+			&__sizes {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 8px;
+			}
+
+			&__size-btn {
+				min-width: 48px;
+				height: 40px;
+				padding: 0 12px;
+				border: 1px solid #e0e0e0;
+				border-radius: 6px;
+				background: #ffffff;
+				font-family: 'DM Sans', sans-serif;
+				font-size: 12px;
+				font-weight: 500;
+				color: #1a2c4e;
+				cursor: pointer;
+				transition: all 0.15s ease;
+
+				&:hover {
+					border-color: #1a2c4e;
+				}
+				&--active {
+					background: #0f2035;
+					border-color: #0f2035;
+					color: #ffffff;
+				}
+			}
+
+			&__colors {
+				display: flex;
+				gap: 10px;
+				flex-wrap: wrap;
+			}
+
+			&__color-dot {
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				border: 2px solid transparent;
+				cursor: pointer;
+				outline: 2px solid rgba(0, 0, 0, 0.1);
+				transition: transform 0.15s ease;
+
+				&:hover {
+					transform: scale(1.12);
+				}
+			}
+
+			// Quantity
+			&__qty {
+				display: inline-flex;
+				align-items: center;
+				border: 1px solid #e0e0e0;
+				border-radius: 999px;
+				overflow: hidden;
+				height: 44px;
+
+				button {
+					width: 40px;
+					height: 100%;
+					background: none;
+					border: none;
+					cursor: pointer;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					color: #1a2c4e;
+					transition: background 0.15s ease;
+
+					&:hover {
+						background: #f5f5f5;
+					}
+				}
+
+				span {
+					min-width: 32px;
+					text-align: center;
+					font-size: 15px;
+					font-weight: 600;
+					color: #1a2c4e;
+				}
+			}
+
+			// Description text
+			&__desc {
+				font-size: 13px;
+				color: #5a6a7e;
+				line-height: 1.75;
+				margin: 0;
+			}
+
+			// Meta table
+			&__meta {
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+				margin-top: 4px;
+			}
+
+			&__meta-row {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				font-size: 13px;
+				padding: 8px 0;
+				border-bottom: 1px solid #f5f5f5;
+
+				&:last-child {
+					border-bottom: none;
+				}
+			}
+
+			&__meta-key {
+				font-weight: 600;
+				color: #1a2c4e;
+				min-width: 80px;
+				flex-shrink: 0;
+				font-size: 12px;
+			}
+
+			&__meta-val {
+				color: #5a6a7e;
+				font-size: 13px;
+
+				&--views {
+					display: flex;
+					align-items: center;
+					gap: 4px;
+				}
+			}
+		}
+
+		// ─── Reviews bottom sheet ─────────────────────────────────────────────────
+
+		.pdm-reviews-sheet {
+			position: fixed;
+			inset: 0;
+			z-index: 500;
+
+			&__overlay {
+				position: absolute;
+				inset: 0;
+				background: rgba(0, 0, 0, 0.4);
+			}
+
+			&__panel {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: #ffffff;
+				border-radius: 20px 20px 0 0;
+				max-height: 88vh;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+				animation: sheetSlideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+			}
+
+			@keyframes sheetSlideUp {
+				from {
+					transform: translateY(100%);
+				}
+				to {
+					transform: translateY(0);
+				}
+			}
+
+			&__handle {
+				width: 36px;
+				height: 4px;
+				border-radius: 999px;
+				background: #e0e0e0;
+				margin: 12px auto 0;
+				flex-shrink: 0;
+			}
+
+			&__header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 14px 20px 10px;
+				flex-shrink: 0;
+			}
+
+			&__title {
+				font-size: 17px;
+				font-weight: 700;
+				color: #1a2c4e;
+				margin: 0;
+				letter-spacing: -0.01em;
+			}
+
+			&__close {
+				width: 30px;
+				height: 30px;
+				border-radius: 50%;
+				border: none;
+				background: #f5f5f5;
+				font-size: 13px;
+				color: #5a6a7e;
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			// Score row
+			&__score {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 0 20px 14px;
+				border-bottom: 1px solid #ebebeb;
+				flex-shrink: 0;
+			}
+
+			&__score-num {
+				font-size: 28px;
+				font-weight: 700;
+				color: #1a2c4e;
+				line-height: 1;
+			}
+
+			&__score-count {
+				font-size: 12px;
+				color: #5a6a7e;
+			}
+
+			// Leave stars
+			&__leave {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 12px 20px;
+				border-bottom: 1px solid #ebebeb;
+				flex-shrink: 0;
+			}
+
+			&__leave-label {
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: #5a6a7e;
+				white-space: nowrap;
+			}
+
+			&__leave-stars {
+				display: flex;
+				gap: 4px;
+			}
+
+			&__star {
+				font-size: 24px;
+				background: none;
+				border: none;
+				cursor: pointer;
+				color: #e0e0e0;
+				padding: 0;
+				line-height: 1;
+				transition: color 0.15s ease, transform 0.15s ease;
+
+				&:hover {
+					transform: scale(1.2);
+				}
+				&--active {
+					color: #f5a623;
+				}
+			}
+
+			// Comments list
+			&__list {
+				flex: 1;
+				overflow-y: auto;
+				padding: 0 20px 16px;
+
+				scrollbar-width: none;
+				&::-webkit-scrollbar {
+					display: none;
+				}
+			}
+
+			&__empty {
+				font-size: 13px;
+				color: #5a6a7e;
+				text-align: center;
+				padding: 32px 0;
+			}
+
+			// Write review form
+			&__form {
+				flex-shrink: 0;
+				padding: 12px 20px 24px;
+				border-top: 1px solid #ebebeb;
+				display: flex;
+				gap: 10px;
+				align-items: flex-end;
+			}
+
+			&__textarea {
+				flex: 1;
+				border: 1px solid #e0e0e0;
+				border-radius: 12px;
+				padding: 10px 14px;
+				font-family: 'DM Sans', sans-serif;
+				font-size: 13px;
+				color: #1a2c4e;
+				resize: none;
+				outline: none;
+				transition: border-color 0.2s ease;
+				box-sizing: border-box;
+
+				&:focus {
+					border-color: #0f2035;
+				}
+				&::placeholder {
+					color: #5a6a7e;
+					opacity: 0.5;
+				}
+			}
+
+			&__submit {
+				height: 40px;
+				padding: 0 18px;
+				background: #0f2035;
+				color: #ffffff;
+				border: none;
+				border-radius: 999px;
+				font-family: 'DM Sans', sans-serif;
+				font-size: 12px;
+				font-weight: 700;
+				letter-spacing: 0.04em;
+				cursor: pointer;
+				white-space: nowrap;
+				transition: background 0.2s ease;
+				flex-shrink: 0;
+
+				&:hover {
+					background: #1a3a5c;
+				}
+				&:disabled {
+					opacity: 0.35;
+					cursor: not-allowed;
+				}
+			}
+		}
+
+		// ─── Related products ─────────────────────────────────────────────────────
+
+		.pdm-related {
+			padding: 24px 16px 0;
+
+			&__title {
+				font-size: 16px;
+				font-weight: 700;
+				color: #1a2c4e;
+				margin: 0 0 16px;
+				letter-spacing: -0.01em;
+			}
+
+			&__grid {
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+			}
+		}
+
+		// ─── Sticky bottom CTA ────────────────────────────────────────────────────
+
+		.pdm-cta {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			z-index: 300;
+			display: flex;
+			gap: 10px;
+			padding: 12px 16px;
+			background: #ffffff;
+			border-top: 1px solid #ebebeb;
+			// iOS safe area
+			padding-bottom: calc(12px + env(safe-area-inset-bottom));
+
+			&__add {
+				flex: 1;
+				height: 48px;
+				background: #0f2035;
+				color: #ffffff;
+				border: none;
+				border-radius: 999px;
+				font-family: 'DM Sans', sans-serif;
+				font-size: 13px;
+				font-weight: 700;
+				letter-spacing: 0.04em;
+				cursor: pointer;
+				transition: background 0.2s ease;
+
+				&:hover {
+					background: #1a3a5c;
+				}
+				&:disabled {
+					opacity: 0.4;
+					cursor: not-allowed;
+				}
+			}
+
+			&__buy {
+				flex: 1;
+				height: 48px;
+				border: 1px solid #e0e0e0;
+				border-radius: 999px;
+				background: #ffffff;
+				font-family: 'DM Sans', sans-serif;
+				font-size: 13px;
+				font-weight: 700;
+				letter-spacing: 0.04em;
+				color: #1a2c4e;
+				cursor: pointer;
+				transition: all 0.2s ease;
+
+				&:hover {
+					border-color: #1a2c4e;
+					background: #fafafa;
+				}
+			}
+		}
+
+		// ─── Review card overrides (mobile sizing) ────────────────────────────────
+
+		.review-card {
+			padding: 16px 0;
+
+			&__name {
+				font-size: 13px;
+			}
+			&__date {
+				font-size: 11px;
+			}
+			&__content {
+				font-size: 13px;
+			}
+		}
+	}
+}
