@@ -6,8 +6,6 @@ import Basket from './Basket';
 import { SearchIcon } from './icons/SearchIcon';
 import { CartIcon } from './icons/CartIcon';
 import { WishlistIcon } from './icons/WishlistIcon';
-import { ChevronLeftIcon } from './icons/ChevronLeftIcon';
-import { ChevronRightIcon } from './icons/ChevronRightIcon';
 import { NEXT_PUBLIC_API_URL } from '../config';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -69,35 +67,6 @@ const StyledMenu = styled((props: MenuProps) => (
 	},
 }));
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
-
-const SLIDES = [
-	{
-		eyebrow: 'FASHION',
-		heading: ['Making a Statement', 'Through Fashion'],
-		subtext: "Fashion isn't just clothes, it's a statement.",
-		cta: 'Shop The Collection',
-		image: '/img/banner/main3.webp',
-		align: 'left',
-	},
-	{
-		eyebrow: 'NEW ARRIVALS',
-		heading: ['Discover Your', 'Unique Style'],
-		subtext: 'Explore the latest trends in contemporary fashion.',
-		cta: 'Shop New Arrivals',
-		image: '/img/banner/main2.webp',
-		align: 'center',
-	},
-	{
-		eyebrow: 'COLLECTION',
-		heading: ['Elevate Every', 'Occasion'],
-		subtext: 'Curated pieces for every moment in your life.',
-		cta: 'View Collection',
-		image: '/img/banner/main1.webp',
-		align: 'right',
-	},
-];
-
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 const IconButton: React.FC<IconButtonProps> = ({ label, children, count, onClick }) => (
@@ -117,10 +86,10 @@ export default function Header() {
 	const cart = useReactiveVar(cartVar);
 	const user = useReactiveVar(userVar);
 
-	const [activeSlide, setActiveSlide] = useState(0);
 	const [isBasketOpen, setIsBasketOpen] = useState(false);
 	const [isClient, setIsClient] = useState(false);
 	const [colorChange, setColorChange] = useState(false);
+	const isHome = router.pathname === '/';
 	const [lang, setLang] = useState<string | null>('en');
 	const [langAnchor, setLangAnchor] = useState<null | HTMLElement>(null);
 	const [logoutAnchor, setLogoutAnchor] = useState<null | HTMLElement>(null);
@@ -151,16 +120,6 @@ export default function Header() {
 		return () => window.removeEventListener('scroll', handleScroll);
 	}, []);
 
-	// ── Auto-slide every 8s ──
-
-	const goToNext = useCallback(() => setActiveSlide((i) => (i === SLIDES.length - 1 ? 0 : i + 1)), []);
-	const goToPrev = () => setActiveSlide((i) => (i === 0 ? SLIDES.length - 1 : i - 1));
-
-	useEffect(() => {
-		const timer = setInterval(goToNext, 8000);
-		return () => clearInterval(timer);
-	}, [goToNext]);
-
 	// ── Lang handlers ──
 
 	const langClick = (e: React.MouseEvent<HTMLButtonElement>) => setLangAnchor(e.currentTarget);
@@ -177,8 +136,6 @@ export default function Header() {
 		[router],
 	);
 
-	const { eyebrow, heading, subtext, cta, image, align } = SLIDES[activeSlide];
-
 	const navItems = [
 		{ label: t('Home'), href: '/' },
 		{ label: t('Shop'), href: '/product' },
@@ -187,7 +144,7 @@ export default function Header() {
 		{ label: t('CS'), href: '/cs' },
 	];
 
-	// ── Shared: Lang menu ──
+	// ── Lang menu ──
 
 	const langMenu = (
 		<>
@@ -208,7 +165,7 @@ export default function Header() {
 		</>
 	);
 
-	// ── Shared: User auth block ──
+	// ── User auth block ──
 
 	const userAuth = (
 		<>
@@ -240,46 +197,6 @@ export default function Header() {
 		</>
 	);
 
-	// ── Shared: Hero ──
-
-	const heroSection = (
-		<section className="hero" aria-label="Featured collection">
-			<div className="hero__backdrop" style={{ backgroundImage: `url(${image})` }} role="img" aria-label={eyebrow} />
-			<div className="hero__overlay" />
-
-			<div className={`hero__content hero__content--${align}`}>
-				<span className="hero__eyebrow">{eyebrow}</span>
-				<h1 className="hero__heading">
-					{heading.map((line, i) => (
-						<span key={i}>{line}</span>
-					))}
-				</h1>
-				<p className="hero__subtext">{subtext}</p>
-				<a href="/product" className="hero__cta">
-					{cta}
-				</a>
-			</div>
-
-			<div className="hero__dots">
-				{SLIDES.map((_, i) => (
-					<button
-						key={i}
-						className={`hero__dot${i === activeSlide ? ' hero__dot--active' : ''}`}
-						onClick={() => setActiveSlide(i)}
-						aria-label={`Go to slide ${i + 1}`}
-					/>
-				))}
-			</div>
-
-			<button className="slider-btn slider-btn--prev" onClick={goToPrev} aria-label="Previous slide">
-				<ChevronLeftIcon />
-			</button>
-			<button className="slider-btn slider-btn--next" onClick={goToNext} aria-label="Next slide">
-				<ChevronRightIcon />
-			</button>
-		</section>
-	);
-
 	// ─────────────────────────────────────────────────────────────────────────────
 	// MOBILE
 	// ─────────────────────────────────────────────────────────────────────────────
@@ -287,7 +204,11 @@ export default function Header() {
 	if (device === 'mobile') {
 		return (
 			<>
-				<div className={`site-header site-header--mobile${colorChange ? ' site-header--scrolled' : ''}`}>
+				<div
+					className={`site-header site-header--mobile${isHome ? ' site-header--overlay' : ''}${
+						colorChange ? ' site-header--scrolled' : ''
+					}`}
+				>
 					<div className="announcement-bar">Free shipping in orders over ₩200,000</div>
 
 					<header className="navbar-mobile">
@@ -334,8 +255,6 @@ export default function Header() {
 							</div>
 						</div>
 					)}
-
-					{heroSection}
 				</div>
 
 				<Basket isOpen={isBasketOpen} onClose={() => setIsBasketOpen(false)} />
@@ -349,7 +268,9 @@ export default function Header() {
 
 	return (
 		<>
-			<div className={`site-header${colorChange ? ' site-header--scrolled' : ''}`}>
+			<div
+				className={`site-header${isHome ? ' site-header--overlay' : ''}${colorChange ? ' site-header--scrolled' : ''}`}
+			>
 				<div className="announcement-bar">Free shipping in orders over ₩200,000</div>
 
 				<header className="navbar">
@@ -392,8 +313,6 @@ export default function Header() {
 						</IconButton>
 					</div>
 				</header>
-
-				{heroSection}
 			</div>
 
 			<Basket isOpen={isBasketOpen} onClose={() => setIsBasketOpen(false)} />

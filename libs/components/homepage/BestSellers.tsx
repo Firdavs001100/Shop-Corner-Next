@@ -15,7 +15,7 @@ import { T } from '../../types/common';
 import { Message } from '../../enums/common.enum';
 
 import { toastErrorHandling, toastSmallSuccess } from '../../toast';
-import ProductCard from './ProductCard';
+import ProductCard from '../common/ProductCard';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 
 interface BestSellersProps {

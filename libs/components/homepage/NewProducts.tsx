@@ -6,7 +6,7 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '../../../apollo/user/query';
 import { T } from '../../types/common';
-import ProductCard from './ProductCard';
+import ProductCard from '../common/ProductCard';
 import { Product } from '../../types/product/product';
 import { ProductsInquiry } from '../../types/product/product.input';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
