@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import { Button, Menu, MenuItem, Pagination, Typography } from '@mui/material';
+import { Button, Drawer, Menu, MenuItem, Pagination, Typography } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import ProductFilter from '../../libs/components/product/Filter';
@@ -10,6 +10,10 @@ import { ProductsInquiry } from '../../libs/types/product/product.input';
 import { Product } from '../../libs/types/product/product';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDown';
+import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded';
 import { Direction, Message } from '../../libs/enums/common.enum';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { GET_PRODUCTS } from '../../apollo/user/query';
@@ -17,8 +21,6 @@ import { T } from '../../libs/types/common';
 import { LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { toastErrorHandling, toastSmallSuccess } from '../../libs/toast';
 import { userVar } from '../../apollo/store';
-import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
-import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded';
 import { ProductDressStyle, ProductSize, ProductCategory } from '../../libs/enums/product.enum';
 import PolicyBanner from '../../libs/components/product/PolicyBanner';
 
@@ -41,8 +43,8 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [sortingOpen, setSortingOpen] = useState(false);
 	const [filterSortName, setFilterSortName] = useState('Newest');
-
-	const [gridView, setGridView] = useState<'grid' | 'list'>('grid');
+	const [gridView, setGridView] = useState<'grid' | 'list'>('grid'); // desktop only
+	const [drawerOpen, setDrawerOpen] = useState(false); // mobile only
 
 	/** APOLLO **/
 	const { loading: getProductsLoading } = useQuery(GET_PRODUCTS, {
@@ -63,7 +65,7 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 		limit: filter.limit,
 		sort: filter.sort,
 		direction: filter.direction,
-		text: filter.search?.text, // ✅ FIX
+		text: filter.search?.text,
 		priceStart: filter.search?.pricesRange?.start,
 		priceEnd: filter.search?.pricesRange?.end,
 		category: filter.search?.categoryList,
@@ -83,14 +85,13 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 		if (!router.isReady) return;
 
 		const query = router.query;
-
 		const rebuiltFilter: ProductsInquiry = {
 			page: Number(query.page) || 1,
 			limit: Number(query.limit) || 12,
 			sort: (query.sort as string) || 'createdAt',
 			direction: (query.direction as unknown as Direction) || Direction.DESC,
 			search: {
-				text: (query.text as string) || '', // ✅ FIX
+				text: (query.text as string) || '',
 				pricesRange: {
 					start: Number(query.priceStart) || 0,
 					end: Number(query.priceEnd) || 5000000,
@@ -111,7 +112,6 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 			if (JSON.stringify(prev) === JSON.stringify(rebuiltFilter)) return prev;
 			return rebuiltFilter;
 		});
-
 		setCurrentPage(rebuiltFilter.page);
 	}, [router.isReady, router.query]);
 
@@ -131,6 +131,7 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 		const updated = { ...searchFilter, page: value };
 		setCurrentPage(value);
 		await updateFilter(updated);
+		if (device === 'mobile') window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
 	/** SORT **/
@@ -143,15 +144,15 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 				break;
 			case 'lowest':
 				updated = { ...updated, sort: 'productPrice', direction: Direction.ASC };
-				setFilterSortName('Price: Low to High');
+				setFilterSortName('Low to High');
 				break;
 			case 'highest':
 				updated = { ...updated, sort: 'productPrice', direction: Direction.DESC };
-				setFilterSortName('Price: High to Low');
+				setFilterSortName('High to Low');
 				break;
 			case 'popular':
 				updated = { ...updated, sort: 'productLikes', direction: Direction.DESC };
-				setFilterSortName('Most Popular');
+				setFilterSortName('Popular');
 				break;
 		}
 		await updateFilter(updated);
@@ -159,8 +160,149 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 		setAnchorEl(null);
 	};
 
-	if (device === 'mobile') return <h1>PRODUCTS MOBILE</h1>;
+	const activeFilterCount =
+		(searchFilter.search?.categoryList?.length ?? 0) +
+		(searchFilter.search?.sizeList?.length ?? 0) +
+		(searchFilter.search?.colorList?.length ?? 0) +
+		(searchFilter.search?.dressStyleList?.length ?? 0) +
+		(searchFilter.search?.brandList?.length ?? 0);
 
+	const SortMenu = () => (
+		<Menu
+			anchorEl={anchorEl}
+			open={sortingOpen}
+			onClose={() => {
+				setSortingOpen(false);
+				setAnchorEl(null);
+			}}
+			sx={{ mt: '4px' }}
+		>
+			<MenuItem id="newest" onClick={sortingHandler} disableRipple>
+				Newest
+			</MenuItem>
+			<MenuItem id="lowest" onClick={sortingHandler} disableRipple>
+				Price: Low to High
+			</MenuItem>
+			<MenuItem id="highest" onClick={sortingHandler} disableRipple>
+				Price: High to Low
+			</MenuItem>
+			<MenuItem id="popular" onClick={sortingHandler} disableRipple>
+				Most Popular
+			</MenuItem>
+		</Menu>
+	);
+
+	// ─── MOBILE ───────────────────────────────────────────────────────────────
+	if (device === 'mobile') {
+		return (
+			<div id="product-list-page">
+				{/* Sticky top bar: count | sort + filter */}
+				<div className="mobile-topbar">
+					<span className="product-page__count">
+						{total} {total === 1 ? 'item' : 'items'}
+					</span>
+
+					<div className="mobile-topbar__actions">
+						<Button
+							className="product-page__sort-btn"
+							onClick={(e) => {
+								setAnchorEl(e.currentTarget);
+								setSortingOpen(true);
+							}}
+							endIcon={<KeyboardArrowDownRoundedIcon fontSize="small" />}
+						>
+							{filterSortName}
+						</Button>
+						<SortMenu />
+
+						<button className="mobile-filter-btn" onClick={() => setDrawerOpen(true)}>
+							<TuneRoundedIcon fontSize="small" />
+							<span>Filter</span>
+							{activeFilterCount > 0 && <span className="mobile-filter-btn__badge">{activeFilterCount}</span>}
+						</button>
+					</div>
+				</div>
+
+				{/* Products — always grid on mobile */}
+				<div className="mobile-content">
+					{getProductsLoading ? (
+						<div className="product-page__loading">
+							{[...Array(4)].map((_, i) => (
+								<div key={i} className="product-page__skeleton" />
+							))}
+						</div>
+					) : products.length === 0 ? (
+						<div className="product-page__empty">
+							<p>No products found</p>
+							<span>
+								Use fewer filters or{' '}
+								<button className="product-page__empty-clear" onClick={() => updateFilter(initialInput)}>
+									clear all
+								</button>
+							</span>
+						</div>
+					) : (
+						<div className="product-page__grid product-page__grid--grid">
+							{products.map((product: Product) => (
+								<ProductCard
+									key={product._id}
+									product={product}
+									likeProductHandler={likeProductHandler}
+									listView={false}
+								/>
+							))}
+						</div>
+					)}
+
+					{products.length > 0 && (
+						<div className="product-page__pagination">
+							<Typography className="product-page__showing">
+								Showing <strong>{products.length}</strong> of <strong>{total}</strong> products
+							</Typography>
+							<Pagination
+								page={currentPage}
+								count={Math.ceil(total / searchFilter.limit)}
+								onChange={handlePaginationChange}
+								shape="rounded"
+								color="primary"
+								siblingCount={1}
+								boundaryCount={1}
+							/>
+						</div>
+					)}
+
+					<PolicyBanner />
+				</div>
+
+				{/* Bottom-sheet filter drawer */}
+				<Drawer
+					anchor="bottom"
+					open={drawerOpen}
+					onClose={() => setDrawerOpen(false)}
+					classes={{ paper: 'mobile-filter-drawer' }}
+				>
+					<div className="mobile-filter-drawer__header">
+						<span className="mobile-filter-drawer__title">Filters</span>
+						<button className="mobile-filter-drawer__close" onClick={() => setDrawerOpen(false)}>
+							<CloseRoundedIcon />
+						</button>
+					</div>
+
+					<div className="mobile-filter-drawer__body">
+						<ProductFilter searchFilter={searchFilter} setSearchFilter={updateFilter} initialInput={initialInput} />
+					</div>
+
+					<div className="mobile-filter-drawer__footer">
+						<button className="mobile-filter-drawer__apply" onClick={() => setDrawerOpen(false)}>
+							Show {total} {total === 1 ? 'result' : 'results'}
+						</button>
+					</div>
+				</Drawer>
+			</div>
+		);
+	}
+
+	// ─── DESKTOP ──────────────────────────────────────────────────────────────
 	return (
 		<div id="product-list-page">
 			<div className="container">
@@ -184,7 +326,6 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 									>
 										<GridViewRoundedIcon fontSize="small" />
 									</button>
-
 									<button
 										className={`product-page__view-btn${gridView === 'list' ? ' product-page__view-btn--active' : ''}`}
 										onClick={() => setGridView('list')}
@@ -196,7 +337,6 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 
 								<div className="product-page__sort">
 									<span className="product-page__sort-label">Sort:</span>
-
 									<Button
 										className="product-page__sort-btn"
 										onClick={(e) => {
@@ -207,32 +347,7 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 									>
 										{filterSortName}
 									</Button>
-
-									<Menu
-										anchorEl={anchorEl}
-										open={sortingOpen}
-										onClose={() => {
-											setSortingOpen(false);
-											setAnchorEl(null);
-										}}
-										sx={{ mt: '4px' }}
-									>
-										<MenuItem id="newest" onClick={sortingHandler} disableRipple>
-											Newest
-										</MenuItem>
-
-										<MenuItem id="lowest" onClick={sortingHandler} disableRipple>
-											Price: Low to High
-										</MenuItem>
-
-										<MenuItem id="highest" onClick={sortingHandler} disableRipple>
-											Price: High to Low
-										</MenuItem>
-
-										<MenuItem id="popular" onClick={sortingHandler} disableRipple>
-											Most Popular
-										</MenuItem>
-									</Menu>
+									<SortMenu />
 								</div>
 							</div>
 						</div>
@@ -271,7 +386,6 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 								<Typography className="product-page__showing">
 									Showing <strong>{products.length}</strong> of <strong>{total}</strong> products
 								</Typography>
-
 								<Pagination
 									page={currentPage}
 									count={Math.ceil(total / searchFilter.limit)}

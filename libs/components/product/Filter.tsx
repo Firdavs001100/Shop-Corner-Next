@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Stack, Checkbox, Slider, OutlinedInput, IconButton, Tooltip } from '@mui/material';
+import { Slider, Stack } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ProductCategory, ProductDressStyle, ProductSize } from '../../enums/product.enum';
 import { ProductsInquiry } from '../../types/product/product.input';
 
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
-import SearchIcon from '@mui/icons-material/Search';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import { OutlinedInput, IconButton, Checkbox, Tooltip } from '@mui/material';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface ProductFilterProps {
 	searchFilter: ProductsInquiry;
@@ -19,7 +20,6 @@ interface ProductFilterProps {
 const SIZES = Object.values(ProductSize);
 const CATEGORIES = Object.values(ProductCategory);
 const DRESS_STYLES = Object.values(ProductDressStyle);
-
 const BRANDS = ['Nike', 'Adidas', 'Zara', 'H&M', 'Uniqlo', "Levi's", 'Gucci', 'Puma'];
 
 const COLORS = [
@@ -35,7 +35,7 @@ const COLORS = [
 
 const formatWon = (v: number) => v.toLocaleString('ko-KR');
 
-/* SECTION */
+/* ─── Section ─────────────────────────────────────────────────────────────── */
 
 interface SectionProps {
 	title: string;
@@ -52,7 +52,6 @@ const FilterSection = ({ title, hasActive, onReset, defaultOpen = true, children
 		<div className="product-filter__section">
 			<div className="product-filter__section-head" onClick={() => setOpen(!open)}>
 				<span className="product-filter__title">{title}</span>
-
 				<div className="product-filter__section-actions">
 					{hasActive && onReset && (
 						<button
@@ -65,23 +64,20 @@ const FilterSection = ({ title, hasActive, onReset, defaultOpen = true, children
 							Reset
 						</button>
 					)}
-
 					{open ? <KeyboardArrowUpRoundedIcon /> : <KeyboardArrowDownRoundedIcon />}
 				</div>
 			</div>
-
-			<div className={`product-filter__section-body ${open ? 'open' : ''}`}>{children}</div>
+			{open && <div className="product-filter__section-body">{children}</div>}
 		</div>
 	);
 };
 
-/* FILTER */
+/* ─── Filter ──────────────────────────────────────────────────────────────── */
 
 const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductFilterProps) => {
 	const device = useDeviceDetect();
 
 	const [searchText, setSearchText] = useState(searchFilter?.search?.text ?? '');
-
 	const [priceRange, setPriceRange] = useState<number[]>([
 		searchFilter?.search?.pricesRange?.start ?? 0,
 		searchFilter?.search?.pricesRange?.end ?? 5000000,
@@ -91,24 +87,13 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 		if (searchFilter?.search?.pricesRange) {
 			setPriceRange([searchFilter.search.pricesRange.start ?? 0, searchFilter.search.pricesRange.end ?? 5000000]);
 		}
-
-		if (searchFilter?.search?.text !== undefined) {
-			setSearchText(searchFilter.search.text);
-		}
+		if (searchFilter?.search?.text !== undefined) setSearchText(searchFilter.search.text);
 	}, [searchFilter?.search?.pricesRange, searchFilter?.search?.text]);
 
 	const toggleListItem = (key: keyof ProductsInquiry['search'], value: string) => {
 		const current = (searchFilter?.search?.[key] ?? []) as string[];
-
 		const updatedList = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
-
-		setSearchFilter({
-			...searchFilter,
-			search: {
-				...searchFilter.search,
-				[key]: updatedList,
-			},
-		});
+		setSearchFilter({ ...searchFilter, search: { ...searchFilter.search, [key]: updatedList } });
 	};
 
 	const resetSection = (key: keyof ProductsInquiry['search']) => {
@@ -119,55 +104,129 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 
 	const priceCommitHandler = (_: any, value: number | number[]) => {
 		const [start, end] = value as number[];
-
-		setSearchFilter({
-			...searchFilter,
-			search: {
-				...searchFilter.search,
-				pricesRange: { start, end },
-			},
-		});
+		setSearchFilter({ ...searchFilter, search: { ...searchFilter.search, pricesRange: { start, end } } });
 	};
 
 	const searchHandler = () => {
-		setSearchFilter({
-			...searchFilter,
-			page: 1, // reset page when searching
-			search: {
-				...searchFilter.search,
-				text: searchText,
-			},
-		});
+		setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, text: searchText } });
 	};
 
 	const refreshHandler = () => {
 		setSearchText('');
 		setPriceRange([0, 5000000]);
-
-		setSearchFilter({
-			...initialInput,
-			page: 1,
-		});
+		setSearchFilter({ ...initialInput, page: 1 });
 	};
 
-	if (device === 'mobile') return <div>PRODUCT FILTER MOBILE</div>;
+	// ─── MOBILE — only Category, Size, Color, Price ────────────────────────────
+	if (device === 'mobile') {
+		return (
+			<div className="product-filter">
+				<div className="product-filter__header">
+					<div className="product-filter__header-left">
+						<TuneRoundedIcon fontSize="small" />
+						<span>Filter By</span>
+					</div>
+					<button className="product-filter__clear-all" onClick={refreshHandler}>
+						Clear All
+					</button>
+				</div>
 
+				{/* CATEGORY */}
+				<FilterSection
+					title="Category"
+					hasActive={(searchFilter?.search?.categoryList?.length ?? 0) > 0}
+					onReset={() => resetSection('categoryList')}
+				>
+					<div className="product-filter__chip-list">
+						{CATEGORIES.map((cat) => (
+							<button
+								key={cat}
+								className={`product-filter__chip${
+									(searchFilter?.search?.categoryList || []).includes(cat) ? ' product-filter__chip--active' : ''
+								}`}
+								onClick={() => toggleListItem('categoryList', cat)}
+							>
+								{cat.replace(/_/g, ' ')}
+							</button>
+						))}
+					</div>
+				</FilterSection>
+
+				{/* SIZE */}
+				<FilterSection
+					title="Size"
+					hasActive={(searchFilter?.search?.sizeList?.length ?? 0) > 0}
+					onReset={() => resetSection('sizeList')}
+				>
+					<div className="product-filter__size-grid">
+						{SIZES.map((size) => (
+							<button
+								key={size}
+								className={`product-filter__size-btn${
+									(searchFilter?.search?.sizeList || []).includes(size) ? ' product-filter__size-btn--active' : ''
+								}`}
+								onClick={() => toggleListItem('sizeList', size)}
+							>
+								{size}
+							</button>
+						))}
+					</div>
+				</FilterSection>
+
+				{/* COLOR */}
+				<FilterSection
+					title="Color"
+					hasActive={(searchFilter?.search?.colorList?.length ?? 0) > 0}
+					onReset={() => resetSection('colorList')}
+				>
+					<div className="product-filter__color-grid">
+						{COLORS.map(({ label, value, hex }) => (
+							<Tooltip key={value} title={label}>
+								<button
+									className={`product-filter__color-btn${
+										(searchFilter?.search?.colorList || []).includes(value) ? ' product-filter__color-btn--active' : ''
+									}`}
+									style={{ background: hex }}
+									onClick={() => toggleListItem('colorList', value)}
+								/>
+							</Tooltip>
+						))}
+					</div>
+				</FilterSection>
+
+				{/* PRICE */}
+				<FilterSection title="Price Range">
+					<Slider
+						value={priceRange}
+						min={0}
+						max={5000000}
+						onChange={(_, val) => setPriceRange(val as number[])}
+						onChangeCommitted={priceCommitHandler}
+						valueLabelDisplay="auto"
+						valueLabelFormat={(v) => `₩${formatWon(v)}`}
+						className="product-filter__slider"
+					/>
+					<Stack direction="row" justifyContent="space-between" className="product-filter__price-labels">
+						<span>₩{formatWon(priceRange[0])}</span>
+						<span>₩{formatWon(priceRange[1])}</span>
+					</Stack>
+				</FilterSection>
+			</div>
+		);
+	}
+
+	// ─── DESKTOP ───────────────────────────────────────────────────────────────
 	return (
 		<div className="product-filter">
-			{/* HEADER */}
-
 			<div className="product-filter__header">
 				<div className="product-filter__header-left">
 					<TuneRoundedIcon fontSize="small" />
 					<span>Filter By</span>
 				</div>
-
 				<button className="product-filter__clear-all" onClick={refreshHandler}>
 					Clear All
 				</button>
 			</div>
-
-			{/* SEARCH */}
 
 			<FilterSection title="Search">
 				<Stack className="product-filter__search-box">
@@ -184,21 +243,12 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 										size="small"
 										onClick={() => {
 											setSearchText('');
-
-											setSearchFilter({
-												...searchFilter,
-												page: 1,
-												search: {
-													...searchFilter.search,
-													text: '',
-												},
-											});
+											setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, text: '' } });
 										}}
 									>
 										<CancelRoundedIcon fontSize="small" />
 									</IconButton>
 								)}
-
 								<IconButton size="small" onClick={searchHandler}>
 									<SearchIcon fontSize="small" />
 								</IconButton>
@@ -207,7 +257,6 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					/>
 				</Stack>
 			</FilterSection>
-			{/* CATEGORY */}
 
 			<FilterSection
 				title="Category"
@@ -228,8 +277,6 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 				</div>
 			</FilterSection>
 
-			{/* SIZE */}
-
 			<FilterSection
 				title="Size"
 				hasActive={(searchFilter?.search?.sizeList?.length ?? 0) > 0}
@@ -239,8 +286,8 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					{SIZES.map((size) => (
 						<button
 							key={size}
-							className={`product-filter__size-btn ${
-								(searchFilter?.search?.sizeList || []).includes(size) ? 'product-filter__size-btn--active' : ''
+							className={`product-filter__size-btn${
+								(searchFilter?.search?.sizeList || []).includes(size) ? ' product-filter__size-btn--active' : ''
 							}`}
 							onClick={() => toggleListItem('sizeList', size)}
 						>
@@ -249,8 +296,6 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					))}
 				</div>
 			</FilterSection>
-
-			{/* COLOR */}
 
 			<FilterSection
 				title="Color"
@@ -261,8 +306,8 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					{COLORS.map(({ label, value, hex }) => (
 						<Tooltip key={value} title={label}>
 							<button
-								className={`product-filter__color-btn ${
-									(searchFilter?.search?.colorList || []).includes(value) ? 'product-filter__color-btn--active' : ''
+								className={`product-filter__color-btn${
+									(searchFilter?.search?.colorList || []).includes(value) ? ' product-filter__color-btn--active' : ''
 								}`}
 								style={{ background: hex }}
 								onClick={() => toggleListItem('colorList', value)}
@@ -271,8 +316,6 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					))}
 				</div>
 			</FilterSection>
-
-			{/* PRICE */}
 
 			<FilterSection title="Price Range">
 				<Slider
@@ -285,14 +328,11 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					valueLabelFormat={(v) => `₩${formatWon(v)}`}
 					className="product-filter__slider"
 				/>
-
 				<Stack direction="row" justifyContent="space-between" className="product-filter__price-labels">
 					<span>₩{formatWon(priceRange[0])}</span>
 					<span>₩{formatWon(priceRange[1])}</span>
 				</Stack>
 			</FilterSection>
-
-			{/* DRESS STYLE */}
 
 			<FilterSection
 				title="Dress Style"
@@ -312,8 +352,6 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					))}
 				</div>
 			</FilterSection>
-
-			{/* BRAND */}
 
 			<FilterSection
 				title="Brand"
