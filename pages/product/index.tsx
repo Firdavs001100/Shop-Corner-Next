@@ -94,7 +94,7 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 				text: (query.text as string) || '',
 				pricesRange: {
 					start: Number(query.priceStart) || 0,
-					end: Number(query.priceEnd) || 5000000,
+					end: Number(query.priceEnd) || 500000,
 				},
 				categoryList: query.category
 					? ((Array.isArray(query.category) ? query.category : [query.category]) as ProductCategory[])
