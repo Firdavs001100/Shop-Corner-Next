@@ -25,13 +25,21 @@
 				height: 36px;
 				border-radius: 50%;
 				background: rgba(255, 255, 255, 0.88);
+				backdrop-filter: blur(6px);
+				-webkit-backdrop-filter: blur(6px);
 				border: none;
 				cursor: pointer;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				color: #1a2c4e;
-				box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+				box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+				transition: background 0.2s ease;
+				-webkit-tap-highlight-color: transparent;
+
+				&:active {
+					background: rgba(255, 255, 255, 1);
+				}
 			}
 
 			&__actions {
@@ -44,13 +52,21 @@
 				height: 36px;
 				border-radius: 50%;
 				background: rgba(255, 255, 255, 0.88);
+				backdrop-filter: blur(6px);
+				-webkit-backdrop-filter: blur(6px);
 				border: none;
 				cursor: pointer;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				color: #1a2c4e;
-				box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+				box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+				transition: background 0.2s ease;
+				-webkit-tap-highlight-color: transparent;
+
+				&:active {
+					background: rgba(255, 255, 255, 1);
+				}
 			}
 		}
 
@@ -94,6 +110,7 @@
 				cursor: pointer;
 				padding: 0;
 				transition: background 0.2s ease, width 0.2s ease;
+				-webkit-tap-highlight-color: transparent;
 
 				&--active {
 					background: #ffffff;
@@ -160,13 +177,13 @@
 				}
 			}
 
-			// Rating
 			&__rating {
 				display: flex;
 				align-items: center;
 				gap: 3px;
 				margin-bottom: 10px;
 				cursor: pointer;
+				-webkit-tap-highlight-color: transparent;
 			}
 
 			&__star {
@@ -194,7 +211,6 @@
 				letter-spacing: 0.04em;
 			}
 
-			// Stock badge
 			&__stock {
 				font-size: 12px;
 				font-weight: 600;
@@ -220,7 +236,6 @@
 				margin: 14px 0;
 			}
 
-			// Sections
 			&__section {
 				margin-bottom: 16px;
 			}
@@ -235,7 +250,6 @@
 				margin-bottom: 10px;
 			}
 
-			// Size
 			&__sizes {
 				display: flex;
 				flex-wrap: wrap;
@@ -255,7 +269,11 @@
 				color: #1a2c4e;
 				cursor: pointer;
 				transition: all 0.15s ease;
+				-webkit-tap-highlight-color: transparent;
 
+				&:active {
+					background: #f5f5f5;
+				}
 				&:hover {
 					border-color: #1a2c4e;
 				}
@@ -266,7 +284,6 @@
 				}
 			}
 
-			// ── Color swatches ────────────────────────────────────────────────────
 			&__colors {
 				display: flex;
 				gap: 10px;
@@ -291,7 +308,6 @@
 				&:active {
 					transform: scale(0.95);
 				}
-
 				&--active {
 					border-color: #0f2035 !important;
 					transform: scale(1.08);
@@ -306,7 +322,6 @@
 				display: block;
 			}
 
-			// Quantity
 			&__qty {
 				display: inline-flex;
 				align-items: center;
@@ -326,8 +341,9 @@
 					justify-content: center;
 					color: #1a2c4e;
 					transition: background 0.15s ease;
+					-webkit-tap-highlight-color: transparent;
 
-					&:hover {
+					&:active {
 						background: #f5f5f5;
 					}
 				}
@@ -341,7 +357,6 @@
 				}
 			}
 
-			// Description
 			&__desc {
 				font-size: 13px;
 				color: #5a6a7e;
@@ -349,11 +364,10 @@
 				margin: 0;
 			}
 
-			// Meta table
 			&__meta {
 				display: flex;
 				flex-direction: column;
-				gap: 8px;
+				gap: 0;
 				margin-top: 4px;
 			}
 
@@ -390,7 +404,7 @@
 			}
 		}
 
-		// ─── Reviews inline ──────────────────────────────────────────────────────
+		// ─── Reviews ─────────────────────────────────────────────────────────────
 
 		.pdm-reviews {
 			padding: 24px 16px;
@@ -473,10 +487,119 @@
 				padding: 24px 0;
 			}
 
+			// ─── Review card ──────────────────────────────────────────────────────
+			// Scoped here because #mobile-wrap and #pc-wrap are separate —
+			// the PC review-card styles don't apply on mobile
+
+			.review-card {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+				padding: 16px 0;
+				border-bottom: 1px solid #ebebeb;
+
+				&:last-of-type {
+					border-bottom: none;
+				}
+
+				&__header {
+					display: flex;
+					align-items: center;
+					gap: 12px;
+				}
+
+				&__avatar {
+					width: 36px;
+					height: 36px;
+					border-radius: 50%;
+					object-fit: cover;
+					flex-shrink: 0;
+					border: 1px solid #ebebeb;
+					display: block;
+				}
+
+				&__meta {
+					display: flex;
+					flex-direction: column;
+					gap: 2px;
+				}
+
+				&__name {
+					font-family: 'DM Sans', sans-serif;
+					font-size: 13px;
+					font-weight: 700;
+					color: #1a2c4e;
+				}
+
+				&__date {
+					font-family: 'DM Sans', sans-serif;
+					font-size: 11px;
+					color: #5a6a7e;
+					font-weight: 400;
+				}
+
+				&__content {
+					font-family: 'DM Sans', sans-serif;
+					font-size: 13px;
+					color: #5a6a7e;
+					line-height: 1.75;
+					margin: 0;
+				}
+			}
+
+			// ─── Pagination ───────────────────────────────────────────────────────
+
+			.pd-reviews__pagination {
+				display: flex;
+				justify-content: center;
+				margin-top: 16px;
+				margin-bottom: 8px;
+
+				.MuiPagination-root .MuiPaginationItem-root {
+					font-family: 'DM Sans', sans-serif !important;
+					font-size: 13px !important;
+					font-weight: 500 !important;
+					color: #555 !important;
+					border-radius: 8px !important;
+					min-width: 36px !important;
+					height: 36px !important;
+					transition: all 0.15s ease !important;
+
+					&:hover {
+						background: #f0f0f0 !important;
+						color: #1a1a1a !important;
+					}
+
+					&.Mui-selected {
+						background: #0f2035 !important;
+						color: #ffffff !important;
+
+						&:hover {
+							background: #1a3a5c !important;
+						}
+					}
+
+					&.MuiPaginationItem-previousNext {
+						background: #ffffff !important;
+						border: 1px solid #e0e0e0 !important;
+						color: #1a1a1a !important;
+
+						&:hover {
+							border-color: #0f2035 !important;
+						}
+					}
+				}
+			}
+
+			// ─── Form ─────────────────────────────────────────────────────────────
+
 			&__form {
 				display: flex;
 				flex-direction: column;
 				gap: 12px;
+				padding-top: 20px;
+				border-top: 1px solid #ebebeb;
+				margin-top: 4px;
 			}
 
 			&__form-title {
@@ -523,8 +646,9 @@
 				letter-spacing: 0.04em;
 				cursor: pointer;
 				transition: background 0.2s ease;
+				-webkit-tap-highlight-color: transparent;
 
-				&:hover {
+				&:active {
 					background: #1a3a5c;
 				}
 				&:disabled {
@@ -538,6 +662,7 @@
 
 		.pdm-related {
 			padding: 24px 16px 0;
+			border-top: 1px solid #ebebeb;
 
 			&__title {
 				font-size: 16px;
@@ -582,8 +707,9 @@
 				letter-spacing: 0.04em;
 				cursor: pointer;
 				transition: background 0.2s ease;
+				-webkit-tap-highlight-color: transparent;
 
-				&:hover {
+				&:active {
 					background: #1a3a5c;
 				}
 				&:disabled {
@@ -605,10 +731,11 @@
 				color: #1a2c4e;
 				cursor: pointer;
 				transition: all 0.2s ease;
+				-webkit-tap-highlight-color: transparent;
 
-				&:hover {
+				&:active {
 					border-color: #1a2c4e;
-					background: #fafafa;
+					background: #f5f5f5;
 				}
 			}
 		}
@@ -617,6 +744,11 @@
 
 		.review-card {
 			padding: 16px 0;
+			border-bottom: 1px solid #ebebeb;
+
+			&:last-of-type {
+				border-bottom: none;
+			}
 
 			&__name {
 				font-size: 13px;

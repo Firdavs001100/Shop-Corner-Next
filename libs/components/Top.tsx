@@ -184,7 +184,7 @@ export default function Header() {
 					>
 						<img
 							className="toolbar__avatar"
-							src={user.memberImage ? `${NEXT_PUBLIC_API_URL}/${user.memberImage}` : '/img/profile/defaultUser.svg'}
+							src={user.memberImage ? `${NEXT_PUBLIC_API_URL}/${user.memberImage}` : '/img/profile/default-user.svg'}
 							alt="avatar"
 						/>
 					</button>

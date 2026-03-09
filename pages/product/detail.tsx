@@ -14,7 +14,7 @@ import { Product } from '../../libs/types/product/product';
 import { Comment } from '../../libs/types/comment/comment';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { CommentGroup } from '../../libs/enums/comment.enum';
-import { Direction } from '../../libs/enums/common.enum';
+import { Direction, Message } from '../../libs/enums/common.enum';
 import { T } from '../../libs/types/common';
 import { NEXT_PUBLIC_API_URL } from '../../libs/config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -58,7 +58,12 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>(initialComment);
 	const [comments, setComments] = useState<Comment[]>([]);
 	const [commentTotal, setCommentTotal] = useState<number>(0);
-	const [commentContent, setCommentContent] = useState<string>('');
+	// ── Matches property workflow: single insertCommentData state object ──
+	const [insertCommentData, setInsertCommentData] = useState<CommentInput>({
+		commentGroup: CommentGroup.PRODUCT,
+		commentContent: '',
+		commentRefId: '',
+	});
 	const [userRating, setUserRating] = useState<number>(0);
 	const [hoverRating, setHoverRating] = useState<number>(0);
 
@@ -72,7 +77,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 				setProduct(data.getProduct);
 				setSlideImage(data.getProduct.productImages?.[0] ?? '');
 				setSlideIndex(0);
-				// Always auto-select first color — if only one, it stays locked; if multiple, user can change
 				const colors = data.getProduct.productColor ?? [];
 				setSelectedColor(colors.length >= 1 ? colors[0] : '');
 			}
@@ -102,8 +106,9 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 
 	const { refetch: refetchComments } = useQuery(GET_COMMENTS, {
 		fetchPolicy: 'cache-and-network',
-		variables: { input: initialComment },
+		variables: { input: commentInquiry },
 		skip: !commentInquiry.search.commentRefId,
+		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
 			if (data?.getComments?.list) setComments(data.getComments.list);
 			setCommentTotal(data?.getComments?.metaCounter[0]?.total ?? 0);
@@ -111,6 +116,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	});
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
+	// ── Matches property workflow: no onCompleted optimistic update ──
 	const [createComment] = useMutation(CREATE_COMMENT);
 
 	/** LIFECYCLES **/
@@ -124,7 +130,15 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 			setSelectedSize('');
 			setSelectedColor('');
 			setProductId(id);
-			setCommentInquiry((prev) => ({ ...prev, search: { commentRefId: id } }));
+			// ── Matches property workflow: update both commentInquiry and insertCommentData ──
+			setCommentInquiry({
+				...commentInquiry,
+				search: { commentRefId: id },
+			});
+			setInsertCommentData({
+				...insertCommentData,
+				commentRefId: id,
+			});
 		}
 	}, [router.query.id]);
 
@@ -180,30 +194,29 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 		toastSmallSuccess(`Added to bag! (${formatSize(selectedSize)}${color ? ` · ${color}` : ''})`, 1200);
 	};
 
-	const submitCommentHandler = async () => {
+	// ── Matches property workflow: mutation → reset content → refetch (no optimistic update) ──
+	const createCommentHandler = async () => {
 		try {
-			if (!user?._id) {
-				const ok = await toastLoginConfirm('Please log in to leave a review');
-				if (ok) await router.push('/account/join');
-				return;
-			}
-			const input: CommentInput = {
-				commentGroup: CommentGroup.PRODUCT,
-				commentContent,
-				commentRefId: productId!,
-			};
-			await createComment({ variables: { input } });
-			setCommentContent('');
+			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+
+			await createComment({ variables: { input: insertCommentData } });
+
+			// Reset only the content field, keep commentRefId and commentGroup intact
+			setInsertCommentData({ ...insertCommentData, commentContent: '' });
 			setUserRating(0);
+
 			await refetchComments({ input: commentInquiry });
+
 			toastSmallSuccess('Review submitted!', 1000);
 		} catch (err: any) {
 			toastErrorHandling(err);
 		}
 	};
 
+	// ── Matches property workflow: spread update (not functional update) ──
 	const paginationHandler = (_: ChangeEvent<unknown>, value: number) => {
-		setCommentInquiry((prev) => ({ ...prev, page: value }));
+		commentInquiry.page = value;
+		setCommentInquiry({ ...commentInquiry });
 	};
 
 	const changeSlide = (index: number) => {
@@ -213,7 +226,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 		setSlideImage(images[index]);
 	};
 
-	// ── Swipe handlers ──
 	const touchStartX = React.useRef<number>(0);
 	const touchEndX = React.useRef<number>(0);
 
@@ -255,7 +267,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	if (device === 'mobile') {
 		return (
 			<div id="product-detail-page" className="product-detail--mobile">
-				{/* ── Image carousel + floating top bar ─────── */}
 				<div className="pdm-gallery" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
 					<div className="pdm-topbar">
 						<button className="pdm-topbar__back" onClick={() => router.back()} aria-label="Go back">
@@ -297,7 +308,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 					)}
 				</div>
 
-				{/* ── Product info ──────────────────────────── */}
 				<div className="pdm-info">
 					<div className="pdm-info__header">
 						<div>
@@ -347,7 +357,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 
 					<div className="pdm-info__divider" />
 
-					{/* ── SIZE first ── */}
 					{(product?.productSize?.length ?? 0) > 0 && (
 						<div className="pdm-info__section">
 							<span className="pdm-info__section-label">
@@ -367,7 +376,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 						</div>
 					)}
 
-					{/* ── COLOR second — always shown, single color stays locked as selected ── */}
 					{(product?.productColor?.length ?? 0) > 0 && (
 						<div className="pdm-info__section">
 							<span className="pdm-info__section-label">COLOR{selectedColor ? ` · ${selectedColor}` : ''}</span>
@@ -434,7 +442,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 					</div>
 				</div>
 
-				{/* ── Reviews inline ───────────────────────── */}
 				<div className="pdm-reviews" id="pdm-reviews">
 					<div className="pdm-reviews__score-box">
 						<StarIcon style={{ color: '#f5a623', fontSize: 32 }} />
@@ -471,14 +478,16 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 								{comments.map((comment: Comment) => (
 									<Review key={comment._id} comment={comment} />
 								))}
-								<Pagination
-									page={commentInquiry.page}
-									count={Math.ceil(commentTotal / commentInquiry.limit)}
-									onChange={paginationHandler}
-									shape="rounded"
-									color="primary"
-									size="small"
-								/>
+								<div className="pd-reviews__pagination">
+									<Pagination
+										page={commentInquiry.page}
+										count={Math.ceil(commentTotal / commentInquiry.limit)}
+										onChange={paginationHandler}
+										shape="rounded"
+										color="primary"
+										size="small"
+									/>
+								</div>
 							</>
 						)}
 					</div>
@@ -488,17 +497,22 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 						<textarea
 							className="pdm-reviews__textarea"
 							placeholder="Share your experience..."
-							value={commentContent}
-							onChange={(e) => setCommentContent(e.target.value)}
+							value={insertCommentData.commentContent}
+							onChange={({ target: { value } }) =>
+								setInsertCommentData({ ...insertCommentData, commentContent: value })
+							}
 							rows={4}
 						/>
-						<button className="pdm-reviews__submit" disabled={!commentContent} onClick={submitCommentHandler}>
+						<button
+							className="pdm-reviews__submit"
+							disabled={insertCommentData.commentContent === '' || user?._id === ''}
+							onClick={createCommentHandler}
+						>
 							Submit Review →
 						</button>
 					</div>
 				</div>
 
-				{/* ── Related products ──────────────────────── */}
 				{relatedProducts.length > 0 && (
 					<div className="pdm-related">
 						<h3 className="pdm-related__title">You May Also Like</h3>
@@ -510,7 +524,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 					</div>
 				)}
 
-				{/* ── Sticky bottom CTA ─────────────────────── */}
 				<div className="pdm-cta">
 					<button
 						className="pdm-cta__add"
@@ -543,7 +556,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 				</nav>
 
 				<div className="pd-layout">
-					{/* LEFT — Images */}
 					<div className="pd-images">
 						<div className="pd-images__main">
 							<img
@@ -571,7 +583,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 						</div>
 					</div>
 
-					{/* RIGHT — Info */}
 					<div className="pd-info">
 						<h1 className="pd-info__title">{product?.productName}</h1>
 
@@ -654,7 +665,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 
 						<div className="pd-info__divider" />
 
-						{/* ── SIZE first ── */}
 						{product?.productSize && product.productSize.length > 0 && (
 							<div className="pd-info__section">
 								<span className="pd-info__section-label">
@@ -674,7 +684,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 							</div>
 						)}
 
-						{/* ── COLOR second — always shown, single color stays locked as selected ── */}
 						{(product?.productColor ?? []).length > 0 && (
 							<div className="pd-info__section">
 								<span className="pd-info__section-label">COLOR{selectedColor ? `: ${selectedColor}` : ''}</span>
@@ -817,13 +826,15 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 									{comments.map((comment: Comment) => (
 										<Review key={comment._id} comment={comment} />
 									))}
-									<Pagination
-										page={commentInquiry.page}
-										count={Math.ceil(commentTotal / commentInquiry.limit)}
-										onChange={paginationHandler}
-										shape="rounded"
-										color="primary"
-									/>
+									<div className="pd-reviews__pagination">
+										<Pagination
+											page={commentInquiry.page}
+											count={Math.ceil(commentTotal / commentInquiry.limit)}
+											onChange={paginationHandler}
+											shape="rounded"
+											color="primary"
+										/>
+									</div>
 								</>
 							)}
 							<div className="pd-reviews__form">
@@ -831,11 +842,17 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 								<textarea
 									className="pd-reviews__textarea"
 									placeholder="Share your experience..."
-									value={commentContent}
-									onChange={(e) => setCommentContent(e.target.value)}
+									value={insertCommentData.commentContent}
+									onChange={({ target: { value } }) =>
+										setInsertCommentData({ ...insertCommentData, commentContent: value })
+									}
 									rows={4}
 								/>
-								<button className="pd-reviews__submit" disabled={!commentContent} onClick={submitCommentHandler}>
+								<button
+									className="pd-reviews__submit"
+									disabled={insertCommentData.commentContent === '' || user?._id === ''}
+									onClick={createCommentHandler}
+								>
 									Submit Review →
 								</button>
 							</div>

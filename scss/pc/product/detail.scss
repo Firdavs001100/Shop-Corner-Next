@@ -309,7 +309,6 @@
 				}
 			}
 
-			// ── Color swatches ────────────────────────────────────────────────────
 			&__colors {
 				display: flex;
 				gap: 10px;
@@ -656,6 +655,49 @@
 				text-align: center;
 				font-size: 14px;
 				color: #5a6a7e;
+			}
+
+			// ─── Pagination ───────────────────────────────────────────────────────
+
+			&__pagination {
+				display: flex;
+				justify-content: center;
+				margin-top: 32px;
+
+				.MuiPagination-root .MuiPaginationItem-root {
+					font-family: 'DM Sans', sans-serif !important;
+					font-size: 13px !important;
+					font-weight: 500 !important;
+					color: #555 !important;
+					border-radius: 8px !important;
+					min-width: 36px !important;
+					height: 36px !important;
+					transition: all 0.15s ease !important;
+
+					&:hover {
+						background: #f0f0f0 !important;
+						color: #1a1a1a !important;
+					}
+
+					&.Mui-selected {
+						background: #0f2035 !important;
+						color: #ffffff !important;
+
+						&:hover {
+							background: #1a3a5c !important;
+						}
+					}
+
+					&.MuiPaginationItem-previousNext {
+						background: #ffffff !important;
+						border: 1px solid #e0e0e0 !important;
+						color: #1a1a1a !important;
+
+						&:hover {
+							border-color: #0f2035 !important;
+						}
+					}
+				}
 			}
 
 			&__form {
