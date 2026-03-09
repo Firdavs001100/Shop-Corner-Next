@@ -5,6 +5,23 @@ export const formatterStr = (value: number | undefined): string => {
 	return numeral(value).format('0,0') != '0' ? numeral(value).format('0,0') : '';
 };
 
+export const formatSize = (size: string): string => {
+	const labels: Record<string, string> = {
+		XXS: 'XXS',
+		XS: 'XS',
+		S: 'S',
+		M: 'M',
+		L: 'L',
+		XL: 'XL',
+		XXL: 'XXL',
+		_3XL: '3XL',
+		_4XL: '4XL',
+		ONE_SIZE: 'One Size',
+		FREE_SIZE: 'Free Size',
+	};
+	return labels[size] ?? size;
+};
+
 export const likeTargetPropertyHandler = async (likeTargetProperty: any, id: string) => {
 	try {
 		await likeTargetProperty({

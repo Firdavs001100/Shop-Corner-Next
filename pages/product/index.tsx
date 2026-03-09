@@ -199,7 +199,7 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 				{/* Sticky top bar: count | sort + filter */}
 				<div className="mobile-topbar">
 					<span className="product-page__count">
-						{total} {total === 1 ? 'item' : 'items'}
+						{total} {total === 1 ? 'product' : 'products'}
 					</span>
 
 					<div className="mobile-topbar__actions">
@@ -314,7 +314,7 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 					<main className="product-page__main">
 						<div className="product-page__toolbar">
 							<span className="product-page__count">
-								{total} {total === 1 ? 'item' : 'items'}
+								{total} {total === 1 ? 'product' : 'products'}
 							</span>
 
 							<div className="product-page__toolbar-right">
@@ -412,7 +412,7 @@ ProductList.defaultProps = {
 		search: {
 			pricesRange: {
 				start: 0,
-				end: 5000000,
+				end: 500000,
 			},
 		},
 	},

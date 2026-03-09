@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, IconButton, Rating, Typography } from '@mui/material';
 import { Product } from '../../types/product/product';
 import { useRouter } from 'next/router';
@@ -7,6 +7,8 @@ import { userVar } from '../../../apollo/store';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { addToCart } from '../../../apollo/actions/cartActions';
+import { toastSmallSuccess } from '../../toast';
+import { formatSize } from '../../utils';
 
 interface NewProductCardProps {
 	product: Product;
@@ -20,15 +22,38 @@ const ProductCard = (props: NewProductCardProps) => {
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 
+	const [showSelector, setShowSelector] = useState(false);
+	const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
+	const multipleColors = product.productColor && product.productColor.length > 1;
+	const showColorStep = showSelector && multipleColors && !selectedColor;
+	const showSizeStep = showSelector && (!multipleColors || !!selectedColor);
+
 	/** HANDLERS **/
 	const pushDetailHandler = async (productId: string) => {
 		await router.push({ pathname: '/product/detail', query: { id: productId } });
 	};
 
-	const handleAddToCart = (e: React.MouseEvent, product: any) => {
+	const openSelectorHandler = (e: React.MouseEvent) => {
 		e.stopPropagation();
+		// if only one color, skip color step
+		if (!multipleColors) {
+			setSelectedColor(product.productColor?.[0] ?? null);
+		} else {
+			setSelectedColor(null);
+		}
+		setShowSelector(true);
+	};
+
+	const handleColorSelect = (color: string) => {
+		setSelectedColor(color);
+	};
+
+	const handleSizeSelect = (size: string) => {
 		const finalPrice =
 			product.isDiscounted && product.productSalePrice ? product.productSalePrice : product.productPrice;
+
+		const color = selectedColor ?? product.productColor?.[0];
 
 		addToCart({
 			_id: product._id,
@@ -36,7 +61,20 @@ const ProductCard = (props: NewProductCardProps) => {
 			price: finalPrice,
 			image: `${process.env.NEXT_PUBLIC_API_URL}/${product.productImages[0]}`,
 			quantity: 1,
+			size,
+			color,
 		});
+
+		toastSmallSuccess(`Added to bag! (${formatSize(size)}${color ? ` · ${color}` : ''})`, 1200);
+
+		setShowSelector(false);
+		setSelectedColor(null);
+	};
+
+	const closeSelector = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		setShowSelector(false);
+		setSelectedColor(null);
 	};
 
 	const formatLikes = (count: number) => (count >= 1000 ? `${(count / 1000).toFixed(1).replace(/\.0$/, '')}k` : count);
@@ -60,7 +98,7 @@ const ProductCard = (props: NewProductCardProps) => {
 				.filter(Boolean)
 				.join(' ')}
 		>
-			<div className="image-box" onClick={() => pushDetailHandler(product._id)}>
+			<div className="image-box" onClick={() => !showSelector && pushDetailHandler(product._id)}>
 				<img src={imagePath} alt={product.productName} className="first-image" />
 
 				{product.productImages?.[1] && (
@@ -73,10 +111,59 @@ const ProductCard = (props: NewProductCardProps) => {
 
 				{product.isDiscounted && discountPercent > 0 && <div className="discount-tag">⚡ -{discountPercent}%</div>}
 
-				<button className="product-add" onClick={(e) => handleAddToCart(e, product)}>
-					<ShoppingCartIcon sx={{ fontSize: 18, mr: 1 }} />
-					Add to Cart
-				</button>
+				{/* ── SELECTOR OVERLAY ── */}
+				{showSelector && (
+					<div className="product-selector-overlay" onClick={(e) => e.stopPropagation()}>
+						<button className="product-selector-overlay__close" onClick={closeSelector}>
+							✕
+						</button>
+
+						{showColorStep && (
+							<>
+								<p className="product-selector-overlay__label">Select Color</p>
+								<div className="product-selector-overlay__options">
+									{product.productColor.map((color) => (
+										<button
+											key={color}
+											className="product-selector-overlay__color-btn"
+											onClick={() => handleColorSelect(color)}
+										>
+											<span
+												className="product-selector-overlay__color-dot"
+												style={{ backgroundColor: color.toLowerCase() }}
+											/>
+											{color}
+										</button>
+									))}
+								</div>
+							</>
+						)}
+
+						{showSizeStep && (
+							<>
+								<p className="product-selector-overlay__label">Select Size</p>
+								<div className="product-selector-overlay__options">
+									{product.productSize.map((size) => (
+										<button
+											key={size}
+											className="product-selector-overlay__size-btn"
+											onClick={() => handleSizeSelect(size)}
+										>
+											{formatSize(size)}
+										</button>
+									))}
+								</div>
+							</>
+						)}
+					</div>
+				)}
+
+				{!showSelector && (
+					<button className="product-add" onClick={openSelectorHandler}>
+						<ShoppingCartIcon sx={{ fontSize: 18, mr: 1 }} />
+						Add to Cart
+					</button>
+				)}
 			</div>
 
 			<div className="info">

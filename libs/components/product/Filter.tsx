@@ -10,6 +10,7 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 import { OutlinedInput, IconButton, Checkbox, Tooltip } from '@mui/material';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import SearchIcon from '@mui/icons-material/Search';
+import { formatSize } from '../../utils';
 
 interface ProductFilterProps {
 	searchFilter: ProductsInquiry;
@@ -80,12 +81,12 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 	const [searchText, setSearchText] = useState(searchFilter?.search?.text ?? '');
 	const [priceRange, setPriceRange] = useState<number[]>([
 		searchFilter?.search?.pricesRange?.start ?? 0,
-		searchFilter?.search?.pricesRange?.end ?? 5000000,
+		searchFilter?.search?.pricesRange?.end ?? 500000,
 	]);
 
 	useEffect(() => {
 		if (searchFilter?.search?.pricesRange) {
-			setPriceRange([searchFilter.search.pricesRange.start ?? 0, searchFilter.search.pricesRange.end ?? 5000000]);
+			setPriceRange([searchFilter.search.pricesRange.start ?? 0, searchFilter.search.pricesRange.end ?? 500000]);
 		}
 		if (searchFilter?.search?.text !== undefined) setSearchText(searchFilter.search.text);
 	}, [searchFilter?.search?.pricesRange, searchFilter?.search?.text]);
@@ -113,7 +114,7 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 
 	const refreshHandler = () => {
 		setSearchText('');
-		setPriceRange([0, 5000000]);
+		setPriceRange([0, 500000]);
 		setSearchFilter({ ...initialInput, page: 1 });
 	};
 
@@ -167,7 +168,7 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 								}`}
 								onClick={() => toggleListItem('sizeList', size)}
 							>
-								{size}
+								{formatSize(size)}
 							</button>
 						))}
 					</div>
@@ -199,7 +200,7 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 					<Slider
 						value={priceRange}
 						min={0}
-						max={5000000}
+						max={500000}
 						onChange={(_, val) => setPriceRange(val as number[])}
 						onChangeCommitted={priceCommitHandler}
 						valueLabelDisplay="auto"
@@ -291,7 +292,7 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 							}`}
 							onClick={() => toggleListItem('sizeList', size)}
 						>
-							{size}
+							{formatSize(size)}
 						</button>
 					))}
 				</div>
@@ -321,7 +322,7 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 				<Slider
 					value={priceRange}
 					min={0}
-					max={5000000}
+					max={500000}
 					onChange={(_, val) => setPriceRange(val as number[])}
 					onChangeCommitted={priceCommitHandler}
 					valueLabelDisplay="auto"

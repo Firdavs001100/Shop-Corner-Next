@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { useReactiveVar } from '@apollo/client';
 import { cartVar } from '../../apollo/store';
 import { addToCart, removeFromCart, deleteFromCart, clearCart } from '../../apollo/actions/cartActions';
+import { formatSize } from '../utils';
 import { SadBagSVG } from './icons/SadBagSVG';
 import { TruckSVG } from './icons/TruckSVG';
 
@@ -62,10 +63,27 @@ export default function Basket({ isOpen, onClose }: BasketProps) {
 					) : (
 						<Box className="basket__items">
 							{cartItems.map((item) => (
-								<Box key={item._id} className="basket__item">
+								<Box key={item.size ? `${item._id}_${item.size}` : item._id} className="basket__item">
 									<img className="basket__item-img" src={`${item.image}`} alt={item.name} />
 									<Box className="basket__item-info">
 										<Typography className="basket__item-name">{item.name}</Typography>
+
+										{/* ── SIZE + COLOR BADGES ── */}
+										{(item.size || item.color) && (
+											<div className="basket__item-badges">
+												{item.size && <span className="basket__item-size">{formatSize(item.size)}</span>}
+												{item.color && (
+													<span className="basket__item-color">
+														<span
+															className="basket__item-color-dot"
+															style={{ backgroundColor: item.color.toLowerCase() }}
+														/>
+														{item.color}
+													</span>
+												)}
+											</div>
+										)}
+
 										<Typography className="basket__item-price">
 											{item.quantity} × <strong>₩{krw.format(item.price)}</strong>
 										</Typography>
@@ -73,7 +91,7 @@ export default function Basket({ isOpen, onClose }: BasketProps) {
 											<IconButton
 												className="basket__qty-btn"
 												size="small"
-												onClick={() => removeFromCart(item._id)}
+												onClick={() => removeFromCart(item._id, item.size, item.color)}
 												disabled={item.quantity <= 1}
 											>
 												<RemoveIcon fontSize="small" />
@@ -84,7 +102,10 @@ export default function Basket({ isOpen, onClose }: BasketProps) {
 											</IconButton>
 										</Box>
 									</Box>
-									<IconButton className="basket__item-delete" onClick={() => deleteFromCart(item._id)}>
+									<IconButton
+										className="basket__item-delete"
+										onClick={() => deleteFromCart(item._id, item.size, item.color)}
+									>
 										<DeleteOutlineIcon />
 									</IconButton>
 								</Box>

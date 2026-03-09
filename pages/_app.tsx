@@ -6,6 +6,7 @@ import { light } from '../scss/MaterialTheme';
 import { ApolloProvider } from '@apollo/client';
 import { useApollo } from '../apollo/client';
 import { appWithTranslation } from 'next-i18next';
+import { Toaster } from 'react-hot-toast';
 import '../scss/app.scss';
 import '../scss/pc/main.scss';
 import '../scss/mobile/main.scss';
@@ -19,6 +20,14 @@ const App = ({ Component, pageProps }: AppProps) => {
 		<ApolloProvider client={client}>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
+				<Toaster
+					position="top-center"
+					reverseOrder={false}
+					toastOptions={{
+						duration: 3000,
+						style: { fontSize: '14px', borderRadius: '8px', padding: '12px' },
+					}}
+				/>
 				<Component {...pageProps} />
 			</ThemeProvider>
 		</ApolloProvider>

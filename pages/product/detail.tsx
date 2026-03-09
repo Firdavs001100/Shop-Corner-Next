@@ -8,6 +8,8 @@ import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { GET_PRODUCT, GET_PRODUCTS, GET_COMMENTS } from '../../apollo/user/query';
 import { CREATE_COMMENT, LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { userVar } from '../../apollo/store';
+import { addToCart } from '../../apollo/actions/cartActions';
+import { formatSize } from '../../libs/utils';
 import { Product } from '../../libs/types/product/product';
 import { Comment } from '../../libs/types/comment/comment';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
@@ -49,6 +51,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
 	const [selectedSize, setSelectedSize] = useState<string>('');
+	const [selectedColor, setSelectedColor] = useState<string>('');
 	const [quantity, setQuantity] = useState<number>(1);
 	const [activeTab, setActiveTab] = useState<string>('Description');
 
@@ -58,7 +61,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	const [commentContent, setCommentContent] = useState<string>('');
 	const [userRating, setUserRating] = useState<number>(0);
 	const [hoverRating, setHoverRating] = useState<number>(0);
-	const [reviewsOpen, setReviewsOpen] = useState<boolean>(false);
 
 	/** APOLLO **/
 	const { loading: productLoading, refetch: refetchProduct } = useQuery(GET_PRODUCT, {
@@ -70,6 +72,9 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 				setProduct(data.getProduct);
 				setSlideImage(data.getProduct.productImages?.[0] ?? '');
 				setSlideIndex(0);
+				// Always auto-select first color — if only one, it stays locked; if multiple, user can change
+				const colors = data.getProduct.productColor ?? [];
+				setSelectedColor(colors.length >= 1 ? colors[0] : '');
 			}
 		},
 	});
@@ -112,12 +117,12 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	useEffect(() => {
 		if (router.query.id) {
 			const id = router.query.id as string;
-			// reset stale state so related products refetch with new category
 			setProduct(null);
 			setRelatedProducts([]);
 			setSlideImage('');
 			setSlideIndex(0);
 			setSelectedSize('');
+			setSelectedColor('');
 			setProductId(id);
 			setCommentInquiry((prev) => ({ ...prev, search: { commentRefId: id } }));
 		}
@@ -145,12 +150,34 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 		}
 	};
 
-	const addToCartHandler = () => {
+	const addToCartHandler = (product: Product) => {
 		if (!selectedSize) {
 			toastErrorHandling({ message: 'Please select a size first' });
 			return;
 		}
-		toastSmallSuccess('Added to bag!', 1200);
+
+		const multipleColors = (product.productColor ?? []).length > 1;
+		if (multipleColors && !selectedColor) {
+			toastErrorHandling({ message: 'Please select a color first' });
+			return;
+		}
+
+		const finalPrice =
+			product.isDiscounted && product.productSalePrice ? product.productSalePrice : product.productPrice;
+
+		const color = selectedColor || product.productColor?.[0];
+
+		addToCart({
+			_id: product._id,
+			name: product.productName,
+			price: finalPrice,
+			image: `${process.env.NEXT_PUBLIC_API_URL}/${product.productImages[0]}`,
+			quantity,
+			size: selectedSize,
+			color,
+		});
+
+		toastSmallSuccess(`Added to bag! (${formatSize(selectedSize)}${color ? ` · ${color}` : ''})`, 1200);
 	};
 
 	const submitCommentHandler = async () => {
@@ -205,10 +232,8 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 		const images = product?.productImages ?? [];
 		if (Math.abs(diff) < threshold) return;
 		if (diff > 0) {
-			// swiped left → next
 			changeSlide(Math.min(slideIndex + 1, images.length - 1));
 		} else {
-			// swiped right → prev
 			changeSlide(Math.max(slideIndex - 1, 0));
 		}
 	};
@@ -220,6 +245,8 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 			</Stack>
 		);
 	}
+
+	const multipleColors = (product?.productColor ?? []).length > 1;
 
 	// ─────────────────────────────────────────────────────────────────────────────
 	// MOBILE
@@ -272,7 +299,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 
 				{/* ── Product info ──────────────────────────── */}
 				<div className="pdm-info">
-					{/* Header row */}
 					<div className="pdm-info__header">
 						<div>
 							<p className="pdm-info__category">{product?.productCategory}</p>
@@ -281,17 +307,19 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 						<div className="pdm-info__price-block">
 							{product?.isDiscounted && product?.productSalePrice ? (
 								<>
-									<span className="pdm-info__price">${product.productSalePrice.toLocaleString()}</span>
-									<span className="pdm-info__price--original">${product.productPrice.toLocaleString()}</span>
+									<span className="pdm-info__price">₩{product.productSalePrice.toLocaleString()}</span>
+									<span className="pdm-info__price--original">₩{product.productPrice.toLocaleString()}</span>
 								</>
 							) : (
-								<span className="pdm-info__price">${product?.productPrice?.toLocaleString()}</span>
+								<span className="pdm-info__price">₩{product?.productPrice?.toLocaleString()}</span>
 							)}
 						</div>
 					</div>
 
-					{/* Rating */}
-					<div className="pdm-info__rating" onClick={() => setReviewsOpen(true)}>
+					<div
+						className="pdm-info__rating"
+						onClick={() => document.getElementById('pdm-reviews')?.scrollIntoView({ behavior: 'smooth' })}
+					>
 						{[1, 2, 3, 4, 5].map((s) => (
 							<span
 								key={s}
@@ -306,7 +334,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 						<span className="pdm-info__view-reviews">See all</span>
 					</div>
 
-					{/* Stock */}
 					<div
 						className={`pdm-info__stock${
 							(product?.productStockCount ?? 0) > 0 ? ' pdm-info__stock--in' : ' pdm-info__stock--out'
@@ -320,10 +347,12 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 
 					<div className="pdm-info__divider" />
 
-					{/* Size */}
+					{/* ── SIZE first ── */}
 					{(product?.productSize?.length ?? 0) > 0 && (
 						<div className="pdm-info__section">
-							<span className="pdm-info__section-label">SIZE {selectedSize && `· ${selectedSize}`}</span>
+							<span className="pdm-info__section-label">
+								SIZE{selectedSize ? ` · ${formatSize(selectedSize)}` : ''}
+							</span>
 							<div className="pdm-info__sizes">
 								{product?.productSize?.map((size: string) => (
 									<button
@@ -331,26 +360,35 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 										className={`pdm-info__size-btn${selectedSize === size ? ' pdm-info__size-btn--active' : ''}`}
 										onClick={() => setSelectedSize(size)}
 									>
-										{size}
+										{formatSize(size)}
 									</button>
 								))}
 							</div>
 						</div>
 					)}
 
-					{/* Color */}
+					{/* ── COLOR second — always shown, single color stays locked as selected ── */}
 					{(product?.productColor?.length ?? 0) > 0 && (
 						<div className="pdm-info__section">
-							<span className="pdm-info__section-label">COLOR</span>
+							<span className="pdm-info__section-label">COLOR{selectedColor ? ` · ${selectedColor}` : ''}</span>
 							<div className="pdm-info__colors">
 								{product?.productColor?.map((color: string) => (
-									<span key={color} className="pdm-info__color-dot" title={color} style={{ background: color }} />
+									<button
+										key={color}
+										className={`pdm-info__color-btn${selectedColor === color ? ' pdm-info__color-btn--active' : ''}`}
+										title={color}
+										style={{ cursor: multipleColors ? 'pointer' : 'default' }}
+										onClick={() => {
+											if (multipleColors) setSelectedColor(color);
+										}}
+									>
+										<span className="pdm-info__color-dot" style={{ background: color }} />
+									</button>
 								))}
 							</div>
 						</div>
 					)}
 
-					{/* Quantity */}
 					<div className="pdm-info__section">
 						<span className="pdm-info__section-label">QUANTITY</span>
 						<div className="pdm-info__qty">
@@ -366,7 +404,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 
 					<div className="pdm-info__divider" />
 
-					{/* Description */}
 					{product?.productDesc && (
 						<div className="pdm-info__section">
 							<span className="pdm-info__section-label">DESCRIPTION</span>
@@ -374,7 +411,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 						</div>
 					)}
 
-					{/* Meta */}
 					<div className="pdm-info__meta">
 						{product?.productBrand && (
 							<div className="pdm-info__meta-row">
@@ -398,83 +434,69 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 					</div>
 				</div>
 
-				{/* ── Reviews sheet ─────────────────────────── */}
-				{reviewsOpen && (
-					<div className="pdm-reviews-sheet">
-						<div className="pdm-reviews-sheet__overlay" onClick={() => setReviewsOpen(false)} />
-						<div className="pdm-reviews-sheet__panel">
-							<div className="pdm-reviews-sheet__handle" />
-							<div className="pdm-reviews-sheet__header">
-								<h3 className="pdm-reviews-sheet__title">Reviews</h3>
-								<button className="pdm-reviews-sheet__close" onClick={() => setReviewsOpen(false)}>
-									✕
-								</button>
-							</div>
-
-							{/* Score row */}
-							<div className="pdm-reviews-sheet__score">
-								<StarIcon style={{ color: '#f5a623', fontSize: 32 }} />
-								<span className="pdm-reviews-sheet__score-num">{(product?.productRank ?? 0).toFixed(1)}</span>
-								<span className="pdm-reviews-sheet__score-count">{commentTotal} reviews</span>
-							</div>
-
-							{/* Leave stars */}
-							<div className="pdm-reviews-sheet__leave">
-								<span className="pdm-reviews-sheet__leave-label">Tap to rate</span>
-								<div className="pdm-reviews-sheet__leave-stars">
-									{[1, 2, 3, 4, 5].map((s) => (
-										<button
-											key={s}
-											className={`pdm-reviews-sheet__star${
-												s <= (hoverRating || userRating) ? ' pdm-reviews-sheet__star--active' : ''
-											}`}
-											onMouseEnter={() => setHoverRating(s)}
-											onMouseLeave={() => setHoverRating(0)}
-											onClick={() => setUserRating(s)}
-										>
-											★
-										</button>
-									))}
-								</div>
-							</div>
-
-							{/* Comments */}
-							<div className="pdm-reviews-sheet__list">
-								{commentTotal === 0 ? (
-									<p className="pdm-reviews-sheet__empty">No reviews yet. Be the first!</p>
-								) : (
-									<>
-										{comments.map((comment: Comment) => (
-											<Review key={comment._id} comment={comment} />
-										))}
-										<Pagination
-											page={commentInquiry.page}
-											count={Math.ceil(commentTotal / commentInquiry.limit)}
-											onChange={paginationHandler}
-											shape="rounded"
-											color="primary"
-											size="small"
-										/>
-									</>
-								)}
-							</div>
-
-							{/* Write review */}
-							<div className="pdm-reviews-sheet__form">
-								<textarea
-									className="pdm-reviews-sheet__textarea"
-									placeholder="Share your experience..."
-									value={commentContent}
-									onChange={(e) => setCommentContent(e.target.value)}
-									rows={3}
-								/>
-								<button className="pdm-reviews-sheet__submit" disabled={!commentContent} onClick={submitCommentHandler}>
-									Submit →
-								</button>
-							</div>
+				{/* ── Reviews inline ───────────────────────── */}
+				<div className="pdm-reviews" id="pdm-reviews">
+					<div className="pdm-reviews__score-box">
+						<StarIcon style={{ color: '#f5a623', fontSize: 32 }} />
+						<div>
+							<div className="pdm-reviews__score">{(product?.productRank ?? 0).toFixed(1)}</div>
+							<div className="pdm-reviews__score-count">{commentTotal} reviews</div>
 						</div>
 					</div>
-				)}
+
+					<div className="pdm-reviews__leave">
+						<span className="pdm-reviews__leave-label">Tap to rate</span>
+						<div className="pdm-reviews__leave-stars">
+							{[1, 2, 3, 4, 5].map((s) => (
+								<button
+									key={s}
+									className={`pdm-reviews__leave-star${
+										s <= (hoverRating || userRating) ? ' pdm-reviews__leave-star--active' : ''
+									}`}
+									onMouseEnter={() => setHoverRating(s)}
+									onMouseLeave={() => setHoverRating(0)}
+									onClick={() => setUserRating(s)}
+								>
+									★
+								</button>
+							))}
+						</div>
+					</div>
+
+					<div className="pdm-reviews__list">
+						{commentTotal === 0 ? (
+							<p className="pdm-reviews__empty">No reviews yet. Be the first!</p>
+						) : (
+							<>
+								{comments.map((comment: Comment) => (
+									<Review key={comment._id} comment={comment} />
+								))}
+								<Pagination
+									page={commentInquiry.page}
+									count={Math.ceil(commentTotal / commentInquiry.limit)}
+									onChange={paginationHandler}
+									shape="rounded"
+									color="primary"
+									size="small"
+								/>
+							</>
+						)}
+					</div>
+
+					<div className="pdm-reviews__form">
+						<h4 className="pdm-reviews__form-title">Leave A Review</h4>
+						<textarea
+							className="pdm-reviews__textarea"
+							placeholder="Share your experience..."
+							value={commentContent}
+							onChange={(e) => setCommentContent(e.target.value)}
+							rows={4}
+						/>
+						<button className="pdm-reviews__submit" disabled={!commentContent} onClick={submitCommentHandler}>
+							Submit Review →
+						</button>
+					</div>
+				</div>
 
 				{/* ── Related products ──────────────────────── */}
 				{relatedProducts.length > 0 && (
@@ -490,13 +512,16 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 
 				{/* ── Sticky bottom CTA ─────────────────────── */}
 				<div className="pdm-cta">
-					<button className="pdm-cta__add" onClick={addToCartHandler} disabled={product?.productStockCount === 0}>
+					<button
+						className="pdm-cta__add"
+						onClick={() => product && addToCartHandler(product)}
+						disabled={!product || product.productStockCount === 0}
+					>
 						Add To Bag
 					</button>
 					<button className="pdm-cta__buy">Buy It Now</button>
 				</div>
 
-				{/* Bottom safe-area spacer */}
 				<div style={{ height: 88 }} />
 			</div>
 		);
@@ -509,7 +534,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	return (
 		<div id="product-detail-page">
 			<div className="container">
-				{/* ── Breadcrumb ───────────────────────────────────── */}
 				<nav className="pd-breadcrumb">
 					<Link href="/">Home</Link>
 					<span>•</span>
@@ -518,7 +542,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 					<span>{product?.productName}</span>
 				</nav>
 
-				{/* ── Main two-column layout ────────────────────────── */}
 				<div className="pd-layout">
 					{/* LEFT — Images */}
 					<div className="pd-images">
@@ -575,11 +598,11 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 						<div className="pd-info__price">
 							{product?.isDiscounted && product?.productSalePrice ? (
 								<>
-									<span className="pd-info__price--sale">${product.productSalePrice.toLocaleString()}</span>
-									<span className="pd-info__price--original">${product.productPrice.toLocaleString()}</span>
+									<span className="pd-info__price--sale">₩{product.productSalePrice.toLocaleString()}</span>
+									<span className="pd-info__price--original">₩{product.productPrice.toLocaleString()}</span>
 								</>
 							) : (
-								<span>${product?.productPrice?.toLocaleString()}</span>
+								<span>₩{product?.productPrice?.toLocaleString()}</span>
 							)}
 						</div>
 
@@ -631,9 +654,12 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 
 						<div className="pd-info__divider" />
 
+						{/* ── SIZE first ── */}
 						{product?.productSize && product.productSize.length > 0 && (
 							<div className="pd-info__section">
-								<span className="pd-info__section-label">SIZE: {selectedSize}</span>
+								<span className="pd-info__section-label">
+									SIZE{selectedSize ? `: ${formatSize(selectedSize)}` : ''}
+								</span>
 								<div className="pd-info__sizes">
 									{product.productSize.map((size: string) => (
 										<button
@@ -641,19 +667,30 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 											className={`pd-info__size-btn${selectedSize === size ? ' pd-info__size-btn--active' : ''}`}
 											onClick={() => setSelectedSize(size)}
 										>
-											{size}
+											{formatSize(size)}
 										</button>
 									))}
 								</div>
 							</div>
 						)}
 
-						{product && (product?.productColor ?? []).length > 0 && (
+						{/* ── COLOR second — always shown, single color stays locked as selected ── */}
+						{(product?.productColor ?? []).length > 0 && (
 							<div className="pd-info__section">
-								<span className="pd-info__section-label">COLOR</span>
+								<span className="pd-info__section-label">COLOR{selectedColor ? `: ${selectedColor}` : ''}</span>
 								<div className="pd-info__colors">
-									{product.productColor.map((color: string) => (
-										<span key={color} className="pd-info__color-dot" title={color} style={{ background: color }} />
+									{product!.productColor.map((color: string) => (
+										<button
+											key={color}
+											className={`pd-info__color-btn${selectedColor === color ? ' pd-info__color-btn--active' : ''}`}
+											title={color}
+											style={{ cursor: multipleColors ? 'pointer' : 'default' }}
+											onClick={() => {
+												if (multipleColors) setSelectedColor(color);
+											}}
+										>
+											<span className="pd-info__color-dot" style={{ background: color }} />
+										</button>
 									))}
 								</div>
 							</div>
@@ -674,8 +711,8 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 							</div>
 							<button
 								className="pd-info__add-btn"
-								onClick={addToCartHandler}
-								disabled={product?.productStockCount === 0}
+								onClick={() => product && addToCartHandler(product)}
+								disabled={!product || product.productStockCount === 0}
 							>
 								Add To Bag
 							</button>

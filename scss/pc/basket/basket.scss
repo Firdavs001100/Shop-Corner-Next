@@ -29,21 +29,17 @@ $duration: 0.22s;
 	box-shadow: -10px 0 15px 0 rgba(0, 0, 0, 0.1) !important;
 	border-left: none !important;
 
-	// Kill MUI's JS transform completely — we drive the animation with `right`
 	transform: none !important;
 	right: -390px !important;
 	transition: right 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
 	visibility: visible !important;
 
-	// MUI adds this class when open={true}
 	&.MuiDrawer-paperAnchorDockedRight,
 	&[class*='paperAnchorRight'] {
 		right: -390px !important;
 	}
 }
 
-// When the drawer is open, MUI's modal removes the hidden attribute — use that
-// to slide the panel in
 .MuiDrawer-root.MuiModal-root:not([aria-hidden='true']) .basket-drawer-paper {
 	right: 0 !important;
 }
@@ -222,11 +218,68 @@ $duration: 0.22s;
 			font-weight: 700 !important;
 			font-size: 14px !important;
 			color: $navy !important;
-			margin-bottom: 3px !important;
+			margin-bottom: 4px !important;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			font-family: 'DM Sans', sans-serif !important;
+		}
+
+		// ── Size & color badge row ────────────────────────────
+		&-badges {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 5px;
+			margin-bottom: 7px;
+		}
+
+		&-size {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			font-size: 10px;
+			font-weight: 700;
+			color: $navy;
+			background: transparent;
+			border: 1.5px solid darken($beige, 12%);
+			border-radius: 20px;
+			padding: 2px 10px;
+			letter-spacing: 0.06em;
+			font-family: 'DM Sans', sans-serif;
+			text-transform: uppercase;
+
+			&::before {
+				content: 'SIZE';
+				font-size: 10px;
+				font-weight: 600;
+				color: $muted;
+				letter-spacing: 0.08em;
+			}
+		}
+
+		&-color {
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
+			font-size: 10px;
+			font-weight: 700;
+			color: $navy;
+			background: transparent;
+			border: 1.5px solid darken($beige, 12%);
+			border-radius: 20px;
+			padding: 2px 10px;
+			letter-spacing: 0.06em;
+			font-family: 'DM Sans', sans-serif;
+			text-transform: uppercase;
+		}
+
+		&-color-dot {
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			border: 1px solid rgba(0, 0, 0, 0.15);
+			flex-shrink: 0;
 		}
 
 		&-price {
@@ -459,5 +512,120 @@ $duration: 0.22s;
 				background: rgba($danger, 0.05) !important;
 			}
 		}
+	}
+}
+
+// ── Product card selector overlay ─────────────────────────
+.product-selector-overlay {
+	position: absolute;
+	inset: 0;
+	background: rgba(255, 255, 255, 0.96);
+	backdrop-filter: blur(4px);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 16px;
+	border-radius: inherit;
+	z-index: 10;
+	animation: overlay-in 0.18s ease;
+
+	&__close {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		background: none;
+		border: none;
+		font-size: 13px;
+		color: #888;
+		cursor: pointer;
+		line-height: 1;
+		padding: 4px 7px;
+		border-radius: 4px;
+		transition: color 0.15s, background 0.15s;
+
+		&:hover {
+			color: #111;
+			background: rgba(0, 0, 0, 0.06);
+		}
+	}
+
+	&__label {
+		font-size: 10px;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: #888;
+		margin: 0;
+		font-family: 'DM Sans', sans-serif;
+	}
+
+	&__options {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 7px;
+		justify-content: center;
+	}
+
+	&__size-btn {
+		min-width: 42px;
+		padding: 6px 10px;
+		border: 1.5px solid #ddd;
+		border-radius: 6px;
+		background: #fff;
+		font-size: 12px;
+		font-weight: 700;
+		color: #1a2332;
+		cursor: pointer;
+		font-family: 'DM Sans', sans-serif;
+		transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.12s;
+
+		&:hover {
+			border-color: #1a2332;
+			background: #1a2332;
+			color: #fff;
+			transform: scale(1.06);
+		}
+	}
+
+	&__color-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 6px 12px;
+		border: 1.5px solid #ddd;
+		border-radius: 6px;
+		background: #fff;
+		font-size: 12px;
+		font-weight: 600;
+		color: #1a2332;
+		cursor: pointer;
+		font-family: 'DM Sans', sans-serif;
+		transition: border-color 0.15s, background 0.15s;
+
+		&:hover {
+			border-color: #1a2332;
+			background: rgba(26, 35, 50, 0.05);
+		}
+	}
+
+	&__color-dot {
+		width: 11px;
+		height: 11px;
+		border-radius: 50%;
+		border: 1px solid rgba(0, 0, 0, 0.15);
+		flex-shrink: 0;
+	}
+}
+
+@keyframes overlay-in {
+	from {
+		opacity: 0;
+		transform: scale(0.97);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
 	}
 }
