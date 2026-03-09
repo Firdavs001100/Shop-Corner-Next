@@ -12,6 +12,7 @@ export const SIGNUP = gql`
 			memberStatus
 			memberAuthType
 			memberPhone
+			memberEmail
 			memberNick
 			memberFullName
 			memberImage
@@ -42,6 +43,7 @@ export const LOGIN = gql`
 			memberType
 			memberAuthType
 			memberPhone
+			memberEmail
 			memberNick
 			memberFullName
 			memberImage
@@ -74,6 +76,7 @@ export const UPDATE_MEMBER = gql`
 			memberStatus
 			memberAuthType
 			memberPhone
+			memberEmail
 			memberNick
 			memberFullName
 			memberImage
@@ -105,6 +108,7 @@ export const LIKE_TARGET_MEMBER = gql`
 			memberStatus
 			memberAuthType
 			memberPhone
+			memberEmail
 			memberNick
 			memberFullName
 			memberImage
@@ -192,6 +196,7 @@ export const CREATE_BOARD_ARTICLE = gql`
 				memberStatus
 				memberAuthType
 				memberPhone
+				memberEmail
 				memberNick
 				memberFullName
 				memberImage
@@ -261,6 +266,7 @@ export const LIKE_TARGET_ARTICLE = gql`
 				memberStatus
 				memberAuthType
 				memberPhone
+				memberEmail
 				memberNick
 				memberFullName
 				memberImage
@@ -311,6 +317,7 @@ export const CREATE_COMMENT = gql`
 				memberStatus
 				memberAuthType
 				memberPhone
+				memberEmail
 				memberNick
 				memberFullName
 				memberImage
@@ -352,6 +359,7 @@ export const UPDATE_COMMENT = gql`
 				memberStatus
 				memberAuthType
 				memberPhone
+				memberEmail
 				memberNick
 				memberFullName
 				memberImage

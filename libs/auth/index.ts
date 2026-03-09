@@ -24,8 +24,8 @@ export const logIn = async (nick: string, password: string): Promise<void> => {
 			updateUserInfo(jwtToken);
 		}
 	} catch (err) {
-		console.warn('login err', err);
-		logOut();
+		console.log('login err', err);
+		throw err;
 	}
 };
 
@@ -43,38 +43,36 @@ const requestJwtToken = async ({
 			mutation: LOGIN,
 			variables: { input: { memberNick: nick, memberPassword: password } },
 			fetchPolicy: 'network-only',
+			context: { skipErrorToast: true },
 		});
 
 		console.log('---------- login ----------');
-		const { accessToken } = result?.data?.login;
+		const accessToken = result?.data?.login?.accessToken;
 
 		return { jwtToken: accessToken };
 	} catch (err: any) {
-		console.log('request token err', err.graphQLErrors);
-		switch (err.graphQLErrors[0].message) {
-			case 'Definer: login and password do not match':
-				await toastError('Please check your password again');
-				break;
-			case 'Definer: user has been blocked!':
-				await toastError('User has been blocked!');
-				break;
-		}
-		throw new Error('token error');
+		console.log('request token err', err);
+		throw err;
 	}
 };
 
-export const signUp = async (nick: string, password: string, phone: string, type: string): Promise<void> => {
+export const signUp = async (
+	nick: string,
+	password: string,
+	phone: string,
+	email: string,
+	type: string,
+): Promise<void> => {
 	try {
-		const { jwtToken } = await requestSignUpJwtToken({ nick, password, phone, type });
+		const { jwtToken } = await requestSignUpJwtToken({ nick, password, phone, email, type });
 
 		if (jwtToken) {
 			updateStorage({ jwtToken });
 			updateUserInfo(jwtToken);
 		}
 	} catch (err) {
-		console.warn('login err', err);
-		logOut();
-		throw new Error('Login Err');
+		console.warn('signup err', err);
+		throw err;
 	}
 };
 
@@ -82,11 +80,13 @@ const requestSignUpJwtToken = async ({
 	nick,
 	password,
 	phone,
+	email,
 	type,
 }: {
 	nick: string;
 	password: string;
 	phone: string;
+	email: string;
 	type: string;
 }): Promise<{ jwtToken: string }> => {
 	const apolloClient = await initializeApollo();
@@ -95,23 +95,24 @@ const requestSignUpJwtToken = async ({
 		const result = await apolloClient.mutate({
 			mutation: SIGNUP,
 			variables: {
-				input: { memberNick: nick, memberPassword: password, memberPhone: phone, memberType: type },
+				input: { memberNick: nick, memberPassword: password, memberPhone: phone, memberEmail: email, memberType: type },
 			},
 			fetchPolicy: 'network-only',
+			context: { skipErrorToast: true },
 		});
 
 		console.log('---------- login ----------');
-		const { accessToken } = result?.data?.signup;
+		const accessToken = result?.data?.signup?.accessToken;
 
 		return { jwtToken: accessToken };
 	} catch (err: any) {
 		console.log('request token err', err.graphQLErrors);
 		switch (err.graphQLErrors[0].message) {
 			case 'Definer: login and password do not match':
-				await toastError('Please check your password again');
+				toastError('Please check your password again');
 				break;
 			case 'Definer: user has been blocked!':
-				await toastError('User has been blocked!');
+				toastError('User has been blocked!');
 				break;
 		}
 		throw new Error('token error');
@@ -133,6 +134,7 @@ export const updateUserInfo = (jwtToken: any) => {
 		memberStatus: claims.memberStatus ?? '',
 		memberAuthType: claims.memberAuthType,
 		memberPhone: claims.memberPhone ?? '',
+		memberEmail: claims.memberEmail ?? '',
 		memberNick: claims.memberNick ?? '',
 		memberFullName: claims.memberFullName ?? '',
 		memberImage:
@@ -169,6 +171,7 @@ const deleteUserInfo = () => {
 		memberStatus: '',
 		memberAuthType: '',
 		memberPhone: '',
+		memberEmail: '',
 		memberNick: '',
 		memberFullName: '',
 		memberImage: '',

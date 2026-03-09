@@ -7,8 +7,7 @@ import { formatSize } from './utils';
 ============================== */
 
 export const toastErrorHandling = (err: any) => {
-	const error = err?.response?.data ?? err;
-	const message = error?.message ?? Messages.error1;
+	const message = err?.graphQLErrors?.[0]?.message || err?.response?.data?.message || err?.message || Messages.error1;
 
 	toast.error(message, { duration: 3000 });
 };

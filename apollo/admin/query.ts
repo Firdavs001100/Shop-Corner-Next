@@ -13,6 +13,7 @@ export const GET_ALL_MEMBERS_BY_ADMIN = gql`
 				memberStatus
 				memberAuthType
 				memberPhone
+				memberEmail
 				memberNick
 				memberFullName
 				memberImage

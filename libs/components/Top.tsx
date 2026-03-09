@@ -109,13 +109,19 @@ export default function Header() {
 	}, []);
 
 	useEffect(() => {
+		if (typeof window === 'undefined') return;
+
 		const stored = localStorage.getItem('locale');
 		setLang(stored ?? 'en');
 		if (!stored) localStorage.setItem('locale', 'en');
 	}, [router]);
 
 	useEffect(() => {
-		const handleScroll = () => setColorChange(window.scrollY >= window.innerHeight * 0.8);
+		const handleScroll = () => {
+			const shouldChange = window.scrollY >= window.innerHeight * 0.8;
+			setColorChange((prev) => (prev !== shouldChange ? shouldChange : prev));
+		};
+
 		window.addEventListener('scroll', handleScroll, { passive: true });
 		return () => window.removeEventListener('scroll', handleScroll);
 	}, []);
@@ -184,15 +190,29 @@ export default function Header() {
 					</button>
 					<Menu anchorEl={logoutAnchor} open={logoutOpen} onClose={() => setLogoutAnchor(null)} sx={{ mt: '5px' }}>
 						<MenuItem onClick={() => logOut()}>
-							<Logout fontSize="small" style={{ color: 'blue', marginRight: 10 }} />
+							<Logout fontSize="small" />
 							{t('Logout')}
 						</MenuItem>
 					</Menu>
 				</>
 			) : (
-				<Link href="/account/join" className="toolbar__btn toolbar__btn--login" aria-label="Login / Register">
+				<button
+					type="button"
+					className="toolbar__btn toolbar__btn--login"
+					aria-label="Login / Register"
+					onClick={() =>
+						router.push(
+							{
+								pathname: router.pathname,
+								query: { ...router.query, auth: 'login' },
+							},
+							undefined,
+							{ shallow: true },
+						)
+					}
+				>
 					<AccountCircleOutlinedIcon fontSize="small" />
-				</Link>
+				</button>
 			)}
 		</>
 	);
@@ -220,9 +240,9 @@ export default function Header() {
 							{mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
 						</button>
 
-						<a href="/" className="navbar-mobile__logo">
+						<Link href="/" className="navbar-mobile__logo">
 							SHOP.CO
-						</a>
+						</Link>
 
 						<div className="navbar-mobile__actions">
 							{user?._id && (
@@ -274,9 +294,9 @@ export default function Header() {
 				<div className="announcement-bar">Free shipping in orders over ₩200,000</div>
 
 				<header className="navbar">
-					<a href="/" className="navbar__logo">
+					<Link href="/" className="navbar__logo">
 						SHOP.CO
-					</a>
+					</Link>
 
 					<nav className="nav" aria-label="Primary navigation">
 						<ul className="nav__list">

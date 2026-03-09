@@ -6,11 +6,10 @@ import Top from '../Top';
 import Footer from '../Footer';
 import { Stack } from '@mui/material';
 import { getJwtToken, updateUserInfo } from '../../auth';
-import { useReactiveVar } from '@apollo/client';
-import { userVar } from '../../../apollo/store';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Join from '../../components/account/join';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -29,7 +28,6 @@ const PAGE_CONFIG: Record<string, PageConfig> = {
 	'/community': { title: 'Community', bgImage: '/img/banner/header2.svg' },
 	'/community/detail': { title: 'Community', bgImage: '/img/banner/header2.svg' },
 	'/cs': { title: 'Help Center', bgImage: '/img/banner/header2.svg' },
-	'/account/join': { title: 'Login / Signup', bgImage: '/img/banner/header2.svg' },
 	'/member': { title: 'Member Page', bgImage: '/img/banner/header1.svg' },
 };
 
@@ -47,8 +45,6 @@ const SEGMENT_LABELS: Record<string, string> = {
 	mypage: 'My Page',
 	community: 'Community',
 	cs: 'Help Center',
-	account: 'Account',
-	join: 'Login / Signup',
 	member: 'Member',
 	detail: 'Detail',
 };
@@ -61,7 +57,6 @@ const buildCrumbs = (pathname: string, query: Record<string, any>, pageTitle: st
 		const isLast = idx === segments.length - 1;
 		const href = '/' + segments.slice(0, idx + 1).join('/');
 
-		// skip MongoDB ObjectId-like segments
 		if (/^[a-f0-9]{24}$/i.test(seg)) return;
 
 		const label = isLast
@@ -71,8 +66,8 @@ const buildCrumbs = (pathname: string, query: Record<string, any>, pageTitle: st
 		crumbs.push(isLast ? { label } : { label, href });
 	});
 
-	// append dynamic names from query params
 	if (query?.productName) crumbs.push({ label: decodeURIComponent(query.productName as string) });
+
 	if (query?.articleTitle) crumbs.push({ label: decodeURIComponent(query.articleTitle as string) });
 
 	return crumbs;
@@ -93,13 +88,16 @@ const PageHero = ({ title, bgImage, pathname, query }: PageHeroProps) => {
 	return (
 		<div className="page-hero" style={{ backgroundImage: `url(${bgImage})` }}>
 			<div className="page-hero__overlay" />
+
 			<div className="container">
 				<div className="page-hero__content">
 					<h1 className="page-hero__title">{title}</h1>
+
 					<nav className="page-hero__breadcrumb" aria-label="Breadcrumb">
 						{crumbs.map((crumb, i) => (
 							<React.Fragment key={i}>
 								{i > 0 && <ChevronRightIcon className="page-hero__sep" />}
+
 								{crumb.href ? (
 									<Link href={crumb.href} className="page-hero__link">
 										{crumb.label}
@@ -116,17 +114,21 @@ const PageHero = ({ title, bgImage, pathname, query }: PageHeroProps) => {
 	);
 };
 
-// ─── HOC ─────────────────────────────────────────────────────────────────────
+// ─── Layout HOC ──────────────────────────────────────────────────────────────
 
 const withLayoutBasic = (Component: any) => {
 	return (props: any) => {
 		const router = useRouter();
 		const { t } = useTranslation('common');
 		const device = useDeviceDetect();
-		const user = useReactiveVar(userVar);
+
+		const authMode = router.isReady && typeof router.query.auth === 'string' ? router.query.auth : undefined;
+
+		const authOpen = authMode === 'login' || authMode === 'register';
 
 		const { title, bgImage } = useMemo(() => {
 			const config = PAGE_CONFIG[router.pathname];
+
 			if (config) return config;
 
 			const autoTitle = router.pathname
@@ -143,6 +145,8 @@ const withLayoutBasic = (Component: any) => {
 			if (jwt) updateUserInfo(jwt);
 		}, []);
 
+		// ───────── MOBILE ─────────
+
 		if (device === 'mobile') {
 			return (
 				<>
@@ -150,26 +154,35 @@ const withLayoutBasic = (Component: any) => {
 						<title>ShopCo</title>
 						<meta name="title" content="ShopCo" />
 					</Head>
+
 					<Stack id="mobile-wrap">
 						<Stack id="top">
 							<Top />
 						</Stack>
+
 						<PageHero
 							title={t(title)}
 							bgImage={bgImage}
 							pathname={router.pathname}
 							query={router.query as Record<string, any>}
 						/>
+
 						<Stack id="main">
 							<Component {...props} />
 						</Stack>
+
 						<Stack id="footer">
 							<Footer />
 						</Stack>
+
+						{/* AUTH MODAL */}
+						{authOpen && <Join />}
 					</Stack>
 				</>
 			);
 		}
+
+		// ───────── DESKTOP ─────────
 
 		return (
 			<>
@@ -177,22 +190,29 @@ const withLayoutBasic = (Component: any) => {
 					<title>ShopCo</title>
 					<meta name="title" content="ShopCo" />
 				</Head>
+
 				<Stack id="pc-wrap">
 					<Stack id="top">
 						<Top />
 					</Stack>
+
 					<PageHero
 						title={t(title)}
 						bgImage={bgImage}
 						pathname={router.pathname}
 						query={router.query as Record<string, any>}
 					/>
+
 					<Stack id="main">
 						<Component {...props} />
 					</Stack>
+
 					<Stack id="footer">
 						<Footer />
 					</Stack>
+
+					{/* AUTH MODAL */}
+					{authOpen && <Join />}
 				</Stack>
 			</>
 		);

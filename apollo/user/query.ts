@@ -12,6 +12,7 @@ export const GET_MEMBER = gql`
 			memberStatus
 			memberAuthType
 			memberPhone
+			memberEmail
 			memberNick
 			memberFullName
 			memberImage
@@ -224,6 +225,7 @@ export const GET_BOARD_ARTICLE = gql`
 				memberStatus
 				memberAuthType
 				memberPhone
+				memberEmail
 				memberNick
 				memberFullName
 				memberImage
@@ -299,6 +301,7 @@ export const GET_COMMENTS = gql`
 					memberStatus
 					memberAuthType
 					memberPhone
+					memberEmail
 					memberNick
 					memberFullName
 					memberImage

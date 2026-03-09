@@ -9,6 +9,8 @@
 @import '/scss/pc/product/product.scss';
 @import '/scss/pc/product/detail.scss';
 
+@import '/scss/pc/account/join.scss';
+
 body {
 	-ms-overflow-style: none; /* for Internet Explorer, Edge */
 	scrollbar-width: none; /* for Firefox */
@@ -870,6 +872,33 @@ body::-webkit-scrollbar {
 }
 
 .MuiPaper-root.MuiMenu-paper {
-	padding: 8px;
+	padding: 4px;
 	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+	.MuiMenuItem-root {
+		border-radius: 4px;
+		padding: 10px 16px;
+		font-family: 'DM Sans', sans-serif;
+		font-size: 13px;
+		font-weight: 600;
+		color: #0f2035;
+		letter-spacing: 0.03em;
+		gap: 10px;
+		transition: background 0.18s ease;
+
+		&:hover {
+			background: #0f2035;
+			color: #ffffff;
+
+			.MuiSvgIcon-root {
+				color: #ffffff;
+			}
+		}
+
+		.MuiSvgIcon-root {
+			font-size: 15px;
+			color: #0f2035;
+			transition: color 0.18s ease;
+		}
+	}
 }
