@@ -145,7 +145,7 @@ export default function Header() {
 	const navItems = [
 		{ label: t('Home'), href: '/' },
 		{ label: t('Shop'), href: '/product' },
-		{ label: t('Community'), href: '/community?articleCategory=FREE' },
+		{ label: t('Community'), href: '/community' },
 		...(user?._id ? [{ label: t('My Page'), href: '/mypage' }] : []),
 		{ label: t('CS'), href: '/cs' },
 	];

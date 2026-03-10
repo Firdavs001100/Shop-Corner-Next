@@ -49,6 +49,31 @@
 			border-radius: 20px;
 			font-size: 12px;
 			font-weight: 600;
+			z-index: 5;
+		}
+
+		.views-badge {
+			position: absolute;
+			right: 12px;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			background: rgba(15, 32, 53, 0.55);
+			backdrop-filter: blur(8px);
+			-webkit-backdrop-filter: blur(8px);
+			color: rgba(255, 255, 255, 0.9);
+			font-size: 10px;
+			font-weight: 600;
+			padding: 4px 9px;
+			border-radius: 999px;
+			z-index: 5;
+			letter-spacing: 0.04em;
+			border: 1px solid rgba(255, 255, 255, 0.15);
+			pointer-events: none;
+			font-family: 'DM Sans', sans-serif;
+			opacity: 0;
+			transform: translateY(-8px);
+			transition: opacity 0.45s ease, transform 0.45s ease;
 		}
 
 		.like-box {
@@ -126,6 +151,11 @@
 			opacity: 1;
 			visibility: visible;
 			transform: translateX(-50%) translateY(0);
+		}
+
+		&:hover .views-badge {
+			opacity: 1;
+			transform: translateY(0);
 		}
 	}
 

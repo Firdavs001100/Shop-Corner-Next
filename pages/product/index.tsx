@@ -19,7 +19,7 @@ import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { GET_PRODUCTS } from '../../apollo/user/query';
 import { T } from '../../libs/types/common';
 import { LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
-import { toastErrorHandling, toastSmallSuccess } from '../../libs/toast';
+import { toastErrorHandling, toastLoginConfirm, toastSmallSuccess } from '../../libs/toast';
 import { userVar } from '../../apollo/store';
 import { ProductDressStyle, ProductSize, ProductCategory } from '../../libs/enums/product.enum';
 import PolicyBanner from '../../libs/components/product/PolicyBanner';
@@ -118,7 +118,16 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 	/** LIKE **/
 	const likeProductHandler = async (user: T, id: string) => {
 		try {
-			if (!user?._id) throw new Error(Message.NOT_AUTHENTICATED);
+			if (!user?._id) {
+				const ok = await toastLoginConfirm('Please log in to like this product');
+				if (ok) {
+					router.push({ pathname: router.pathname, query: { ...router.query, auth: 'login' } }, undefined, {
+						shallow: true,
+					});
+				}
+				return;
+			}
+			
 			await likeTargetProduct({ variables: { input: id } });
 			toastSmallSuccess('Success', 800);
 		} catch (err: any) {

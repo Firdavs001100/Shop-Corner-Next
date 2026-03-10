@@ -25,9 +25,9 @@ const PAGE_CONFIG: Record<string, PageConfig> = {
 	'/product': { title: 'Shop', bgImage: '/img/banner/shop-hero2.jpg' },
 	'/product/detail': { title: 'Product Detail', bgImage: '/img/banner/shop-hero.webp' },
 	'/mypage': { title: 'My Page', bgImage: '/img/banner/header1.svg' },
-	'/community': { title: 'Community', bgImage: '/img/banner/header2.svg' },
-	'/community/detail': { title: 'Community', bgImage: '/img/banner/header2.svg' },
-	'/cs': { title: 'Help Center', bgImage: '/img/banner/header2.svg' },
+	'/community': { title: 'Community', bgImage: '/img/community/header1.jpg' },
+	'/community/detail': { title: 'Community', bgImage: '/img/community/header1.jpg' },
+	'/cs': { title: 'Help Center', bgImage: '/img/banner/cs/banner1.svg' },
 	'/member': { title: 'Member Page', bgImage: '/img/banner/header1.svg' },
 };
 

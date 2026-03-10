@@ -151,7 +151,11 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 		try {
 			if (!user?._id) {
 				const ok = await toastLoginConfirm('Please log in to like this product');
-				if (ok) await router.push('/account/join');
+				if (ok) {
+					router.push({ pathname: router.pathname, query: { ...router.query, auth: 'login' } }, undefined, {
+						shallow: true,
+					});
+				}
 				return;
 			}
 			await likeTargetProduct({ variables: { input: productId } });
@@ -194,7 +198,15 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 
 	const createCommentHandler = async () => {
 		try {
-			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+			if (!user?._id) {
+				const ok = await toastLoginConfirm('Please log in to leave a comment');
+				if (ok) {
+					router.push({ pathname: router.pathname, query: { ...router.query, auth: 'login' } }, undefined, {
+						shallow: true,
+					});
+				}
+				return;
+			}
 
 			// ── Rating required: scroll to stars and show error state ──
 			if (userRating === 0) {
