@@ -6,6 +6,7 @@ import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { addToCart } from '../../../apollo/actions/cartActions';
 import { toastSmallSuccess } from '../../toast';
 import { formatSize } from '../../utils';
@@ -101,6 +102,11 @@ const ProductCard = (props: NewProductCardProps) => {
 			<div className="image-box" onClick={() => !showSelector && pushDetailHandler(product._id)}>
 				<img src={imagePath} alt={product.productName} className="first-image" />
 
+				<div className="views-badge">
+					<RemoveRedEyeIcon sx={{ fontSize: 12 }} />
+					<span>{product.productViews || 0}</span>
+				</div>
+
 				{product.productImages?.[1] && (
 					<img
 						src={`${process.env.NEXT_PUBLIC_API_URL}/${product.productImages[1]}`}
@@ -194,8 +200,8 @@ const ProductCard = (props: NewProductCardProps) => {
 				)}
 
 				<div className="rating-row">
-					<Rating value={product.productRank || 0} readOnly size="small" precision={0.5} />
-					<span className="count">({product.productViews || 0})</span>
+					<Rating value={product.productRating || 0} readOnly size="small" precision={0.5} />
+					<span className="count">({product.productComments || 0})</span>
 				</div>
 
 				<div className="price-row">

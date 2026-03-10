@@ -22,6 +22,7 @@ export interface Product {
 	productLikes: number;
 	productTags: string[];
 	productRank: number;
+	productComments: number;
 	productSales: number;
 	productRating: number;
 	isDiscounted: boolean;
