@@ -63,6 +63,7 @@ export const CREATE_PRODUCT_BY_ADMIN = gql`
 			productTags
 			productRank
 			productSales
+			productRating
 			isDiscounted
 			createdAt
 			updatedAt
@@ -93,6 +94,7 @@ export const UPDATE_PRODUCT_BY_ADMIN = gql`
 			productTags
 			productRank
 			productSales
+			productRating
 			isDiscounted
 			createdAt
 			updatedAt
@@ -123,6 +125,7 @@ export const REMOVE_PRODUCT_BY_ADMIN = gql`
 			productTags
 			productRank
 			productSales
+			productRating
 			isDiscounted
 			createdAt
 			updatedAt

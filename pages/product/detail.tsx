@@ -218,11 +218,23 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 			setUserRating(0);
 			setRatingError(false);
 
-			const { data } = await refetchComments({ input: commentInquiry });
-			if (data?.getComments?.list) setComments(data.getComments.list);
-			setCommentTotal(data?.getComments?.metaCounter[0]?.total ?? 0);
+			const { data: commentsData } = await refetchComments({ input: commentInquiry });
+			const { data: productData } = await refetchProduct({ input: productId });
+
+			if (productData?.getProduct) {
+				setProduct(productData.getProduct);
+			}
+
+			if (commentsData?.getComments?.list) setComments(commentsData.getComments.list);
+			setCommentTotal(commentsData?.getComments?.metaCounter[0]?.total ?? 0);
 
 			toastSmallSuccess('Review submitted!', 1000);
+
+			const reviewsEl = document.getElementById(device === 'mobile' ? 'pdm-reviews' : 'pd-reviews');
+			if (reviewsEl) {
+				const top = reviewsEl.getBoundingClientRect().top + window.scrollY - 80;
+				window.scrollTo({ top, behavior: 'smooth' });
+			}
 		} catch (err: any) {
 			toastErrorHandling(err);
 		}
@@ -348,7 +360,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 							<span
 								key={s}
 								className={`pdm-info__star${
-									s <= Math.round(product?.productRank ?? 0) ? ' pdm-info__star--filled' : ''
+									s <= Math.round(product?.productRating ?? 0) ? ' pdm-info__star--filled' : ''
 								}`}
 							>
 								★
@@ -460,7 +472,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 					<div className="pdm-reviews__score-box">
 						<StarIcon style={{ color: '#f5a623', fontSize: 32 }} />
 						<div>
-							<div className="pdm-reviews__score">{(product?.productRank ?? 0).toFixed(1)}</div>
+							<div className="pdm-reviews__score">{(product?.productRating ?? 0).toFixed(1)}</div>
 							<div className="pdm-reviews__score-count">{commentTotal} reviews</div>
 						</div>
 					</div>
@@ -609,7 +621,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 								<span
 									key={s}
 									className={`pd-info__star${
-										s <= Math.round(product?.productRank ?? 0) ? ' pd-info__star--filled' : ''
+										s <= Math.round(product?.productRating ?? 0) ? ' pd-info__star--filled' : ''
 									}`}
 								>
 									★
@@ -800,7 +812,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 							<div className="pd-reviews__score-box">
 								<StarIcon style={{ color: '#f5a623', fontSize: 40 }} />
 								<div>
-									<div className="pd-reviews__score">{(product?.productRank ?? 0).toFixed(1)}</div>
+									<div className="pd-reviews__score">{(product?.productRating ?? 0).toFixed(1)}</div>
 									<div className="pd-reviews__score-count">{commentTotal} reviews</div>
 								</div>
 							</div>

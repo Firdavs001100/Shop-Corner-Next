@@ -73,6 +73,7 @@ export const GET_PRODUCT = gql`
 			productTags
 			productRank
 			productSales
+			productRating
 			isDiscounted
 			createdAt
 			updatedAt
@@ -109,6 +110,7 @@ export const GET_PRODUCTS = gql`
 				productTags
 				productRank
 				productSales
+				productRating
 				isDiscounted
 				createdAt
 				updatedAt
@@ -144,6 +146,7 @@ export const GET_FAVORITES = gql`
 				productTags
 				productRank
 				productSales
+				productRating
 				isDiscounted
 				createdAt
 				updatedAt
@@ -184,6 +187,7 @@ export const GET_VISITED = gql`
 				productTags
 				productRank
 				productSales
+				productRating
 				isDiscounted
 				createdAt
 				updatedAt
@@ -492,6 +496,7 @@ export const GET_ORDERS = gql`
 					productTags
 					productRank
 					productSales
+					productRating
 					isDiscounted
 					createdAt
 					updatedAt

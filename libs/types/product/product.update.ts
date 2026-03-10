@@ -16,6 +16,7 @@ export interface ProductUpdate {
 	productBrand?: string;
 	productImages?: string[];
 	productStockCount?: number;
+	productRating: number;
 	productTags?: string[];
 	isDiscounted?: boolean;
 }

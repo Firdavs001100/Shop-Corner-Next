@@ -603,6 +603,16 @@
 				border-radius: 14px;
 				padding: 20px;
 				text-align: center;
+				transition: border-color 0.2s ease, background 0.2s ease; // ← add this
+
+				&--error {
+					border-color: #c62828;
+					background: rgba(198, 40, 40, 0.04);
+
+					.pd-reviews__leave-label {
+						color: #c62828;
+					}
+				}
 			}
 
 			&__leave-label {

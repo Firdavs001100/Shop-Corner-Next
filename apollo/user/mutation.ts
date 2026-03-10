@@ -159,6 +159,7 @@ export const LIKE_TARGET_PRODUCT = gql`
 			productTags
 			productRank
 			productSales
+			productRating
 			isDiscounted
 			createdAt
 			updatedAt
@@ -515,6 +516,7 @@ export const CREATE_ORDER = gql`
 				productTags
 				productRank
 				productSales
+				productRating
 				isDiscounted
 				createdAt
 				updatedAt

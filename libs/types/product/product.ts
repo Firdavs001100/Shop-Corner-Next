@@ -23,6 +23,7 @@ export interface Product {
 	productTags: string[];
 	productRank: number;
 	productSales: number;
+	productRating: number;
 	isDiscounted: boolean;
 	createdAt: Date;
 	updatedAt: Date;

@@ -69,6 +69,7 @@ export const GET_ALL_PRODUCTS_BY_ADMIN = gql`
 				productTags
 				productRank
 				productSales
+				productRating
 				isDiscounted
 				createdAt
 				updatedAt
@@ -272,6 +273,7 @@ export const GET_ALL_ORDERS_BY_ADMIN = gql`
 					productTags
 					productRank
 					productSales
+					productRating
 					isDiscounted
 					createdAt
 					updatedAt
