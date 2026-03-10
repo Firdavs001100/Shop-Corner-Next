@@ -18,6 +18,7 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { CaretDown } from 'phosphor-react';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 
@@ -182,11 +183,11 @@ export default function Header() {
 						onClick={(e) => setLogoutAnchor(e.currentTarget)}
 						aria-label="Account menu"
 					>
-						<img
-							className="toolbar__avatar"
-							src={user.memberImage ? `${NEXT_PUBLIC_API_URL}/${user.memberImage}` : '/img/profile/default-user.svg'}
-							alt="avatar"
-						/>
+						{user.memberImage ? (
+							<img className="toolbar__avatar" src={`${NEXT_PUBLIC_API_URL}/${user.memberImage}`} alt="avatar" />
+						) : (
+							<AccountCircleIcon sx={{ fontSize: 30, color: '#c0c8d4' }} />
+						)}
 					</button>
 					<Menu anchorEl={logoutAnchor} open={logoutOpen} onClose={() => setLogoutAnchor(null)} sx={{ mt: '5px' }}>
 						<MenuItem onClick={() => logOut()}>
