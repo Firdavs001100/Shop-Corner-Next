@@ -184,6 +184,7 @@ export const REMOVE_COMMENT_BY_ADMIN = gql`
 			commentGroup
 			commentContent
 			commentRefId
+			commentRating
 			memberId
 			createdAt
 			updatedAt

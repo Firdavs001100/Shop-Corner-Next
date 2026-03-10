@@ -438,6 +438,18 @@
 				border-top: 1px solid #ebebeb;
 				border-bottom: 1px solid #ebebeb;
 				margin-bottom: 16px;
+				transition: border-color 0.2s ease, background 0.2s ease;
+
+				&--error {
+					border-color: #c62828;
+					background: rgba(198, 40, 40, 0.04);
+					border-radius: 8px;
+					padding: 14px 10px;
+
+					.pdm-reviews__leave-label {
+						color: #c62828;
+					}
+				}
 			}
 
 			&__leave-label {
@@ -447,6 +459,7 @@
 				text-transform: uppercase;
 				color: #5a6a7e;
 				white-space: nowrap;
+				transition: color 0.2s ease;
 			}
 
 			&__leave-stars {
@@ -536,6 +549,23 @@
 					font-size: 11px;
 					color: #5a6a7e;
 					font-weight: 400;
+				}
+
+				&__stars {
+					display: flex;
+					gap: 2px;
+					margin-left: auto;
+					flex-shrink: 0;
+				}
+
+				&__star {
+					font-size: 12px;
+					color: #e0e0e0;
+					line-height: 1;
+
+					&--filled {
+						color: #f5a623;
+					}
 				}
 
 				&__content {

@@ -308,6 +308,7 @@ export const CREATE_COMMENT = gql`
 			commentGroup
 			commentContent
 			commentRefId
+			commentRating
 			memberId
 			createdAt
 			updatedAt
@@ -350,6 +351,7 @@ export const UPDATE_COMMENT = gql`
 			commentGroup
 			commentContent
 			commentRefId
+			commentRating
 			memberId
 			createdAt
 			updatedAt

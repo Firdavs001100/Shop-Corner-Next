@@ -14,13 +14,25 @@ const Review = ({ comment }: ReviewProps) => {
 
 	const memberNick = comment?.memberData?.memberNick ?? 'Anonymous';
 	const date = comment?.createdAt ? moment(comment.createdAt).format('MMM D, YYYY') : '';
+	const rating = comment?.commentRating ?? 0;
 
 	return (
 		<div className="review-card">
 			<div className="review-card__header">
 				<img className="review-card__avatar" src={memberImage} alt={memberNick} />
 				<div className="review-card__meta">
-					<span className="review-card__name">{memberNick}</span>
+					<div className="review-card__meta-top">
+						<span className="review-card__name">{memberNick}</span>
+						{rating > 0 && (
+							<div className="review-card__stars">
+								{[1, 2, 3, 4, 5].map((s) => (
+									<span key={s} className={`review-card__star${s <= rating ? ' review-card__star--filled' : ''}`}>
+										★
+									</span>
+								))}
+							</div>
+						)}
+					</div>
 					<span className="review-card__date">{date}</span>
 				</div>
 			</div>

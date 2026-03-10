@@ -58,7 +58,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>(initialComment);
 	const [comments, setComments] = useState<Comment[]>([]);
 	const [commentTotal, setCommentTotal] = useState<number>(0);
-	// ── Matches property workflow: single insertCommentData state object ──
 	const [insertCommentData, setInsertCommentData] = useState<CommentInput>({
 		commentGroup: CommentGroup.PRODUCT,
 		commentContent: '',
@@ -66,6 +65,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	});
 	const [userRating, setUserRating] = useState<number>(0);
 	const [hoverRating, setHoverRating] = useState<number>(0);
+	const [ratingError, setRatingError] = useState<boolean>(false);
 
 	/** APOLLO **/
 	const { loading: productLoading, refetch: refetchProduct } = useQuery(GET_PRODUCT, {
@@ -116,7 +116,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	});
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
-	// ── Matches property workflow: no onCompleted optimistic update ──
 	const [createComment] = useMutation(CREATE_COMMENT);
 
 	/** LIFECYCLES **/
@@ -130,7 +129,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 			setSelectedSize('');
 			setSelectedColor('');
 			setProductId(id);
-			// ── Matches property workflow: update both commentInquiry and insertCommentData ──
 			setCommentInquiry({
 				...commentInquiry,
 				search: { commentRefId: id },
@@ -194,18 +192,35 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 		toastSmallSuccess(`Added to bag! (${formatSize(selectedSize)}${color ? ` · ${color}` : ''})`, 1200);
 	};
 
-	// ── Matches property workflow: mutation → reset content → refetch (no optimistic update) ──
 	const createCommentHandler = async () => {
 		try {
 			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
 
-			await createComment({ variables: { input: insertCommentData } });
+			// ── Rating required: scroll to stars and show error state ──
+			if (userRating === 0) {
+				setRatingError(true);
+				const leaveEl = document.getElementById(device === 'mobile' ? 'pdm-leave-stars' : 'pd-leave-stars');
+				leaveEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				toastErrorHandling({ message: 'Please choose a rating first' });
+				return;
+			}
 
-			// Reset only the content field, keep commentRefId and commentGroup intact
+			await createComment({
+				variables: {
+					input: {
+						...insertCommentData,
+						commentRating: userRating,
+					},
+				},
+			});
+
 			setInsertCommentData({ ...insertCommentData, commentContent: '' });
 			setUserRating(0);
+			setRatingError(false);
 
-			await refetchComments({ input: commentInquiry });
+			const { data } = await refetchComments({ input: commentInquiry });
+			if (data?.getComments?.list) setComments(data.getComments.list);
+			setCommentTotal(data?.getComments?.metaCounter[0]?.total ?? 0);
 
 			toastSmallSuccess('Review submitted!', 1000);
 		} catch (err: any) {
@@ -213,7 +228,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 		}
 	};
 
-	// ── Matches property workflow: spread update (not functional update) ──
 	const paginationHandler = (_: ChangeEvent<unknown>, value: number) => {
 		commentInquiry.page = value;
 		setCommentInquiry({ ...commentInquiry });
@@ -451,8 +465,9 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 						</div>
 					</div>
 
-					<div className="pdm-reviews__leave">
-						<span className="pdm-reviews__leave-label">Tap to rate</span>
+					{/* id added for scroll target, --error modifier for red state */}
+					<div className={`pdm-reviews__leave${ratingError ? ' pdm-reviews__leave--error' : ''}`} id="pdm-leave-stars">
+						<span className="pdm-reviews__leave-label">{ratingError ? 'Choose a rating first!' : 'Tap to rate'}</span>
 						<div className="pdm-reviews__leave-stars">
 							{[1, 2, 3, 4, 5].map((s) => (
 								<button
@@ -462,7 +477,10 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 									}`}
 									onMouseEnter={() => setHoverRating(s)}
 									onMouseLeave={() => setHoverRating(0)}
-									onClick={() => setUserRating(s)}
+									onClick={() => {
+										setUserRating(s);
+										setRatingError(false);
+									}}
 								>
 									★
 								</button>
@@ -798,8 +816,12 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 									</div>
 								))}
 							</div>
-							<div className="pd-reviews__leave">
-								<span className="pd-reviews__leave-label">Tap to review</span>
+
+							{/* id added for scroll target, --error modifier for red state */}
+							<div className={`pd-reviews__leave${ratingError ? ' pd-reviews__leave--error' : ''}`} id="pd-leave-stars">
+								<span className="pd-reviews__leave-label">
+									{ratingError ? 'Choose a rating first!' : 'Tap to review'}
+								</span>
 								<div className="pd-reviews__leave-stars">
 									{[1, 2, 3, 4, 5].map((s) => (
 										<button
@@ -809,7 +831,10 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 											}`}
 											onMouseEnter={() => setHoverRating(s)}
 											onMouseLeave={() => setHoverRating(0)}
-											onClick={() => setUserRating(s)}
+											onClick={() => {
+												setUserRating(s);
+												setRatingError(false);
+											}}
 										>
 											★
 										</button>
