@@ -70,40 +70,47 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
-	const { query } = router;
-	const articleId = query?.id as string;
+	const articleId = router.query?.id as string | undefined;
 
 	const [boardArticle, setBoardArticle] = useState<BoardArticle | undefined>();
 	const [comments, setComments] = useState<Comment[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [comment, setComment] = useState<string>('');
 	const [wordsCnt, setWordsCnt] = useState<number>(0);
-	const [searchFilter, setSearchFilter] = useState<CommentsInquiry>({ ...initialInput });
+	const [searchFilter, setSearchFilter] = useState<CommentsInquiry>({
+		...initialInput,
+		search: { commentRefId: articleId ?? '' },
+	});
 
 	const [editingCommentId, setEditingCommentId] = useState<string>('');
 	const [editingContent, setEditingContent] = useState<string>('');
 	const [editingWordsCnt, setEditingWordsCnt] = useState<number>(0);
 
 	/** APOLLO **/
-	const { refetch: getBoardArticleRefetch } = useQuery(GET_BOARD_ARTICLE, {
+	const { data: boardArticleData, refetch: getBoardArticleRefetch } = useQuery(GET_BOARD_ARTICLE, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: articleId },
 		skip: !articleId,
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setBoardArticle(data?.getBoardArticle);
-		},
 	});
 
-	const { refetch: getCommentsRefetch } = useQuery(GET_COMMENTS, {
+	useEffect(() => {
+		if (!boardArticleData) return;
+		setBoardArticle(boardArticleData?.getBoardArticle);
+	}, [boardArticleData]);
+
+	const { data: commentsData, refetch: getCommentsRefetch } = useQuery(GET_COMMENTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: searchFilter },
+		skip: !articleId || !searchFilter.search?.commentRefId,
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setComments(data?.getComments?.list ?? []);
-			setTotal(data?.getComments?.metaCounter[0]?.total ?? 0);
-		},
 	});
+
+	useEffect(() => {
+		if (!commentsData) return;
+		setComments(commentsData?.getComments?.list ?? []);
+		setTotal(commentsData?.getComments?.metaCounter[0]?.total ?? 0);
+	}, [commentsData]);
 
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_ARTICLE);
 	const [createComment] = useMutation(CREATE_COMMENT);
@@ -111,7 +118,8 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (articleId) setSearchFilter({ ...searchFilter, search: { commentRefId: articleId } });
+		if (!articleId) return;
+		setSearchFilter((prev) => ({ ...prev, search: { commentRefId: articleId } }));
 	}, [articleId]);
 
 	/** HANDLERS **/
@@ -148,7 +156,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 			}
 			const commentInput: CommentInput = {
 				commentGroup: CommentGroup.ARTICLE,
-				commentRefId: articleId,
+				commentRefId: articleId!,
 				commentContent: comment.trim(),
 			};
 			await createComment({ variables: { input: commentInput } });
@@ -710,7 +718,9 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 							onClick={() =>
 								router.push({
 									pathname: '/community',
-									query: { articleCategory: boardArticle?.articleCategory ?? BoardArticleCategory.QUESTION },
+									query: {
+										articleCategory: boardArticle?.articleCategory ?? BoardArticleCategory.QUESTION,
+									},
 								})
 							}
 						>
