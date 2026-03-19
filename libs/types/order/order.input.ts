@@ -3,6 +3,8 @@ import { OrderPaymentStatus, OrderStatus } from '../../enums/order.enum';
 
 export interface OrderItemInput {
 	itemQuantity: number;
+	itemSize: string;
+	itemColor: string;
 	productId: string;
 	orderId?: string;
 }

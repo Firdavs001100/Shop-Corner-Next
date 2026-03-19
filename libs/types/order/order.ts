@@ -12,6 +12,8 @@ export interface OrderItem {
 	productId: string;
 	itemQuantity: number;
 	itemPrice: number;
+	itemSize: string;
+	itemColor: string;
 	createdAt: Date;
 	updatedAt: Date;
 }
