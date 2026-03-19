@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Box } from '@mui/material';
 import useDeviceDetect from '../hooks/useDeviceDetect';
+import { useTranslation } from 'next-i18next';
 
 // ── Icons ─────────────────────────────────────────────────
 
@@ -70,34 +71,6 @@ interface SocialLink {
 	href: string;
 }
 
-const helpLinks: NavLink[] = [
-	{ label: 'Help Center', href: '#' },
-	{ label: 'Track My Order', href: '#' },
-	{ label: 'Cancel My Order', href: '#' },
-	{ label: 'Return My Order', href: '#' },
-];
-
-const categoryLinks: NavLink[] = [
-	{ label: 'Jacket', href: '#' },
-	{ label: 'Pants', href: '#' },
-	{ label: 'T-Shirt', href: '#' },
-	{ label: 'Bag & Shoes', href: '#' },
-];
-
-const policyLinks: NavLink[] = [
-	{ label: 'Shipping & Delivery', href: '#' },
-	{ label: 'Returns, Refunds & Cancellations', href: '#' },
-	{ label: 'Terms & Conditions', href: '#' },
-	{ label: 'Privacy Policy', href: '#' },
-];
-
-const socialLinks: SocialLink[] = [
-	{ icon: <FacebookIcon />, label: 'Facebook', href: '#' },
-	{ icon: <TwitterIcon />, label: 'Twitter', href: '#' },
-	{ icon: <PinterestIcon />, label: 'Pinterest', href: '#' },
-	{ icon: <TikTokIcon />, label: 'TikTok', href: '#' },
-];
-
 // ── Sub-components ────────────────────────────────────────
 
 interface FooterNavColumnProps {
@@ -120,27 +93,27 @@ const FooterNavColumn: React.FC<FooterNavColumnProps> = ({ title, links }) => (
 	</Box>
 );
 
-const FooterBrand = () => (
+const FooterBrand = ({ t, socialLinks }: any) => (
 	<Box className="footer__col footer__col--brand">
 		<div className="footer__logo">SHOP.CO</div>
 
 		<Box className="footer__contact">
 			<Box className="footer__contact-item">
 				<LocationIcon />
-				<span>368 Ocean Ave, Seaside, CA 12345</span>
+				<span>{t('address')}</span>
 			</Box>
 			<Box className="footer__contact-item">
 				<PhoneIcon />
-				<span>+ (555) – 123-6868</span>
+				<span>{t('phone')}</span>
 			</Box>
 			<Box className="footer__contact-item">
 				<EmailIcon />
-				<span>Shop.Co@gmail.com</span>
+				<span>{t('email')}</span>
 			</Box>
 		</Box>
 
 		<Box className="footer__social">
-			{socialLinks.map(({ icon, label, href }) => (
+			{socialLinks.map(({ icon, label, href }: any) => (
 				<a key={label} href={href} className="footer__social-link" aria-label={label}>
 					{icon}
 				</a>
@@ -149,9 +122,9 @@ const FooterBrand = () => (
 	</Box>
 );
 
-const FooterBottom = () => (
+const FooterBottom = ({ t }: any) => (
 	<Box className="footer__bottom">
-		<p className="footer__copyright">Copyright &copy; 2026 ShopCo. All Rights Reserved.</p>
+		<p className="footer__copyright">{t('copyright')}</p>
 		<Box className="footer__payments">
 			<span className="footer__pay-badge footer__pay-badge--visa">VISA</span>
 			<MastercardIcon />
@@ -166,13 +139,42 @@ const FooterBottom = () => (
 
 export default function Footer() {
 	const device = useDeviceDetect();
+	const { t } = useTranslation('common');
+
+	const helpLinks: NavLink[] = [
+		{ label: t('helpCenter'), href: '#' },
+		{ label: t('trackOrder'), href: '#' },
+		{ label: t('cancelOrder'), href: '#' },
+		{ label: t('returnOrder'), href: '#' },
+	];
+
+	const categoryLinks: NavLink[] = [
+		{ label: t('categoryJacket'), href: '#' },
+		{ label: t('categoryPants'), href: '#' },
+		{ label: t('categoryTshirt'), href: '#' },
+		{ label: t('categoryBagShoes'), href: '#' },
+	];
+
+	const policyLinks: NavLink[] = [
+		{ label: t('shippingDelivery'), href: '#' },
+		{ label: t('returnsPolicy'), href: '#' },
+		{ label: t('termsConditions'), href: '#' },
+		{ label: t('privacyPolicy'), href: '#' },
+	];
+
+	const socialLinks: SocialLink[] = [
+		{ icon: <FacebookIcon />, label: 'Facebook', href: '#' },
+		{ icon: <TwitterIcon />, label: 'Twitter', href: '#' },
+		{ icon: <PinterestIcon />, label: 'Pinterest', href: '#' },
+		{ icon: <TikTokIcon />, label: 'TikTok', href: '#' },
+	];
 
 	const gridContent = (
 		<Box className="footer__grid">
-			<FooterBrand />
-			<FooterNavColumn title="Let Us Help" links={helpLinks} />
-			<FooterNavColumn title="Categories" links={categoryLinks} />
-			<FooterNavColumn title="Our Policies" links={policyLinks} />
+			<FooterBrand t={t} socialLinks={socialLinks} />
+			<FooterNavColumn title={t('letUsHelp')} links={helpLinks} />
+			<FooterNavColumn title={t('categories')} links={categoryLinks} />
+			<FooterNavColumn title={t('ourPolicies')} links={policyLinks} />
 		</Box>
 	);
 
@@ -181,7 +183,7 @@ export default function Footer() {
 			<footer className="footer">
 				<Box className="footer__inner">
 					{gridContent}
-					<FooterBottom />
+					<FooterBottom t={t} />
 				</Box>
 			</footer>
 		);
@@ -190,7 +192,7 @@ export default function Footer() {
 			<footer className="footer">
 				<Box className="footer__inner">
 					{gridContent}
-					<FooterBottom />
+					<FooterBottom t={t} />
 				</Box>
 			</footer>
 		);

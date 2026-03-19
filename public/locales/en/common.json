@@ -1,0 +1,89 @@
+{
+	"home": "Home",
+	"shop": "Shop",
+	"community": "Community",
+	"mypage": "My Page",
+	"cs": "Customer Service",
+	"member": "Member",
+
+	"english": "English",
+	"korean": "Korean",
+
+	"logout": "Logout",
+	"loginRegister": "Login / Register",
+
+	"notifications": "Notifications",
+	"markAllRead": "Mark all read",
+	"noNotifications": "No notifications yet",
+	"noDetails": "No additional details.",
+	"showMore": "Show more",
+	"showLess": "Show less",
+
+	"justNow": "just now",
+	"minutesAgo": "{{count}}m ago",
+	"hoursAgo": "{{count}}h ago",
+	"daysAgo": "{{count}}d ago",
+
+	"searchPlaceholder": "Search products...",
+	"freeShipping": "Free shipping on orders over ₩200,000",
+
+	"search": "Search",
+	"cart": "Cart",
+	"wishlist": "Wishlist",
+	"accountMenu": "Account menu",
+	"toggleMenu": "Toggle menu",
+
+	"emptyState": "Nothing here yet",
+	"loading": "Loading...",
+	"error": "Something went wrong",
+
+	"productDetail": "Product Detail",
+	"checkout": "Checkout",
+	"memberPage": "Member Page",
+	"detail": "Detail",
+
+	"hero": {
+		"fashion": "FASHION",
+		"statement1": "Making a Statement",
+		"statement2": "Through Fashion",
+		"subtext1": "Fashion isn't just clothes, it's a statement.",
+		"cta1": "Shop The Collection",
+
+		"newArrivals": "NEW ARRIVALS",
+		"unique1": "Discover Your",
+		"unique2": "Unique Style",
+		"subtext2": "Explore the latest trends in contemporary fashion.",
+		"cta2": "Shop New Arrivals",
+
+		"collection": "COLLECTION",
+		"elevate1": "Elevate Every",
+		"elevate2": "Occasion",
+		"subtext3": "Curated pieces for every moment in your life.",
+		"cta3": "View Collection"
+	},
+
+	"letUsHelp": "Let Us Help",
+	"categories": "Categories",
+	"ourPolicies": "Our Policies",
+
+	"helpCenter": "Help Center",
+	"trackOrder": "Track My Order",
+	"cancelOrder": "Cancel My Order",
+	"returnOrder": "Return My Order",
+
+	"categoryJacket": "Jacket",
+	"categoryPants": "Pants",
+	"categoryTshirt": "T-Shirt",
+	"categoryBagShoes": "Bag & Shoes",
+
+	"shippingDelivery": "Shipping & Delivery",
+	"returnsPolicy": "Returns, Refunds & Cancellations",
+	"termsConditions": "Terms & Conditions",
+	"privacyPolicy": "Privacy Policy",
+
+	"address": "368 Ocean Ave, Seaside, CA 12345",
+	"phone": "+ (555) – 123-6868",
+	"email": "Shop.Co@gmail.com",
+
+	"copyright": "Copyright © 2026 ShopCo. All Rights Reserved."
+}

@@ -1,0 +1,89 @@
+{
+	"home": "홈",
+	"shop": "쇼핑",
+	"community": "커뮤니티",
+	"mypage": "마이페이지",
+	"cs": "고객센터",
+	"member": "회원",
+
+	"english": "영어",
+	"korean": "한국어",
+
+	"logout": "로그아웃",
+	"loginRegister": "로그인 / 회원가입",
+
+	"notifications": "알림",
+	"markAllRead": "모두 읽음 처리",
+	"noNotifications": "아직 알림이 없습니다",
+	"noDetails": "추가 정보가 없습니다.",
+	"showMore": "더 보기",
+	"showLess": "접기",
+
+	"justNow": "방금 전",
+	"minutesAgo": "{{count}}분 전",
+	"hoursAgo": "{{count}}시간 전",
+	"daysAgo": "{{count}}일 전",
+
+	"searchPlaceholder": "상품을 검색하세요...",
+	"freeShipping": "₩200,000 이상 주문 시 무료 배송",
+
+	"search": "검색",
+	"cart": "장바구니",
+	"wishlist": "위시리스트",
+	"accountMenu": "계정 메뉴",
+	"toggleMenu": "메뉴 열기/닫기",
+
+	"emptyState": "아직 아무것도 없습니다",
+	"loading": "로딩 중...",
+	"error": "문제가 발생했습니다",
+
+	"productDetail": "상품 상세",
+	"checkout": "결제",
+	"memberPage": "회원 페이지",
+	"detail": "상세",
+
+	"hero": {
+		"fashion": "패션",
+		"statement1": "패션으로 완성하는",
+		"statement2": "당신만의 스타일",
+		"subtext1": "패션은 단순한 옷이 아니라, 자신을 표현하는 하나의 방식입니다.",
+		"cta1": "컬렉션 보기",
+
+		"newArrivals": "신상품",
+		"unique1": "나만의",
+		"unique2": "스타일을 발견하세요",
+		"subtext2": "최신 트렌드의 컨템포러리 패션을 만나보세요.",
+		"cta2": "신상품 보기",
+
+		"collection": "컬렉션",
+		"elevate1": "모든 순간을",
+		"elevate2": "더 특별하게",
+		"subtext3": "당신의 모든 순간을 위한 엄선된 아이템을 만나보세요.",
+		"cta3": "컬렉션 보기"
+	},
+
+	"letUsHelp": "고객 지원",
+	"categories": "카테고리",
+	"ourPolicies": "정책 안내",
+
+	"helpCenter": "고객센터",
+	"trackOrder": "주문 조회",
+	"cancelOrder": "주문 취소",
+	"returnOrder": "반품 신청",
+
+	"categoryJacket": "자켓",
+	"categoryPants": "팬츠",
+	"categoryTshirt": "티셔츠",
+	"categoryBagShoes": "가방 & 신발",
+
+	"shippingDelivery": "배송 안내",
+	"returnsPolicy": "반품 및 환불 정책",
+	"termsConditions": "이용 약관",
+	"privacyPolicy": "개인정보 처리방침",
+
+	"address": "미국 캘리포니아주 시사이드, 오션 애비뉴 368",
+	"phone": "+ (555) – 123-6868",
+	"email": "Shop.Co@gmail.com",
+
+	"copyright": "© 2026 ShopCo. 모든 권리 보유."
+}

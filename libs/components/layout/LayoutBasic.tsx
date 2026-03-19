@@ -14,7 +14,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
-// ─── Page config ──────────────────────────────────────────────────────────────
+// ─── Page config (USE KEYS, NOT TEXT) ─────────────────────────────────────────
 
 interface PageConfig {
 	title: string;
@@ -22,53 +22,62 @@ interface PageConfig {
 }
 
 const PAGE_CONFIG: Record<string, PageConfig> = {
-	'/product': { title: 'Shop', bgImage: '/img/banner/shop-hero2.jpg' },
-	'/product/detail': { title: 'Product Detail', bgImage: '/img/banner/shop-hero.webp' },
-	'/mypage': { title: 'My Page', bgImage: '/img/banner/header1.svg' },
-	'/community': { title: 'Community', bgImage: '/img/community/header1.jpg' },
-	'/community/detail': { title: 'Community', bgImage: '/img/community/header1.jpg' },
-	'/cs': { title: 'Help Center', bgImage: '/img/banner/cs/banner1.svg' },
-	'/member': { title: 'Member Page', bgImage: '/img/banner/header1.svg' },
+	'/product': { title: 'shop', bgImage: '/img/banner/shop-hero2.jpg' },
+	'/product/detail': { title: 'productDetail', bgImage: '/img/banner/shop-hero.webp' },
+	'/mypage': { title: 'mypage', bgImage: '/img/banner/mypage2.jpg' },
+	'/community': { title: 'community', bgImage: '/img/community/header1.jpg' },
+	'/community/detail': { title: 'community', bgImage: '/img/community/header1.jpg' },
+	'/cs': { title: 'cs', bgImage: '/img/banner/cs/banner1.jpg' },
+	'/member': { title: 'memberPage', bgImage: '/img/banner/memberPage.jpg' },
+	'/cart': { title: 'cart', bgImage: '/img/banner/shop-hero.webp' },
+	'/checkout': { title: 'checkout', bgImage: '/img/banner/shop-hero.webp' },
 };
 
-const DEFAULT_BG = '/img/banner/header2.svg';
+const DEFAULT_BG = '/img/banner/shop-hero2.jpg';
 
-// ─── Breadcrumb ───────────────────────────────────────────────────────────────
+// ─── Breadcrumb labels (KEYS) ────────────────────────────────────────────────
+
+const SEGMENT_LABELS: Record<string, string> = {
+	product: 'shop',
+	mypage: 'mypage',
+	community: 'community',
+	cs: 'cs',
+	member: 'member',
+	detail: 'detail',
+};
+
+// ─── Breadcrumb builder ──────────────────────────────────────────────────────
 
 interface Crumb {
 	label: string;
 	href?: string;
 }
 
-const SEGMENT_LABELS: Record<string, string> = {
-	product: 'Shop',
-	mypage: 'My Page',
-	community: 'Community',
-	cs: 'Help Center',
-	member: 'Member',
-	detail: 'Detail',
-};
-
-const buildCrumbs = (pathname: string, query: Record<string, any>, pageTitle: string): Crumb[] => {
-	const crumbs: Crumb[] = [{ label: 'Home', href: '/' }];
+const buildCrumbs = (pathname: string, query: Record<string, any>, pageTitle: string, t: any): Crumb[] => {
+	const crumbs: Crumb[] = [{ label: t('home'), href: '/' }];
 	const segments = pathname.split('/').filter(Boolean);
 
 	segments.forEach((seg, idx) => {
 		const isLast = idx === segments.length - 1;
 		const href = '/' + segments.slice(0, idx + 1).join('/');
 
+		// skip mongo id
 		if (/^[a-f0-9]{24}$/i.test(seg)) return;
 
-		const label = isLast
-			? pageTitle
-			: SEGMENT_LABELS[seg] ?? seg.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+		const key = SEGMENT_LABELS[seg];
+
+		const label = isLast ? t(pageTitle, { defaultValue: pageTitle }) : t(key || seg, { defaultValue: seg });
 
 		crumbs.push(isLast ? { label } : { label, href });
 	});
 
-	if (query?.productName) crumbs.push({ label: decodeURIComponent(query.productName as string) });
+	if (query?.productName) {
+		crumbs.push({ label: decodeURIComponent(query.productName as string) });
+	}
 
-	if (query?.articleTitle) crumbs.push({ label: decodeURIComponent(query.articleTitle as string) });
+	if (query?.articleTitle) {
+		crumbs.push({ label: decodeURIComponent(query.articleTitle as string) });
+	}
 
 	return crumbs;
 };
@@ -80,10 +89,13 @@ interface PageHeroProps {
 	bgImage: string;
 	pathname: string;
 	query: Record<string, any>;
+	t: any;
 }
 
-const PageHero = ({ title, bgImage, pathname, query }: PageHeroProps) => {
-	const crumbs = buildCrumbs(pathname, query, title);
+const PageHero = React.memo(({ title, bgImage, pathname, query, t }: PageHeroProps) => {
+	const crumbs = buildCrumbs(pathname, query, title, t);
+
+	const translatedTitle = t(`${title}`, { defaultValue: title });
 
 	return (
 		<div className="page-hero" style={{ backgroundImage: `url(${bgImage})` }}>
@@ -91,7 +103,7 @@ const PageHero = ({ title, bgImage, pathname, query }: PageHeroProps) => {
 
 			<div className="container">
 				<div className="page-hero__content">
-					<h1 className="page-hero__title">{title}</h1>
+					<h1 className="page-hero__title">{translatedTitle}</h1>
 
 					<nav className="page-hero__breadcrumb" aria-label="Breadcrumb">
 						{crumbs.map((crumb, i) => (
@@ -112,7 +124,7 @@ const PageHero = ({ title, bgImage, pathname, query }: PageHeroProps) => {
 			</div>
 		</div>
 	);
-};
+});
 
 // ─── Layout HOC ──────────────────────────────────────────────────────────────
 
@@ -131,13 +143,9 @@ const withLayoutBasic = (Component: any) => {
 
 			if (config) return config;
 
-			const autoTitle = router.pathname
-				.split('/')
-				.filter(Boolean)
-				.map((s) => s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()))
-				.join(' ');
+			const autoKey = router.pathname.split('/').filter(Boolean).join('.');
 
-			return { title: autoTitle, bgImage: DEFAULT_BG };
+			return { title: autoKey, bgImage: DEFAULT_BG };
 		}, [router.pathname]);
 
 		useEffect(() => {
@@ -145,14 +153,16 @@ const withLayoutBasic = (Component: any) => {
 			if (jwt) updateUserInfo(jwt);
 		}, []);
 
+		const pageTitle = t(`${title}`, { defaultValue: title });
+
 		// ───────── MOBILE ─────────
 
 		if (device === 'mobile') {
 			return (
 				<>
 					<Head>
-						<title>ShopCo</title>
-						<meta name="title" content="ShopCo" />
+						<title>{pageTitle} | ShopCo</title>
+						<meta name="title" content={`${pageTitle} | ShopCo`} />
 					</Head>
 
 					<Stack id="mobile-wrap">
@@ -161,10 +171,11 @@ const withLayoutBasic = (Component: any) => {
 						</Stack>
 
 						<PageHero
-							title={t(title)}
+							title={title}
 							bgImage={bgImage}
 							pathname={router.pathname}
 							query={router.query as Record<string, any>}
+							t={t}
 						/>
 
 						<Stack id="main">
@@ -175,7 +186,6 @@ const withLayoutBasic = (Component: any) => {
 							<Footer />
 						</Stack>
 
-						{/* AUTH MODAL */}
 						{authOpen && <Join />}
 					</Stack>
 				</>
@@ -187,8 +197,8 @@ const withLayoutBasic = (Component: any) => {
 		return (
 			<>
 				<Head>
-					<title>ShopCo</title>
-					<meta name="title" content="ShopCo" />
+					<title>{pageTitle} | ShopCo</title>
+					<meta name="title" content={`${pageTitle} | ShopCo`} />
 				</Head>
 
 				<Stack id="pc-wrap">
@@ -197,10 +207,11 @@ const withLayoutBasic = (Component: any) => {
 					</Stack>
 
 					<PageHero
-						title={t(title)}
+						title={title}
 						bgImage={bgImage}
 						pathname={router.pathname}
 						query={router.query as Record<string, any>}
+						t={t}
 					/>
 
 					<Stack id="main">
@@ -211,7 +222,6 @@ const withLayoutBasic = (Component: any) => {
 						<Footer />
 					</Stack>
 
-					{/* AUTH MODAL */}
 					{authOpen && <Join />}
 				</Stack>
 			</>

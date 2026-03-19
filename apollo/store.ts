@@ -3,6 +3,10 @@ import { makeVar } from '@apollo/client';
 import { CustomJwtPayload } from '../libs/types/customJwtPayload';
 export const themeVar = makeVar({});
 
+/* REACTIVE VAR */
+
+export const wishlistCountVar = makeVar<number>(0);
+
 export const userVar = makeVar<CustomJwtPayload>({
 	_id: '',
 	memberType: '',

@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Top from '../Top';
 import Footer from '../Footer';
 import Join from '../account/join';
-import { Stack } from '@mui/material';
+import { Link, Stack } from '@mui/material';
 import { userVar } from '../../../apollo/store';
 import { useReactiveVar } from '@apollo/client';
 import { getJwtToken, updateUserInfo } from '../../auth';
@@ -15,31 +15,32 @@ import { useRouter } from 'next/router';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { useTranslation } from 'next-i18next';
 
 /* ───────────── Slides ───────────── */
 
 const SLIDES = [
 	{
-		eyebrow: 'FASHION',
-		heading: ['Making a Statement', 'Through Fashion'],
-		subtext: "Fashion isn't just clothes, it's a statement.",
-		cta: 'Shop The Collection',
+		eyebrow: 'hero.fashion',
+		heading: ['hero.statement1', 'hero.statement2'],
+		subtext: 'hero.subtext1',
+		cta: 'hero.cta1',
 		image: '/img/banner/main3.webp',
 		align: 'left',
 	},
 	{
-		eyebrow: 'NEW ARRIVALS',
-		heading: ['Discover Your', 'Unique Style'],
-		subtext: 'Explore the latest trends in contemporary fashion.',
-		cta: 'Shop New Arrivals',
+		eyebrow: 'hero.newArrivals',
+		heading: ['hero.unique1', 'hero.unique2'],
+		subtext: 'hero.subtext2',
+		cta: 'hero.cta2',
 		image: '/img/banner/main2.webp',
 		align: 'center',
 	},
 	{
-		eyebrow: 'COLLECTION',
-		heading: ['Elevate Every', 'Occasion'],
-		subtext: 'Curated pieces for every moment in your life.',
-		cta: 'View Collection',
+		eyebrow: 'hero.collection',
+		heading: ['hero.elevate1', 'hero.elevate2'],
+		subtext: 'hero.subtext3',
+		cta: 'hero.cta3',
 		image: '/img/banner/main1.webp',
 		align: 'right',
 	},
@@ -49,6 +50,7 @@ const SLIDES = [
 
 const Hero = () => {
 	const [activeSlide, setActiveSlide] = useState(0);
+	const { t } = useTranslation('common');
 
 	const goToNext = useCallback(() => {
 		setActiveSlide((i) => (i === SLIDES.length - 1 ? 0 : i + 1));
@@ -71,19 +73,22 @@ const Hero = () => {
 			<div className="hero__overlay" />
 
 			<div className={`hero__content hero__content--${align}`}>
-				<span className="hero__eyebrow">{eyebrow}</span>
+				<span className="hero__eyebrow">{t(eyebrow)}</span>
 
 				<h1 className="hero__heading">
 					{heading.map((line, i) => (
-						<span key={i}>{line}</span>
+						<span key={i}>{t(line)}</span>
 					))}
 				</h1>
 
-				<p className="hero__subtext">{subtext}</p>
+				<p className="hero__subtext">{t(subtext)}</p>
 
 				<a href="/product" className="hero__cta">
-					{cta}
+					{t(cta)}
 				</a>
+				{/* <Link href="/product" className="hero__cta">
+					{t(cta)}
+				</Link> */}
 			</div>
 
 			<div className="hero__dots">
