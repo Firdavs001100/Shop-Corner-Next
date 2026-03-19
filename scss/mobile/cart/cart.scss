@@ -1,0 +1,354 @@
+#mobile-wrap {
+	#cart-page {
+		padding-bottom: 40px;
+
+		// ── Shipping bar ──────────────────────────────────────────────────
+
+		.cart-mob-shipping-bar {
+			padding: 16px 16px 0;
+			margin-bottom: 4px;
+
+			&__text {
+				font-size: 13px;
+				font-weight: 500;
+				color: #5a6a7e;
+				margin: 0 0 10px;
+
+				strong {
+					color: #0f2035;
+					font-weight: 700;
+				}
+			}
+
+			&__achieved {
+				color: #16a34a;
+				font-size: 13px;
+			}
+
+			&__progress-wrap {
+				position: relative;
+			}
+
+			&__track {
+				height: 5px;
+				background: #e8ecf0;
+				border-radius: 999px;
+				overflow: hidden;
+			}
+
+			&__fill {
+				height: 100%;
+				background: #f59e0b;
+				border-radius: 999px;
+				transition: width 0.4s ease;
+			}
+
+			&__truck {
+				position: absolute;
+				bottom: 0;
+				transform: translateX(-50%);
+				transition: left 0.4s ease;
+			}
+		}
+
+		// ── Empty ─────────────────────────────────────────────────────────
+
+		.cart-mob-empty {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 12px;
+			padding: 80px 24px;
+			color: #c0c8d4;
+
+			svg {
+				color: #c0c8d4;
+			}
+
+			&__title {
+				font-size: 18px;
+				font-weight: 800;
+				color: #0f2035;
+				margin: 0;
+			}
+
+			&__sub {
+				font-size: 13px;
+				color: #8a94a6;
+				margin: 0;
+				text-align: center;
+			}
+
+			&__btn {
+				height: 40px;
+				padding: 0 24px;
+				background: #0f2035;
+				color: #ffffff;
+				border: none;
+				border-radius: 999px;
+				font-family: 'DM Sans', sans-serif;
+				font-size: 13px;
+				font-weight: 700;
+				cursor: pointer;
+				margin-top: 6px;
+			}
+		}
+
+		// ── Items list ────────────────────────────────────────────────────
+
+		.cart-mob-items {
+			display: flex;
+			flex-direction: column;
+			gap: 0;
+			background: #ffffff;
+			border-radius: 16px;
+			border: 1px solid #f0f0ee;
+			overflow: hidden;
+			margin: 16px 16px 0;
+		}
+
+		.cart-mob-item {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 14px 16px;
+			border-bottom: 1px solid #f5f5f3;
+
+			&:last-child {
+				border-bottom: none;
+			}
+
+			&__img {
+				width: 64px;
+				height: 80px;
+				object-fit: cover;
+				border-radius: 8px;
+				flex-shrink: 0;
+				background: #f0f4f8;
+			}
+
+			&__info {
+				display: flex;
+				flex-direction: column;
+				gap: 5px;
+				flex: 1;
+				min-width: 0;
+			}
+
+			&__name {
+				font-size: 13px;
+				font-weight: 700;
+				color: #0f2035;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			&__badges {
+				display: flex;
+				gap: 5px;
+				flex-wrap: wrap;
+			}
+
+			&__badge {
+				display: inline-flex;
+				align-items: center;
+				gap: 3px;
+				height: 20px;
+				padding: 0 7px;
+				background: #f0f4f8;
+				border-radius: 999px;
+				font-size: 10px;
+				font-weight: 600;
+				color: #5a6a7e;
+
+				&--color {
+					background: #f0f4f8;
+				}
+			}
+
+			&__color-dot {
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				border: 1px solid rgba(0, 0, 0, 0.1);
+				flex-shrink: 0;
+			}
+
+			&__price {
+				font-size: 13px;
+				font-weight: 700;
+				color: #0f2035;
+			}
+
+			&__qty {
+				display: inline-flex;
+				align-items: center;
+				background: #f8f9fb;
+				border: 1.5px solid #e8ecf0;
+				border-radius: 999px;
+				padding: 2px;
+				gap: 0;
+			}
+
+			&__qty-btn {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 24px;
+				height: 24px;
+				border-radius: 50%;
+				border: none;
+				background: transparent;
+				color: #5a6a7e;
+				cursor: pointer;
+
+				&:disabled {
+					opacity: 0.35;
+					cursor: not-allowed;
+				}
+			}
+
+			&__qty-val {
+				min-width: 24px;
+				text-align: center;
+				font-size: 13px;
+				font-weight: 700;
+				color: #0f2035;
+			}
+
+			&__delete {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 30px;
+				height: 30px;
+				border-radius: 8px;
+				border: none;
+				background: transparent;
+				color: #a0aab8;
+				cursor: pointer;
+				flex-shrink: 0;
+
+				&:hover {
+					color: #e53935;
+					background: #fff5f5;
+				}
+			}
+		}
+
+		// ── Coupon ────────────────────────────────────────────────────────
+
+		.cart-mob-coupon {
+			display: flex;
+			margin: 12px 16px 0;
+			border: 1.5px solid #e8ecf0;
+			border-radius: 10px;
+			overflow: hidden;
+			background: #ffffff;
+
+			&__input {
+				flex: 1;
+				height: 42px;
+				padding: 0 14px;
+				border: none;
+				font-family: 'DM Sans', sans-serif;
+				font-size: 13px;
+				color: #0f2035;
+				background: transparent;
+				outline: none;
+
+				&::placeholder {
+					color: #a0aab8;
+				}
+			}
+
+			&__btn {
+				height: 42px;
+				padding: 0 16px;
+				background: #0f2035;
+				color: #ffffff;
+				border: none;
+				font-family: 'DM Sans', sans-serif;
+				font-size: 13px;
+				font-weight: 700;
+				cursor: pointer;
+				white-space: nowrap;
+			}
+		}
+
+		// ── Summary ───────────────────────────────────────────────────────
+
+		.cart-mob-summary {
+			margin: 12px 16px 0;
+			background: #ffffff;
+			border-radius: 16px;
+			border: 1px solid #f0f0ee;
+			padding: 20px;
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+
+			&__title {
+				font-size: 14px;
+				font-weight: 800;
+				color: #0f2035;
+				margin: 0;
+				text-align: center;
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
+
+			&__row {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				font-size: 13px;
+				color: #5a6a7e;
+				font-weight: 500;
+
+				&--total {
+					font-size: 15px;
+					font-weight: 800;
+					color: #0f2035;
+				}
+			}
+
+			&__free {
+				color: #16a34a;
+				font-weight: 700;
+			}
+
+			&__divider {
+				height: 1px;
+				background: #f0f0ee;
+			}
+
+			&__checkout-btn {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 6px;
+				width: 100%;
+				height: 46px;
+				background: #0f2035;
+				color: #ffffff;
+				border: none;
+				border-radius: 10px;
+				font-family: 'DM Sans', sans-serif;
+				font-size: 14px;
+				font-weight: 700;
+				cursor: pointer;
+				margin-top: 4px;
+			}
+		}
+	}
+}
+
+/* Truck icon override */
+#mobile-wrap #cart-page .cart-truck-icon {
+	font-size: 26px !important;
+	color: #f59e0b !important;
+	display: block;
+}
