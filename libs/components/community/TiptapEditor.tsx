@@ -63,6 +63,7 @@ const TiptapEditor = () => {
 	const [createBoardArticle] = useMutation(CREATE_BOARD_ARTICLE);
 
 	const editor = useEditor({
+		immediatelyRender: false,
 		extensions: [
 			StarterKit,
 			Underline,

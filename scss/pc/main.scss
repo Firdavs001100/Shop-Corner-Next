@@ -14,7 +14,20 @@
 @import '/scss/pc/community/community.scss';
 @import '/scss/pc/community/detail.scss';
 
+@import '/scss/pc/cs/cs.scss';
+
 @import '/scss/pc/admin/admin.scss';
+
+@import '/scss/pc/mypage/myArticles.scss';
+@import '/scss/pc/mypage/myFavorites.scss';
+@import '/scss/pc/mypage/myOrders.scss';
+@import '/scss/pc/mypage/mypage.scss';
+@import '/scss/pc/mypage/myProfile.scss';
+@import '/scss/pc/mypage/writeArticle.scss';
+
+@import '/scss/pc/member/followers.scss';
+@import '/scss/pc/member/followings.scss';
+@import '/scss/pc/member/memberPage.scss';
 
 body {
 	-ms-overflow-style: none; /* for Internet Explorer, Edge */

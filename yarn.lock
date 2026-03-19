@@ -9898,6 +9898,11 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
+libphonenumber-js@^1.12.40:
+  version "1.12.40"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.12.40.tgz#4b743571462a0f3fdafab7a941d89ee842aa25e0"
+  integrity sha512-HKGs7GowShNls3Zh+7DTr6wYpPk5jC78l508yQQY3e8ZgJChM3A9JZghmMJZuK+5bogSfuTafpjksGSR3aMIEg==
+
 lil-gui@~0.17.0:
   version "0.17.0"
   resolved "https://registry.yarnpkg.com/lil-gui/-/lil-gui-0.17.0.tgz#b41ae55d0023fcd9185f7395a218db0f58189663"

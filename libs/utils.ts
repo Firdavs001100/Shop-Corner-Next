@@ -22,6 +22,15 @@ export const formatSize = (size: string): string => {
 	return labels[size] ?? size;
 };
 
+export const likeProductHandler = async (likeTargetProduct: any, user: any, id: string, isLiked: boolean) => {
+	try {
+		if (!user?._id) throw new Error('Please log in first.');
+		await likeTargetProduct({ variables: { input: id } });
+	} catch (err: any) {
+		console.error(err.message);
+	}
+};
+
 export const likeTargetPropertyHandler = async (likeTargetProperty: any, id: string) => {
 	try {
 		await likeTargetProperty({

@@ -1,0 +1,116 @@
+#mobile-wrap {
+	#my-page {
+		.mp-recently-visited--mobile {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			padding: 16px 16px 40px;
+
+			.mp-recently-visited__mob-header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+
+				&-left {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+				}
+			}
+
+			.mp-recently-visited__mob-title {
+				font-size: 18px;
+				font-weight: 700;
+				color: #0f2035;
+				margin: 0;
+			}
+
+			.mp-recently-visited__mob-count {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				min-width: 24px;
+				height: 24px;
+				background: #0f2035;
+				color: #ffffff;
+				font-size: 11px;
+				font-weight: 700;
+				border-radius: 999px;
+				padding: 0 7px;
+			}
+
+			.mp-recently-visited__mob-list {
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+			}
+
+			.mp-recently-visited__empty {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 12px;
+				padding: 60px 0;
+
+				svg {
+					color: #c0c8d4;
+				}
+
+				p {
+					font-size: 14px;
+					font-weight: 600;
+					color: #0f2035;
+					margin: 0;
+					text-align: center;
+				}
+
+				span {
+					font-size: 12px;
+					color: #8a94a6;
+					text-align: center;
+				}
+			}
+
+			.mp-recently-visited__pagination {
+				display: flex;
+				justify-content: center;
+				padding-top: 8px;
+
+				.MuiPagination-root .MuiPaginationItem-root {
+					font-size: 12px !important;
+					font-weight: 500 !important;
+					color: #555 !important;
+					border-radius: 8px !important;
+					min-width: 32px !important;
+					height: 32px !important;
+					transition: all 0.15s ease !important;
+
+					&:hover {
+						background: #f0f0f0 !important;
+						color: #1a1a1a !important;
+					}
+
+					&.Mui-selected {
+						background: #0f2035 !important;
+						color: #ffffff !important;
+
+						&:hover {
+							background: #1a3a5c !important;
+						}
+					}
+
+					&.MuiPaginationItem-previousNext {
+						background: #ffffff !important;
+						border: 1px solid #e0e0e0 !important;
+						color: #1a1a1a !important;
+
+						&:hover {
+							border-color: #0f2035 !important;
+						}
+					}
+				}
+			}
+		}
+	}
+}
