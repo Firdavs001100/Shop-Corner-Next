@@ -12,7 +12,6 @@ export const SIGNUP = gql`
 			memberStatus
 			memberAuthType
 			memberPhone
-			memberEmail
 			memberNick
 			memberFullName
 			memberImage
@@ -32,6 +31,17 @@ export const SIGNUP = gql`
 			createdAt
 			updatedAt
 			accessToken
+			memberEmail
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
+			meFollowed {
+				followingId
+				followerId
+				myFollowing
+			}
 		}
 	}
 `;
@@ -43,7 +53,6 @@ export const LOGIN = gql`
 			memberType
 			memberAuthType
 			memberPhone
-			memberEmail
 			memberNick
 			memberFullName
 			memberImage
@@ -64,6 +73,17 @@ export const LOGIN = gql`
 			updatedAt
 			memberStatus
 			accessToken
+			memberEmail
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
+			meFollowed {
+				followingId
+				followerId
+				myFollowing
+			}
 		}
 	}
 `;
@@ -76,7 +96,6 @@ export const UPDATE_MEMBER = gql`
 			memberStatus
 			memberAuthType
 			memberPhone
-			memberEmail
 			memberNick
 			memberFullName
 			memberImage
@@ -96,6 +115,17 @@ export const UPDATE_MEMBER = gql`
 			createdAt
 			updatedAt
 			accessToken
+			memberEmail
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
+			meFollowed {
+				followingId
+				followerId
+				myFollowing
+			}
 		}
 	}
 `;
@@ -108,7 +138,6 @@ export const LIKE_TARGET_MEMBER = gql`
 			memberStatus
 			memberAuthType
 			memberPhone
-			memberEmail
 			memberNick
 			memberFullName
 			memberImage
@@ -128,6 +157,17 @@ export const LIKE_TARGET_MEMBER = gql`
 			createdAt
 			updatedAt
 			accessToken
+			memberEmail
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
+			meFollowed {
+				followingId
+				followerId
+				myFollowing
+			}
 		}
 	}
 `;
@@ -159,7 +199,6 @@ export const LIKE_TARGET_PRODUCT = gql`
 			productTags
 			productRank
 			productSales
-			productRating
 			isDiscounted
 			createdAt
 			updatedAt
@@ -168,6 +207,8 @@ export const LIKE_TARGET_PRODUCT = gql`
 				likeRefId
 				myFavorite
 			}
+			productComments
+			productRating
 		}
 	}
 `;
@@ -197,7 +238,6 @@ export const CREATE_BOARD_ARTICLE = gql`
 				memberStatus
 				memberAuthType
 				memberPhone
-				memberEmail
 				memberNick
 				memberFullName
 				memberImage
@@ -217,6 +257,17 @@ export const CREATE_BOARD_ARTICLE = gql`
 				createdAt
 				updatedAt
 				accessToken
+				memberEmail
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
 			}
 			meLiked {
 				memberId
@@ -242,6 +293,48 @@ export const UPDATE_BOARD_ARTICLE = gql`
 			memberId
 			createdAt
 			updatedAt
+			memberData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberEmail
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
+			}
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
 		}
 	}
 `;
@@ -267,7 +360,6 @@ export const LIKE_TARGET_ARTICLE = gql`
 				memberStatus
 				memberAuthType
 				memberPhone
-				memberEmail
 				memberNick
 				memberFullName
 				memberImage
@@ -287,6 +379,17 @@ export const LIKE_TARGET_ARTICLE = gql`
 				createdAt
 				updatedAt
 				accessToken
+				memberEmail
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
 			}
 			meLiked {
 				memberId
@@ -309,7 +412,6 @@ export const CREATE_COMMENT = gql`
 			commentGroup
 			commentContent
 			commentRefId
-			commentRating
 			memberId
 			createdAt
 			updatedAt
@@ -319,7 +421,6 @@ export const CREATE_COMMENT = gql`
 				memberStatus
 				memberAuthType
 				memberPhone
-				memberEmail
 				memberNick
 				memberFullName
 				memberImage
@@ -339,6 +440,23 @@ export const CREATE_COMMENT = gql`
 				createdAt
 				updatedAt
 				accessToken
+				memberEmail
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
+			}
+			commentRating
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
 			}
 		}
 	}
@@ -352,7 +470,6 @@ export const UPDATE_COMMENT = gql`
 			commentGroup
 			commentContent
 			commentRefId
-			commentRating
 			memberId
 			createdAt
 			updatedAt
@@ -362,7 +479,6 @@ export const UPDATE_COMMENT = gql`
 				memberStatus
 				memberAuthType
 				memberPhone
-				memberEmail
 				memberNick
 				memberFullName
 				memberImage
@@ -382,6 +498,23 @@ export const UPDATE_COMMENT = gql`
 				createdAt
 				updatedAt
 				accessToken
+				memberEmail
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
+			}
+			commentRating
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
 			}
 		}
 	}
@@ -399,6 +532,53 @@ export const SUBSCRIBE = gql`
 			followerId
 			createdAt
 			updatedAt
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
+			meFollowed {
+				followingId
+				followerId
+				myFollowing
+			}
+			followerData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberEmail
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
+			}
 		}
 	}
 `;
@@ -411,6 +591,53 @@ export const UNSUBSCRIBE = gql`
 			followerId
 			createdAt
 			updatedAt
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
+			meFollowed {
+				followingId
+				followerId
+				myFollowing
+			}
+			followerData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberEmail
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
+			}
 		}
 	}
 `;
@@ -418,6 +645,21 @@ export const UNSUBSCRIBE = gql`
 /**************************
  *         NOTICE         *
  *************************/
+
+export const CREATE_NOTICE = gql`
+	mutation CreateNotice($input: NoticeInput!) {
+		createNotice(input: $input) {
+			_id
+			noticeCategory
+			noticeStatus
+			noticeTitle
+			noticeContent
+			memberId
+			createdAt
+			updatedAt
+		}
+	}
+`;
 
 /**************************
  *      NOTIFICATION      *

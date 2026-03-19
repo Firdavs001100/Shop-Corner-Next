@@ -12,7 +12,6 @@ export const UPDATE_MEMBER_BY_ADMIN = gql`
 			memberStatus
 			memberAuthType
 			memberPhone
-			memberEmail
 			memberNick
 			memberFullName
 			memberImage
@@ -32,6 +31,17 @@ export const UPDATE_MEMBER_BY_ADMIN = gql`
 			createdAt
 			updatedAt
 			accessToken
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
+			meFollowed {
+				followingId
+				followerId
+				myFollowing
+			}
+			memberEmail
 		}
 	}
 `;
@@ -63,10 +73,16 @@ export const CREATE_PRODUCT_BY_ADMIN = gql`
 			productTags
 			productRank
 			productSales
-			productRating
 			isDiscounted
 			createdAt
 			updatedAt
+			productComments
+			productRating
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
 		}
 	}
 `;
@@ -94,10 +110,16 @@ export const UPDATE_PRODUCT_BY_ADMIN = gql`
 			productTags
 			productRank
 			productSales
-			productRating
 			isDiscounted
 			createdAt
 			updatedAt
+			productRating
+			productComments
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
 		}
 	}
 `;
@@ -125,10 +147,16 @@ export const REMOVE_PRODUCT_BY_ADMIN = gql`
 			productTags
 			productRank
 			productSales
-			productRating
 			isDiscounted
 			createdAt
 			updatedAt
+			productComments
+			productRating
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
 		}
 	}
 `;
@@ -152,6 +180,48 @@ export const UPDATE_BOARD_ARTICLE_BY_ADMIN = gql`
 			memberId
 			createdAt
 			updatedAt
+			memberData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberEmail
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
+			}
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
 		}
 	}
 `;
@@ -171,6 +241,48 @@ export const REMOVE_BOARD_ARTICLE_BY_ADMIN = gql`
 			memberId
 			createdAt
 			updatedAt
+			memberData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberEmail
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
+			}
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
 		}
 	}
 `;
@@ -180,17 +292,59 @@ export const REMOVE_BOARD_ARTICLE_BY_ADMIN = gql`
  *************************/
 
 export const REMOVE_COMMENT_BY_ADMIN = gql`
-	mutation RemoveCommentByAdmin($input: String!) {
-		removeCommentByAdmin(commentId: $input) {
+	mutation RemoveCommentByAdmin {
+		removeCommentByAdmin(commentId: "69a0c9b38d4a9870b98aeaa6") {
 			_id
 			commentStatus
 			commentGroup
 			commentContent
 			commentRefId
-			commentRating
 			memberId
 			createdAt
 			updatedAt
+			commentRating
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
+			memberData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberEmail
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
+			}
 		}
 	}
 `;

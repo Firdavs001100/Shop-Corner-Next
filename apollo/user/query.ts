@@ -12,7 +12,6 @@ export const GET_MEMBER = gql`
 			memberStatus
 			memberAuthType
 			memberPhone
-			memberEmail
 			memberNick
 			memberFullName
 			memberImage
@@ -32,6 +31,29 @@ export const GET_MEMBER = gql`
 			createdAt
 			updatedAt
 			accessToken
+			_id
+			memberType
+			memberStatus
+			memberAuthType
+			memberPhone
+			memberNick
+			memberFullName
+			memberImage
+			memberAddress
+			memberDesc
+			memberArticles
+			memberFollowers
+			memberFollowings
+			memberPoints
+			memberLikes
+			memberViews
+			memberComments
+			memberRank
+			memberWarnings
+			memberBlocks
+			deletedAt
+			createdAt
+			updatedAt
 			meLiked {
 				memberId
 				likeRefId
@@ -42,6 +64,7 @@ export const GET_MEMBER = gql`
 				followerId
 				myFollowing
 			}
+			memberEmail
 		}
 	}
 `;
@@ -73,7 +96,6 @@ export const GET_PRODUCT = gql`
 			productTags
 			productRank
 			productSales
-			productRating
 			isDiscounted
 			createdAt
 			updatedAt
@@ -82,6 +104,8 @@ export const GET_PRODUCT = gql`
 				likeRefId
 				myFavorite
 			}
+			productComments
+			productRating
 		}
 	}
 `;
@@ -110,10 +134,16 @@ export const GET_PRODUCTS = gql`
 				productTags
 				productRank
 				productSales
-				productRating
 				isDiscounted
 				createdAt
 				updatedAt
+				productComments
+				productRating
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
 			}
 			metaCounter {
 				total
@@ -146,7 +176,6 @@ export const GET_FAVORITES = gql`
 				productTags
 				productRank
 				productSales
-				productRating
 				isDiscounted
 				createdAt
 				updatedAt
@@ -155,6 +184,8 @@ export const GET_FAVORITES = gql`
 					likeRefId
 					myFavorite
 				}
+				productComments
+				productRating
 			}
 			metaCounter {
 				total
@@ -187,7 +218,6 @@ export const GET_VISITED = gql`
 				productTags
 				productRank
 				productSales
-				productRating
 				isDiscounted
 				createdAt
 				updatedAt
@@ -196,6 +226,8 @@ export const GET_VISITED = gql`
 					likeRefId
 					myFavorite
 				}
+				productComments
+				productRating
 			}
 			metaCounter {
 				total
@@ -229,7 +261,6 @@ export const GET_BOARD_ARTICLE = gql`
 				memberStatus
 				memberAuthType
 				memberPhone
-				memberEmail
 				memberNick
 				memberFullName
 				memberImage
@@ -249,6 +280,16 @@ export const GET_BOARD_ARTICLE = gql`
 				createdAt
 				updatedAt
 				accessToken
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
 			}
 			meLiked {
 				memberId
@@ -301,6 +342,16 @@ export const GET_BOARD_ARTICLES = gql`
 					createdAt
 					updatedAt
 					accessToken
+					meLiked {
+						memberId
+						likeRefId
+						myFavorite
+					}
+					meFollowed {
+						followingId
+						followerId
+						myFollowing
+					}
 				}
 				meLiked {
 					memberId
@@ -328,11 +379,84 @@ export const GET_COMMENTS = gql`
 				commentGroup
 				commentContent
 				commentRefId
-				commentRating
 				memberId
 				createdAt
 				updatedAt
 				memberData {
+					_id
+					memberType
+					memberStatus
+					memberAuthType
+					memberPhone
+					memberNick
+					memberFullName
+					memberImage
+					memberAddress
+					memberDesc
+					memberArticles
+					memberFollowers
+					memberFollowings
+					memberPoints
+					memberLikes
+					memberViews
+					memberComments
+					memberRank
+					memberWarnings
+					memberBlocks
+					deletedAt
+					createdAt
+					updatedAt
+					accessToken
+					memberEmail
+					meLiked {
+						memberId
+						likeRefId
+						myFavorite
+					}
+					meFollowed {
+						followingId
+						followerId
+						myFollowing
+					}
+				}
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				commentRating
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;
+
+/**************************
+ *         FOLLOW        *
+ *************************/
+
+export const GET_MEMBER_FOLLOWINGS = gql`
+	query GetMemberFollowings($input: FollowInquiry!) {
+		getMemberFollowings(input: $input) {
+			list {
+				_id
+				followingId
+				followerId
+				createdAt
+				updatedAt
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
+				followingData {
 					_id
 					memberType
 					memberStatus
@@ -358,33 +482,17 @@ export const GET_COMMENTS = gql`
 					createdAt
 					updatedAt
 					accessToken
+					meLiked {
+						memberId
+						likeRefId
+						myFavorite
+					}
+					meFollowed {
+						followingId
+						followerId
+						myFollowing
+					}
 				}
-				meLiked {
-					memberId
-					likeRefId
-					myFavorite
-				}
-			}
-			metaCounter {
-				total
-			}
-		}
-	}
-`;
-
-/**************************
- *         FOLLOW        *
- *************************/
-
-export const GET_MEMBER_FOLLOWINGS = gql`
-	query GetMemberFollowings($input: FollowInquiry!) {
-		getMemberFollowings(input: $input) {
-			list {
-				_id
-				followingId
-				followerId
-				createdAt
-				updatedAt
 			}
 			metaCounter {
 				total
@@ -402,6 +510,53 @@ export const GET_MEMBER_FOLLOWERS = gql`
 				followerId
 				createdAt
 				updatedAt
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+				meFollowed {
+					followingId
+					followerId
+					myFollowing
+				}
+				followerData {
+					_id
+					memberType
+					memberStatus
+					memberAuthType
+					memberPhone
+					memberEmail
+					memberNick
+					memberFullName
+					memberImage
+					memberAddress
+					memberDesc
+					memberArticles
+					memberFollowers
+					memberFollowings
+					memberPoints
+					memberLikes
+					memberViews
+					memberComments
+					memberRank
+					memberWarnings
+					memberBlocks
+					deletedAt
+					createdAt
+					updatedAt
+					accessToken
+					meLiked {
+						memberId
+						likeRefId
+						myFavorite
+					}
+					meFollowed {
+						followingId
+						followerId
+						myFollowing
+					}
+				}
 			}
 			metaCounter {
 				total
