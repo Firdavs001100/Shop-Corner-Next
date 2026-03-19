@@ -88,6 +88,7 @@ $font-body: 'DM Sans', sans-serif;
 	align-items: flex-end;
 	gap: 12px;
 	font-family: $font-body;
+	pointer-events: none;
 
 	@media (max-width: 768px) {
 		bottom: 20px;
@@ -112,6 +113,7 @@ $font-body: 'DM Sans', sans-serif;
 	filter: blur(4px);
 	transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
 		filter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+	pointer-events: none;
 
 	@media (max-width: 768px) {
 		width: calc(100vw - 32px);
@@ -516,6 +518,7 @@ $font-body: 'DM Sans', sans-serif;
 	flex-shrink: 0;
 	transition: background 0.25s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
 	animation: toggleAppear 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+	pointer-events: all;
 
 	@keyframes toggleAppear {
 		from {

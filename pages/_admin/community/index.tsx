@@ -7,11 +7,9 @@ import { toastSmallSuccess, toastErrorHandling } from '../../../libs/toast';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
 import { GET_ALL_BOARD_ARTICLES_BY_ADMIN } from '../../../apollo/admin/query';
 import { UPDATE_BOARD_ARTICLE_BY_ADMIN, REMOVE_BOARD_ARTICLE_BY_ADMIN } from '../../../apollo/admin/mutation';
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
+import { BoardArticle } from '../../../libs/types/board-article/board-article';
 
 const fd = (d: Date) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
 const stripHtml = (html: string) =>
 	html
 		.replace(/<[^>]*>/g, ' ')
@@ -31,8 +29,6 @@ const CATEGORY_META: Record<BoardArticleCategory, { label: string; bg: string; c
 	[BoardArticleCategory.HELP]: { label: 'Help', bg: '#fee2e2', color: '#b91c1c' },
 	[BoardArticleCategory.SHOWCASE]: { label: 'Showcase', bg: '#fef9c3', color: '#a16207' },
 };
-
-// ── Category Icons (matching community page) ──────────────────────────────────
 
 const CATEGORY_ICONS: Record<BoardArticleCategory, React.ReactNode> = {
 	[BoardArticleCategory.QUESTION]: (
@@ -110,8 +106,6 @@ const CATEGORY_ICONS: Record<BoardArticleCategory, React.ReactNode> = {
 	),
 };
 
-// ── Chips ─────────────────────────────────────────────────────────────────────
-
 const StatusChip = ({ status }: { status: BoardArticleStatus }) => {
 	const m = STATUS_META[status] ?? STATUS_META[BoardArticleStatus.ACTIVE];
 	return (
@@ -130,8 +124,6 @@ const CategoryBadge = ({ category }: { category: BoardArticleCategory }) => {
 		</span>
 	);
 };
-
-// ── Confirm Delete ────────────────────────────────────────────────────────────
 
 const ConfirmDelete = ({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) => (
 	<div className="admin-modal-overlay" onClick={onCancel}>
@@ -175,20 +167,6 @@ const ConfirmDelete = ({ onConfirm, onCancel }: { onConfirm: () => void; onCance
 	</div>
 );
 
-// ── Create Article Modal ──────────────────────────────────────────────────────
-
-const EMPTY_ARTICLE = {
-	articleCategory: BoardArticleCategory.QUESTION,
-	articleTitle: '',
-	articleContent: '',
-};
-
-// Note: article creation is handled via user mutation (not admin),
-// since BoardArticleInput doesn't have adminCreate — we use the regular one
-// but you can swap this with CREATE_BOARD_ARTICLE if available
-
-// ── Article View Modal ────────────────────────────────────────────────────────
-
 const ArticleViewModal = ({
 	article,
 	onClose,
@@ -197,19 +175,18 @@ const ArticleViewModal = ({
 }: {
 	article: any;
 	onClose: () => void;
-	onUpdateStatus: (id: string, status: BoardArticleStatus) => Promise<void>;
+	onUpdateStatus: (id: string, s: BoardArticleStatus) => Promise<void>;
 	onDelete: (id: string) => void;
 }) => {
-	// keep a local copy of status so the buttons update immediately
 	const [localStatus, setLocalStatus] = useState<BoardArticleStatus>(article.articleStatus);
 	const [updating, setUpdating] = useState(false);
 
-	const handleStatus = async (status: BoardArticleStatus) => {
-		if (status === localStatus) return;
+	const handleStatus = async (s: BoardArticleStatus) => {
+		if (s === localStatus) return;
 		setUpdating(true);
 		try {
-			await onUpdateStatus(article._id, status);
-			setLocalStatus(status);
+			await onUpdateStatus(article._id, s);
+			setLocalStatus(s);
 		} finally {
 			setUpdating(false);
 		}
@@ -218,7 +195,6 @@ const ArticleViewModal = ({
 	return (
 		<div className="admin-modal-overlay" onClick={onClose}>
 			<div className="aa-view-modal" onClick={(e) => e.stopPropagation()}>
-				{/* Header */}
 				<div className="aa-view-modal__header">
 					<div className="aa-view-modal__header-meta">
 						<CategoryBadge category={article.articleCategory} />
@@ -239,10 +215,7 @@ const ArticleViewModal = ({
 						</svg>
 					</button>
 				</div>
-
-				{/* Body */}
 				<div className="aa-view-modal__body">
-					{/* Author */}
 					<div className="aa-view-modal__author">
 						{article.memberData?.memberImage ? (
 							<img
@@ -260,25 +233,17 @@ const ArticleViewModal = ({
 							<p className="aa-view-modal__author-date">{fd(article.createdAt)}</p>
 						</div>
 					</div>
-
-					{/* Title */}
 					<h3 className="aa-view-modal__title">{article.articleTitle}</h3>
-
-					{/* Images from articleImage array (cover images, not tiptap) */}
 					{article.articleImage && article.articleImage.length > 0 && (
 						<div className="aa-view-modal__images">
 							{article.articleImage.map((img: string, i: number) => (
 								<div key={i} className="aa-view-modal__img-wrap">
-									<img src={`${NEXT_PUBLIC_API_URL}/${img}`} alt={`img-${i}`} />
+									<img src={`${NEXT_PUBLIC_API_URL}/${img}`} alt="" />
 								</div>
 							))}
 						</div>
 					)}
-
-					{/* Content — rendered HTML with constrained images */}
 					<div className="aa-view-modal__content" dangerouslySetInnerHTML={{ __html: article.articleContent }} />
-
-					{/* Stats */}
 					<div className="aa-view-modal__stats">
 						<span className="aa-view-modal__stat">
 							<svg
@@ -327,8 +292,6 @@ const ArticleViewModal = ({
 							{article.articleComments} comments
 						</span>
 					</div>
-
-					{/* Status controls */}
 					<div className="aa-view-modal__controls">
 						<p className="aa-view-modal__control-label">Change Status</p>
 						<div className="aa-view-modal__status-btns">
@@ -351,8 +314,6 @@ const ArticleViewModal = ({
 							))}
 						</div>
 					</div>
-
-					{/* Footer */}
 					<div className="ap-modal__footer">
 						<button className="ap-btn ap-btn--danger" onClick={() => onDelete(article._id)}>
 							Delete Permanently
@@ -367,11 +328,9 @@ const ArticleViewModal = ({
 	);
 };
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
-
 const AdminArticles: NextPage = () => {
 	const [page, setPage] = useState(1);
-	const [articles, setArticles] = useState<any[]>([]);
+	const [articles, setArticles] = useState<BoardArticle[]>([]);
 	const [total, setTotal] = useState(0);
 	const [categoryFilter, setCategoryFilter] = useState<BoardArticleCategory | ''>('');
 	const [statusFilter, setStatusFilter] = useState<BoardArticleStatus | ''>('');
@@ -407,12 +366,10 @@ const AdminArticles: NextPage = () => {
 	const [updateArticle] = useMutation(UPDATE_BOARD_ARTICLE_BY_ADMIN);
 	const [removeArticle] = useMutation(REMOVE_BOARD_ARTICLE_BY_ADMIN);
 
-	// Returns a promise so the view modal can await and update its local state
 	const handleUpdateStatus = async (id: string, articleStatus: BoardArticleStatus): Promise<void> => {
 		await updateArticle({ variables: { input: { _id: id, articleStatus } } });
 		toastSmallSuccess('Status updated', 800);
-		// update table row too
-		setArticles((prev) => prev.map((a) => (a._id === id ? { ...a, articleStatus } : a)));
+		setArticles((p) => p.map((a) => (a._id === id ? { ...a, articleStatus } : a)));
 		refetch();
 	};
 
@@ -420,7 +377,7 @@ const AdminArticles: NextPage = () => {
 		if (!deleteTarget) return;
 		try {
 			await removeArticle({ variables: { input: deleteTarget } });
-			toastSmallSuccess('Article deleted', 800);
+			toastSmallSuccess('Deleted', 800);
 			setDeleteTarget(null);
 			setViewTarget(null);
 			refetch();
@@ -433,7 +390,6 @@ const AdminArticles: NextPage = () => {
 
 	return (
 		<div className="admin-section">
-			{/* Header */}
 			<div className="ap-page-header">
 				<div>
 					<h1 className="ap-page-header__title">Articles</h1>
@@ -444,7 +400,6 @@ const AdminArticles: NextPage = () => {
 				</div>
 			</div>
 
-			{/* Category tabs */}
 			<div className="an-category-tabs">
 				<button
 					className={`an-category-tab ${categoryFilter === '' ? 'an-category-tab--active' : ''}`}
@@ -463,7 +418,6 @@ const AdminArticles: NextPage = () => {
 				))}
 			</div>
 
-			{/* Toolbar */}
 			<div className="ap-toolbar">
 				<div className="ap-toolbar__filters" style={{ marginLeft: 0 }}>
 					<select
@@ -481,7 +435,6 @@ const AdminArticles: NextPage = () => {
 				</div>
 			</div>
 
-			{/* Table */}
 			<div className="ap-table-card">
 				{loading ? (
 					<div className="ap-skeleton">
@@ -532,7 +485,6 @@ const AdminArticles: NextPage = () => {
 								) : (
 									articles.map((a) => (
 										<tr key={a._id} className="ap-table__row">
-											{/* Article — thumbnail OR category icon */}
 											<td>
 												<div className="aa-article-cell">
 													{a.articleImage?.[0] ? (
@@ -552,13 +504,10 @@ const AdminArticles: NextPage = () => {
 													)}
 													<div>
 														<p className="aa-article-cell__title">{a.articleTitle}</p>
-														{/* Strip HTML for preview — no tiptap images */}
 														<p className="aa-article-cell__preview">{stripHtml(a.articleContent)}</p>
 													</div>
 												</div>
 											</td>
-
-											{/* Author */}
 											<td>
 												<div className="ap-product-cell">
 													{a.memberData?.memberImage ? (
@@ -584,13 +533,9 @@ const AdminArticles: NextPage = () => {
 													</span>
 												</div>
 											</td>
-
-											{/* Category */}
 											<td>
 												<CategoryBadge category={a.articleCategory} />
 											</td>
-
-											{/* Stats */}
 											<td>
 												<span className="ap-num-cell">{a.articleViews}</span>
 											</td>
@@ -600,8 +545,6 @@ const AdminArticles: NextPage = () => {
 											<td>
 												<span className="ap-num-cell">{a.articleComments}</span>
 											</td>
-
-											{/* Status — inline select */}
 											<td>
 												<div className="ao-select-wrap">
 													<StatusChip status={a.articleStatus} />
@@ -624,13 +567,9 @@ const AdminArticles: NextPage = () => {
 													</select>
 												</div>
 											</td>
-
-											{/* Date */}
 											<td>
 												<span className="ap-date-cell">{fd(a.createdAt)}</span>
 											</td>
-
-											{/* Actions */}
 											<td>
 												<div className="ap-row-actions">
 													<button className="ap-row-btn ap-row-btn--edit" onClick={() => setViewTarget(a)}>
@@ -677,7 +616,6 @@ const AdminArticles: NextPage = () => {
 				)}
 			</div>
 
-			{/* Pagination */}
 			{totalPages > 1 && (
 				<div className="ap-pagination">
 					<button className="ap-pagination__nav" disabled={page === 1} onClick={() => setPage(page - 1)}>
@@ -700,7 +638,6 @@ const AdminArticles: NextPage = () => {
 				</div>
 			)}
 
-			{/* View Modal */}
 			{viewTarget && (
 				<ArticleViewModal
 					article={viewTarget}
@@ -712,8 +649,6 @@ const AdminArticles: NextPage = () => {
 					}}
 				/>
 			)}
-
-			{/* Confirm Delete */}
 			{deleteTarget && <ConfirmDelete onConfirm={handleDeleteConfirm} onCancel={() => setDeleteTarget(null)} />}
 		</div>
 	);
