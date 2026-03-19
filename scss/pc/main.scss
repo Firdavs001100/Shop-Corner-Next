@@ -14,6 +14,8 @@
 @import '/scss/pc/community/community.scss';
 @import '/scss/pc/community/detail.scss';
 
+@import '/scss/pc/admin/admin.scss';
+
 body {
 	-ms-overflow-style: none; /* for Internet Explorer, Edge */
 	scrollbar-width: none; /* for Firefox */
@@ -153,6 +155,98 @@ body::-webkit-scrollbar {
 					color: #ffffff;
 				}
 			}
+		}
+	}
+
+	// ─── Search ───────────────────────────────────────────────────────────────────
+
+	.search-wrap {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+
+	.search-bar {
+		display: flex;
+		align-items: center;
+		background: rgba(255, 255, 255, 0.15);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		border-radius: 999px;
+		overflow: hidden;
+		animation: searchExpand 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+		@keyframes searchExpand {
+			from {
+				opacity: 0;
+				width: 40px;
+			}
+			to {
+				opacity: 1;
+				width: 260px;
+			}
+		}
+
+		&__input {
+			width: 200px;
+			height: 36px;
+			background: none;
+			border: none;
+			outline: none;
+			padding: 0 14px;
+			font-family: $font-body;
+			font-size: 13px;
+			color: #ffffff;
+
+			&::placeholder {
+				color: rgba(255, 255, 255, 0.55);
+			}
+		}
+
+		&__btn {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 36px;
+			height: 36px;
+			background: none;
+			border: none;
+			cursor: pointer;
+			color: #ffffff;
+			flex-shrink: 0;
+			transition: background 0.15s;
+
+			&:hover {
+				background: rgba(255, 255, 255, 0.1);
+			}
+		}
+
+		&__close {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			background: none;
+			border: none;
+			cursor: pointer;
+			color: rgba(255, 255, 255, 0.6);
+			flex-shrink: 0;
+			margin-right: 4px;
+			border-radius: 50%;
+			transition: all 0.15s;
+
+			&:hover {
+				color: #ffffff;
+				background: rgba(255, 255, 255, 0.1);
+			}
+		}
+	}
+
+	// Scrolled state — dark background so adjust colors
+	.site-header--scrolled {
+		.search-bar {
+			background: rgba(255, 255, 255, 0.08);
+			border-color: rgba(255, 255, 255, 0.2);
 		}
 	}
 
