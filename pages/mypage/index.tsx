@@ -4,18 +4,18 @@ import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import MyFavorites from '../../libs/components/mypage/MyFavorites';
+import MyOrders from '../../libs/components/mypage/MyOrders';
 import RecentlyVisited from '../../libs/components/mypage/RecentlyVisited';
 import MyProfile from '../../libs/components/mypage/MyProfile';
 import MyArticles from '../../libs/components/mypage/MyArticles';
 import WriteArticle from '../../libs/components/mypage/WriteArticle';
 import MemberFollowers from '../../libs/components/member/MemberFollowers';
 import MemberFollowings from '../../libs/components/member/MemberFollowings';
-import { useMutation, useReactiveVar } from '@apollo/client';
+import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
-import { toastErrorHandling, toastSmallSuccess } from '../../libs/toast';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { LIKE_TARGET_MEMBER, SUBSCRIBE, UNSUBSCRIBE } from '../../apollo/user/mutation';
-import { Messages, NEXT_PUBLIC_API_URL } from '../../libs/config';
+import { NEXT_PUBLIC_API_URL } from '../../libs/config';
+import { MemberType } from '../../libs/enums/member.enum';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
@@ -23,7 +23,9 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -32,6 +34,13 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const MENU_ITEMS = [
+	{
+		group: 'Account',
+		items: [
+			{ key: 'myProfile', label: 'My Profile', icon: <PersonOutlineIcon /> },
+			{ key: 'myOrders', label: 'My Orders', icon: <ReceiptLongOutlinedIcon /> },
+		],
+	},
 	{
 		group: 'Content',
 		items: [
@@ -53,24 +62,16 @@ const MENU_ITEMS = [
 			{ key: 'followings', label: 'Followings', icon: <PersonAddAltOutlinedIcon /> },
 		],
 	},
-	{
-		group: 'Account',
-		items: [{ key: 'myProfile', label: 'My Profile', icon: <PersonOutlineIcon /> }],
-	},
 ];
 
-// Flattened for the mobile tab strip
 const FLAT_MENU = MENU_ITEMS.flatMap((g) => g.items);
 
 const MyPage: NextPage = () => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
-	const category: string = (router.query?.category as string) ?? 'myArticles';
-
-	const [subscribe] = useMutation(SUBSCRIBE);
-	const [unsubscribe] = useMutation(UNSUBSCRIBE);
-	const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
+	const category = (router.query?.category as string) ?? 'myProfile';
+	const isAdmin = user?.memberType === MemberType.ADMIN;
 
 	useEffect(() => {
 		if (!user._id) router.push('/').then();
@@ -80,54 +81,10 @@ const MyPage: NextPage = () => {
 		router.push({ pathname: '/mypage', query: { category: key } }, undefined, { shallow: true });
 	};
 
-	const likeMemberHandler = async (id: string, refetch: any, query: any) => {
-		try {
-			if (!id) return;
-			if (!user._id) throw new Error(Messages.error2);
-			await likeTargetMember({ variables: { input: id } });
-			toastSmallSuccess('Success', 800);
-			await refetch({ input: query });
-		} catch (err: any) {
-			toastErrorHandling(err);
-		}
-	};
-
-	const subscribeHandler = async (id: string, refetch: any, query: any) => {
-		try {
-			if (!id) throw new Error(Messages.error1);
-			if (!user._id) throw new Error(Messages.error2);
-			await subscribe({ variables: { input: id } });
-			toastSmallSuccess('Subscribed!', 800);
-			await refetch({ input: query });
-		} catch (err: any) {
-			toastErrorHandling(err);
-		}
-	};
-
-	const unsubscribeHandler = async (id: string, refetch: any, query: any) => {
-		try {
-			if (!id) throw new Error(Messages.error1);
-			if (!user._id) throw new Error(Messages.error2);
-			await unsubscribe({ variables: { input: id } });
-			toastSmallSuccess('Unsubscribed!', 800);
-			await refetch({ input: query });
-		} catch (err: any) {
-			toastErrorHandling(err);
-		}
-	};
-
-	const redirectToMemberPageHandler = async (memberId: string) => {
-		try {
-			if (memberId === user?._id) await router.push(`/mypage?memberId=${memberId}`);
-			else await router.push(`/member?memberId=${memberId}`);
-		} catch (err: any) {
-			toastErrorHandling(err);
-		}
-	};
-
 	const renderContent = () => (
 		<>
 			{category === 'myProfile' && <MyProfile />}
+			{category === 'myOrders' && <MyOrders />}
 			{category === 'myArticles' && <MyArticles />}
 			{category === 'writeArticle' && <WriteArticle />}
 			{category === 'myFavorites' && <MyFavorites />}
@@ -137,7 +94,8 @@ const MyPage: NextPage = () => {
 		</>
 	);
 
-	// u2500u2500 MOBILE u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500
+	// ── MOBILE ────────────────────────────────────────────────────────────────
+
 	if (device === 'mobile') {
 		return (
 			<div id="my-page">
@@ -158,6 +116,12 @@ const MyPage: NextPage = () => {
 					<div className="mp-mob-header__info">
 						<span className="mp-mob-header__nick">{user?.memberNick ?? 'Member'}</span>
 						<span className="mp-mob-header__email">{user?.memberEmail ?? ''}</span>
+						{isAdmin && (
+							<button className="mp-mob-header__admin-btn" onClick={() => router.push('/_admin')}>
+								<AdminPanelSettingsOutlinedIcon sx={{ fontSize: 14 }} />
+								Admin Panel
+							</button>
+						)}
 					</div>
 				</div>
 
@@ -181,14 +145,15 @@ const MyPage: NextPage = () => {
 		);
 	}
 
-	// u2500u2500 DESKTOP u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500
+	// ── DESKTOP ───────────────────────────────────────────────────────────────
+
 	return (
 		<div id="my-page">
 			<div className="container">
 				<div className="mp-layout">
-					{/* u2500u2500 SIDEBAR u2500u2500 */}
+					{/* ── SIDEBAR ── */}
 					<aside className="mp-sidebar">
-						{/* Profile */}
+						{/* Profile card */}
 						<div className="mp-sidebar__profile">
 							<div className="mp-sidebar__avatar-wrap">
 								{user?.memberImage ? (
@@ -205,12 +170,13 @@ const MyPage: NextPage = () => {
 							<div className="mp-sidebar__user-info">
 								<span className="mp-sidebar__nick">{user?.memberNick ?? 'Member'}</span>
 								<span className="mp-sidebar__email">{user?.memberEmail ?? ''}</span>
+								{isAdmin && <span className="mp-sidebar__admin-badge">Administrator</span>}
 							</div>
 						</div>
 
 						<div className="mp-sidebar__divider" />
 
-						{/* Grouped nav */}
+						{/* Nav */}
 						<nav className="mp-sidebar__nav">
 							{MENU_ITEMS.map((group) => (
 								<React.Fragment key={group.group}>
@@ -228,9 +194,20 @@ const MyPage: NextPage = () => {
 								</React.Fragment>
 							))}
 						</nav>
+
+						{/* Admin panel link */}
+						{isAdmin && (
+							<>
+								<div className="mp-sidebar__divider" />
+								<button className="mp-sidebar__admin-btn" onClick={() => router.push('/_admin')}>
+									<AdminPanelSettingsOutlinedIcon sx={{ fontSize: 18 }} />
+									<span>Admin Panel</span>
+								</button>
+							</>
+						)}
 					</aside>
 
-					{/* u2500u2500 MAIN u2500u2500 */}
+					{/* ── MAIN ── */}
 					<main className="mp-main">{renderContent()}</main>
 				</div>
 			</div>
