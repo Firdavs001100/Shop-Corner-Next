@@ -4,17 +4,18 @@ import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import MyFavorites from '../../libs/components/mypage/MyFavorites';
-import MyOrders from '../../libs/components/mypage/MyOrders';
 import RecentlyVisited from '../../libs/components/mypage/RecentlyVisited';
 import MyProfile from '../../libs/components/mypage/MyProfile';
 import MyArticles from '../../libs/components/mypage/MyArticles';
 import WriteArticle from '../../libs/components/mypage/WriteArticle';
 import MemberFollowers from '../../libs/components/member/MemberFollowers';
 import MemberFollowings from '../../libs/components/member/MemberFollowings';
-import { useReactiveVar } from '@apollo/client';
+import { useMutation, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
+import { toastErrorHandling, toastSmallSuccess } from '../../libs/toast';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { NEXT_PUBLIC_API_URL } from '../../libs/config';
+import { LIKE_TARGET_MEMBER, SUBSCRIBE, UNSUBSCRIBE } from '../../apollo/user/mutation';
+import { Messages, NEXT_PUBLIC_API_URL } from '../../libs/config';
 import { MemberType } from '../../libs/enums/member.enum';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
@@ -23,7 +24,6 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 
@@ -36,10 +36,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 const MENU_ITEMS = [
 	{
 		group: 'Account',
-		items: [
-			{ key: 'myProfile', label: 'My Profile', icon: <PersonOutlineIcon /> },
-			{ key: 'myOrders', label: 'My Orders', icon: <ReceiptLongOutlinedIcon /> },
-		],
+		items: [{ key: 'myProfile', label: 'My Profile', icon: <PersonOutlineIcon /> }],
 	},
 	{
 		group: 'Content',
@@ -70,10 +67,15 @@ const MyPage: NextPage = () => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
-	const category = (router.query?.category as string) ?? 'myProfile';
-	const isAdmin = user?.memberType === MemberType.ADMIN;
+	const category: string = (router.query?.category as string) ?? 'myProfile';
+
+	const [subscribe] = useMutation(SUBSCRIBE);
+	const [unsubscribe] = useMutation(UNSUBSCRIBE);
+	const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 
 	const [mounted, setMounted] = useState(false);
+
+	const isAdmin = user?.memberType === MemberType.ADMIN;
 
 	useEffect(() => {
 		setMounted(true);
@@ -81,32 +83,81 @@ const MyPage: NextPage = () => {
 
 	useEffect(() => {
 		if (!mounted) return;
-		if (!user._id) router.push('/').then();
-	}, [user, mounted]);
+		if (!user?._id) router.replace('/');
+	}, [mounted, user]);
 
 	const navigate = (key: string) => {
 		router.push({ pathname: '/mypage', query: { category: key } }, undefined, { shallow: true });
 	};
 
+	const subscribeHandler = async (id: string, refetch: any, query: any) => {
+		try {
+			if (!id) throw new Error(Messages.error1);
+			if (!user._id) throw new Error(Messages.error2);
+			await subscribe({ variables: { input: id } });
+			toastSmallSuccess('Subscribed!', 800);
+			await refetch({ input: query });
+		} catch (err: any) {
+			toastErrorHandling(err);
+		}
+	};
+
+	const unsubscribeHandler = async (id: string, refetch: any, query: any) => {
+		try {
+			if (!id) throw new Error(Messages.error1);
+			if (!user._id) throw new Error(Messages.error2);
+			await unsubscribe({ variables: { input: id } });
+			toastSmallSuccess('Unsubscribed!', 800);
+			await refetch({ input: query });
+		} catch (err: any) {
+			toastErrorHandling(err);
+		}
+	};
+
+	const likeMemberHandler = async (id: string, refetch: any, query: any) => {
+		try {
+			if (!id) return;
+			if (!user._id) throw new Error(Messages.error2);
+			await likeTargetMember({ variables: { input: id } });
+			toastSmallSuccess('Success', 800);
+			await refetch({ input: query });
+		} catch (err: any) {
+			toastErrorHandling(err);
+		}
+	};
+
+	const redirectToMemberPageHandler = async (memberId: string) => {
+		try {
+			if (memberId === user?._id) await router.push(`/mypage?memberId=${memberId}`);
+			else await router.push(`/member?memberId=${memberId}`);
+		} catch (err: any) {
+			toastErrorHandling(err);
+		}
+	};
+
+	const childProps = {
+		subscribeHandler,
+		unsubscribeHandler,
+		likeMemberHandler,
+		redirectToMemberPageHandler,
+	};
+
 	const renderContent = () => (
 		<>
 			{category === 'myProfile' && <MyProfile />}
-			{category === 'myOrders' && <MyOrders />}
 			{category === 'myArticles' && <MyArticles />}
 			{category === 'writeArticle' && <WriteArticle />}
 			{category === 'myFavorites' && <MyFavorites />}
 			{category === 'recentlyVisited' && <RecentlyVisited />}
-			{category === 'followers' && <MemberFollowers />}
-			{category === 'followings' && <MemberFollowings />}
+			{category === 'followers' && <MemberFollowers {...childProps} />}
+			{category === 'followings' && <MemberFollowings {...childProps} />}
 		</>
 	);
 
 	// ── MOBILE ────────────────────────────────────────────────────────────────
-
 	if (device === 'mobile') {
 		return (
 			<div id="my-page">
-				{/* Profile header */}
 				<div className="mp-mob-header">
 					<div className="mp-mob-header__avatar-wrap">
 						{user?.memberImage ? (
@@ -123,16 +174,15 @@ const MyPage: NextPage = () => {
 					<div className="mp-mob-header__info">
 						<span className="mp-mob-header__nick">{user?.memberNick ?? 'Member'}</span>
 						<span className="mp-mob-header__email">{user?.memberEmail ?? ''}</span>
-						{isAdmin && (
-							<button className="mp-mob-header__admin-btn" onClick={() => router.push('/_admin')}>
-								<AdminPanelSettingsOutlinedIcon sx={{ fontSize: 14 }} />
-								Admin Panel
-							</button>
-						)}
 					</div>
+					{isAdmin && (
+						<button className="mp-mob-header__admin-btn" onClick={() => router.push('/_admin')}>
+							<AdminPanelSettingsOutlinedIcon sx={{ fontSize: 14 }} />
+							Admin Panel
+						</button>
+					)}
 				</div>
 
-				{/* Horizontal tab nav */}
 				<nav className="mp-mob-nav">
 					{FLAT_MENU.map((item) => (
 						<button
@@ -146,21 +196,17 @@ const MyPage: NextPage = () => {
 					))}
 				</nav>
 
-				{/* Page content */}
 				<div className="mp-mob-content">{renderContent()}</div>
 			</div>
 		);
 	}
 
 	// ── DESKTOP ───────────────────────────────────────────────────────────────
-
 	return (
 		<div id="my-page">
 			<div className="container">
 				<div className="mp-layout">
-					{/* ── SIDEBAR ── */}
 					<aside className="mp-sidebar">
-						{/* Profile card */}
 						<div className="mp-sidebar__profile">
 							<div className="mp-sidebar__avatar-wrap">
 								{user?.memberImage ? (
@@ -183,7 +229,6 @@ const MyPage: NextPage = () => {
 
 						<div className="mp-sidebar__divider" />
 
-						{/* Nav */}
 						<nav className="mp-sidebar__nav">
 							{MENU_ITEMS.map((group) => (
 								<React.Fragment key={group.group}>
@@ -202,7 +247,6 @@ const MyPage: NextPage = () => {
 							))}
 						</nav>
 
-						{/* Admin panel link */}
 						{isAdmin && (
 							<>
 								<div className="mp-sidebar__divider" />
@@ -214,7 +258,6 @@ const MyPage: NextPage = () => {
 						)}
 					</aside>
 
-					{/* ── MAIN ── */}
 					<main className="mp-main">{renderContent()}</main>
 				</div>
 			</div>
