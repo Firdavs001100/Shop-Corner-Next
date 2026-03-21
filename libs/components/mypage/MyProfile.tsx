@@ -29,10 +29,30 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 type Tab = 'info' | 'security';
 
 const FIELDS = [
-	{ label: 'Username', key: 'memberNick', icon: <PersonOutlineIcon sx={{ fontSize: 16 }} />, placeholder: 'Your username' },
-	{ label: 'Full Name', key: 'memberFullName', icon: <BadgeOutlinedIcon sx={{ fontSize: 16 }} />, placeholder: 'Your full name' },
-	{ label: 'Phone', key: 'memberPhone', icon: <PhoneOutlinedIcon sx={{ fontSize: 16 }} />, placeholder: 'Your phone number' },
-	{ label: 'Address', key: 'memberAddress', icon: <LocationOnOutlinedIcon sx={{ fontSize: 16 }} />, placeholder: 'Your address' },
+	{
+		label: 'Username',
+		key: 'memberNick',
+		icon: <PersonOutlineIcon sx={{ fontSize: 16 }} />,
+		placeholder: 'Your username',
+	},
+	{
+		label: 'Full Name',
+		key: 'memberFullName',
+		icon: <BadgeOutlinedIcon sx={{ fontSize: 16 }} />,
+		placeholder: 'Your full name',
+	},
+	{
+		label: 'Phone',
+		key: 'memberPhone',
+		icon: <PhoneOutlinedIcon sx={{ fontSize: 16 }} />,
+		placeholder: 'Your phone number',
+	},
+	{
+		label: 'Address',
+		key: 'memberAddress',
+		icon: <LocationOnOutlinedIcon sx={{ fontSize: 16 }} />,
+		placeholder: 'Your address',
+	},
 ];
 
 const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
@@ -89,10 +109,13 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 			reader.onload = (ev) => setPreviewImage(ev.target?.result as string);
 			reader.readAsDataURL(image);
 			const formData = new FormData();
-			formData.append('operations', JSON.stringify({
-				query: `mutation ImageUploader($file: Upload!, $target: String!) { imageUploader(file: $file, target: $target) }`,
-				variables: { file: null, target: 'member' },
-			}));
+			formData.append(
+				'operations',
+				JSON.stringify({
+					query: `mutation ImageUploader($file: Upload!, $target: String!) { imageUploader(file: $file, target: $target) }`,
+					variables: { file: null, target: 'member' },
+				}),
+			);
 			formData.append('map', JSON.stringify({ '0': ['variables.file'] }));
 			formData.append('0', image);
 			const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GRAPHQL_URL}`, formData, {
@@ -191,8 +214,10 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 		setEditing(false);
 	};
 
-	const isDisabled = saving || !updateData.memberNick?.trim() || !updateData.memberPhone?.trim() || !updateData.memberAddress?.trim();
-	const isPasswordDisabled = savingPassword || !currentPassword.trim() || !newPassword.trim() || newPassword !== confirmPassword;
+	const isDisabled =
+		saving || !updateData.memberNick?.trim() || !updateData.memberPhone?.trim() || !updateData.memberAddress?.trim();
+	const isPasswordDisabled =
+		savingPassword || !currentPassword.trim() || !newPassword.trim() || newPassword !== confirmPassword;
 
 	const STATS = [
 		{ icon: <ArticleOutlinedIcon />, label: 'Articles', value: user.memberArticles ?? 0 },
@@ -206,12 +231,11 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	if (device === 'mobile') {
 		return (
 			<div className="mp-profile mp-profile--mobile">
-
 				{/* Page bar */}
 				<div className="mp-page-bar">
-					<div className="mp-page-bar__info">
-						<span>Account</span>
-						<div className="mp-page-bar__title">My Profile</div>
+					<div className="mp-page-bar__left">
+						<span className="mp-page-bar__eyebrow">Account</span>
+						<h2 className="mp-page-bar__title">My Profile</h2>
 					</div>
 				</div>
 
@@ -224,10 +248,19 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 							) : (
 								<AccountCircleIcon className="mp-profile__avatar-icon" />
 							)}
-							<label htmlFor="mob-upload" className={`mp-profile__camera${uploading ? ' mp-profile__camera--busy' : ''}`}>
+							<label
+								htmlFor="mob-upload"
+								className={`mp-profile__camera${uploading ? ' mp-profile__camera--busy' : ''}`}
+							>
 								<CameraAltOutlinedIcon sx={{ fontSize: 13 }} />
 							</label>
-							<input id="mob-upload" type="file" hidden accept="image/jpg,image/jpeg,image/png" onChange={uploadImage} />
+							<input
+								id="mob-upload"
+								type="file"
+								hidden
+								accept="image/jpg,image/jpeg,image/png"
+								onChange={uploadImage}
+							/>
 						</div>
 						<div className="mp-profile__mob-identity-info">
 							<h2 className="mp-profile__display-name">{user.memberFullName || user.memberNick}</h2>
@@ -250,10 +283,22 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 
 				{/* Tabs */}
 				<div className="mp-profile__tabs">
-					<button className={`mp-profile__tab${activeTab === 'info' ? ' active' : ''}`} onClick={() => { setActiveTab('info'); setEditing(false); }}>
+					<button
+						className={`mp-profile__tab${activeTab === 'info' ? ' active' : ''}`}
+						onClick={() => {
+							setActiveTab('info');
+							setEditing(false);
+						}}
+					>
 						<PersonOutlineIcon sx={{ fontSize: 15 }} /> Personal Info
 					</button>
-					<button className={`mp-profile__tab${activeTab === 'security' ? ' active' : ''}`} onClick={() => { setActiveTab('security'); setEditing(false); }}>
+					<button
+						className={`mp-profile__tab${activeTab === 'security' ? ' active' : ''}`}
+						onClick={() => {
+							setActiveTab('security');
+							setEditing(false);
+						}}
+					>
 						<LockOutlinedIcon sx={{ fontSize: 15 }} /> Security
 					</button>
 				</div>
@@ -268,8 +313,12 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 								</button>
 							) : (
 								<div className="mp-profile__inline-actions">
-									<button className="mp-profile__inline-cancel" onClick={cancelEdit}>Cancel</button>
-									<button className="mp-profile__inline-save" onClick={updateProfileHandler} disabled={isDisabled}>{saving ? 'Saving...' : 'Save'}</button>
+									<button className="mp-profile__inline-cancel" onClick={cancelEdit}>
+										Cancel
+									</button>
+									<button className="mp-profile__inline-save" onClick={updateProfileHandler} disabled={isDisabled}>
+										{saving ? 'Saving...' : 'Save'}
+									</button>
 								</div>
 							)}
 						</div>
@@ -282,16 +331,29 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 										<input
 											type="text"
 											placeholder={f.placeholder}
-											value={f.key === 'memberPhone' ? formatKRPhone((editing ? updateData : (user as any))[f.key] ?? '') : (editing ? updateData : (user as any))[f.key] ?? ''}
+											value={
+												f.key === 'memberPhone'
+													? formatKRPhone((editing ? updateData : (user as any))[f.key] ?? '')
+													: (editing ? updateData : (user as any))[f.key] ?? ''
+											}
 											readOnly={!editing}
-											onChange={({ target: { value } }) => setUpdateData((prev) => ({ ...prev, [f.key]: f.key === 'memberPhone' ? formatKRPhone(value) : value }))}
+											onChange={({ target: { value } }) =>
+												setUpdateData((prev) => ({
+													...prev,
+													[f.key]: f.key === 'memberPhone' ? formatKRPhone(value) : value,
+												}))
+											}
 										/>
 									</div>
 								</div>
 							))}
 							<div className="mp-profile__field">
 								<label>About Me</label>
-								<div className={`mp-profile__input-wrap mp-profile__input-wrap--textarea${!editing ? ' mp-profile__input-wrap--readonly' : ''}`}>
+								<div
+									className={`mp-profile__input-wrap mp-profile__input-wrap--textarea${
+										!editing ? ' mp-profile__input-wrap--readonly' : ''
+									}`}
+								>
 									<NotesOutlinedIcon sx={{ fontSize: 16 }} />
 									<textarea
 										placeholder="Tell us about yourself..."
@@ -316,9 +378,18 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 								<label>Current Password</label>
 								<div className="mp-profile__input-wrap">
 									<LockOutlinedIcon sx={{ fontSize: 16 }} />
-									<input type={showCurrent ? 'text' : 'password'} placeholder="Enter your current password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+									<input
+										type={showCurrent ? 'text' : 'password'}
+										placeholder="Enter your current password"
+										value={currentPassword}
+										onChange={(e) => setCurrentPassword(e.target.value)}
+									/>
 									<button className="mp-profile__pw-toggle" onClick={() => setShowCurrent(!showCurrent)}>
-										{showCurrent ? <VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} /> : <VisibilityOutlinedIcon sx={{ fontSize: 16 }} />}
+										{showCurrent ? (
+											<VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} />
+										) : (
+											<VisibilityOutlinedIcon sx={{ fontSize: 16 }} />
+										)}
 									</button>
 								</div>
 							</div>
@@ -326,19 +397,51 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 								<label>New Password</label>
 								<div className="mp-profile__input-wrap">
 									<LockOutlinedIcon sx={{ fontSize: 16 }} />
-									<input type={showNew ? 'text' : 'password'} placeholder="Enter new password" value={newPassword} disabled={!currentPassword.trim()} onChange={(e) => setNewPassword(e.target.value)} />
-									<button className="mp-profile__pw-toggle" onClick={() => setShowNew(!showNew)} disabled={!currentPassword.trim()}>
-										{showNew ? <VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} /> : <VisibilityOutlinedIcon sx={{ fontSize: 16 }} />}
+									<input
+										type={showNew ? 'text' : 'password'}
+										placeholder="Enter new password"
+										value={newPassword}
+										disabled={!currentPassword.trim()}
+										onChange={(e) => setNewPassword(e.target.value)}
+									/>
+									<button
+										className="mp-profile__pw-toggle"
+										onClick={() => setShowNew(!showNew)}
+										disabled={!currentPassword.trim()}
+									>
+										{showNew ? (
+											<VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} />
+										) : (
+											<VisibilityOutlinedIcon sx={{ fontSize: 16 }} />
+										)}
 									</button>
 								</div>
 							</div>
 							<div className={`mp-profile__field${!currentPassword.trim() ? ' mp-profile__field--locked' : ''}`}>
 								<label>Confirm New Password</label>
-								<div className={`mp-profile__input-wrap${confirmPassword && newPassword !== confirmPassword ? ' mp-profile__input-wrap--error' : ''}`}>
+								<div
+									className={`mp-profile__input-wrap${
+										confirmPassword && newPassword !== confirmPassword ? ' mp-profile__input-wrap--error' : ''
+									}`}
+								>
 									<LockOutlinedIcon sx={{ fontSize: 16 }} />
-									<input type={showConfirm ? 'text' : 'password'} placeholder="Confirm new password" value={confirmPassword} disabled={!currentPassword.trim()} onChange={(e) => setConfirmPassword(e.target.value)} />
-									<button className="mp-profile__pw-toggle" onClick={() => setShowConfirm(!showConfirm)} disabled={!currentPassword.trim()}>
-										{showConfirm ? <VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} /> : <VisibilityOutlinedIcon sx={{ fontSize: 16 }} />}
+									<input
+										type={showConfirm ? 'text' : 'password'}
+										placeholder="Confirm new password"
+										value={confirmPassword}
+										disabled={!currentPassword.trim()}
+										onChange={(e) => setConfirmPassword(e.target.value)}
+									/>
+									<button
+										className="mp-profile__pw-toggle"
+										onClick={() => setShowConfirm(!showConfirm)}
+										disabled={!currentPassword.trim()}
+									>
+										{showConfirm ? (
+											<VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} />
+										) : (
+											<VisibilityOutlinedIcon sx={{ fontSize: 16 }} />
+										)}
 									</button>
 								</div>
 								{confirmPassword && newPassword !== confirmPassword && (
@@ -359,12 +462,12 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 
 	return (
 		<div className="mp-profile">
-
 			{/* Page bar */}
 			<div className="mp-page-bar">
-				<div className="mp-page-bar__info">
-					<span>Account</span>
-					<div className="mp-page-bar__title">My Profile</div>
+				<div className="mp-page-bar__left">
+					<span className="mp-page-bar__eyebrow">Account</span>
+					<h2 className="mp-page-bar__title">My Profile</h2>
+					<p className="mp-page-bar__sub">Manage your personal info and security</p>
 				</div>
 			</div>
 
@@ -377,7 +480,10 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 						) : (
 							<AccountCircleIcon className="mp-profile__avatar-icon" />
 						)}
-						<label htmlFor="desk-upload" className={`mp-profile__camera${uploading ? ' mp-profile__camera--busy' : ''}`}>
+						<label
+							htmlFor="desk-upload"
+							className={`mp-profile__camera${uploading ? ' mp-profile__camera--busy' : ''}`}
+						>
 							<CameraAltOutlinedIcon sx={{ fontSize: 14 }} />
 						</label>
 						<input id="desk-upload" type="file" hidden accept="image/jpg,image/jpeg,image/png" onChange={uploadImage} />
@@ -417,10 +523,22 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 			{/* Body */}
 			<div className="mp-profile__body">
 				<div className="mp-profile__tabs">
-					<button className={`mp-profile__tab${activeTab === 'info' ? ' active' : ''}`} onClick={() => { setActiveTab('info'); setEditing(false); }}>
+					<button
+						className={`mp-profile__tab${activeTab === 'info' ? ' active' : ''}`}
+						onClick={() => {
+							setActiveTab('info');
+							setEditing(false);
+						}}
+					>
 						<PersonOutlineIcon sx={{ fontSize: 16 }} /> Personal Info
 					</button>
-					<button className={`mp-profile__tab${activeTab === 'security' ? ' active' : ''}`} onClick={() => { setActiveTab('security'); setEditing(false); }}>
+					<button
+						className={`mp-profile__tab${activeTab === 'security' ? ' active' : ''}`}
+						onClick={() => {
+							setActiveTab('security');
+							setEditing(false);
+						}}
+					>
 						<LockOutlinedIcon sx={{ fontSize: 16 }} /> Security
 					</button>
 				</div>
@@ -433,12 +551,16 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 							<div>
 								<h3 className="mp-profile__section-title">Personal Information</h3>
 								<p className="mp-profile__section-sub">
-									{editing ? 'Update your details below and hit save when done.' : 'Your personal details and contact info.'}
+									{editing
+										? 'Update your details below and hit save when done.'
+										: 'Your personal details and contact info.'}
 								</p>
 							</div>
 							{editing && (
 								<div className="mp-profile__form-actions">
-									<button className="mp-profile__cancel-btn" onClick={cancelEdit}>Cancel</button>
+									<button className="mp-profile__cancel-btn" onClick={cancelEdit}>
+										Cancel
+									</button>
 									<button className="mp-profile__save-btn" onClick={updateProfileHandler} disabled={isDisabled}>
 										{saving ? 'Saving...' : 'Save Changes'}
 									</button>
@@ -456,16 +578,29 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 											inputMode="numeric"
 											maxLength={13}
 											placeholder={f.placeholder}
-											value={f.key === 'memberPhone' ? formatKRPhone((editing ? updateData : (user as any))[f.key] ?? '') : (editing ? updateData : (user as any))[f.key] ?? ''}
+											value={
+												f.key === 'memberPhone'
+													? formatKRPhone((editing ? updateData : (user as any))[f.key] ?? '')
+													: (editing ? updateData : (user as any))[f.key] ?? ''
+											}
 											readOnly={!editing}
-											onChange={({ target: { value } }) => setUpdateData((prev) => ({ ...prev, [f.key]: f.key === 'memberPhone' ? formatKRPhone(value) : value }))}
+											onChange={({ target: { value } }) =>
+												setUpdateData((prev) => ({
+													...prev,
+													[f.key]: f.key === 'memberPhone' ? formatKRPhone(value) : value,
+												}))
+											}
 										/>
 									</div>
 								</div>
 							))}
 							<div className="mp-profile__field mp-profile__field--full">
 								<label>About Me</label>
-								<div className={`mp-profile__input-wrap mp-profile__input-wrap--textarea${!editing ? ' mp-profile__input-wrap--readonly' : ''}`}>
+								<div
+									className={`mp-profile__input-wrap mp-profile__input-wrap--textarea${
+										!editing ? ' mp-profile__input-wrap--readonly' : ''
+									}`}
+								>
 									<NotesOutlinedIcon sx={{ fontSize: 16 }} />
 									<textarea
 										placeholder="Tell us about yourself..."
@@ -493,9 +628,18 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 								<label>Current Password</label>
 								<div className="mp-profile__input-wrap">
 									<LockOutlinedIcon sx={{ fontSize: 16 }} />
-									<input type={showCurrent ? 'text' : 'password'} placeholder="Enter your current password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+									<input
+										type={showCurrent ? 'text' : 'password'}
+										placeholder="Enter your current password"
+										value={currentPassword}
+										onChange={(e) => setCurrentPassword(e.target.value)}
+									/>
 									<button className="mp-profile__pw-toggle" onClick={() => setShowCurrent(!showCurrent)}>
-										{showCurrent ? <VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} /> : <VisibilityOutlinedIcon sx={{ fontSize: 16 }} />}
+										{showCurrent ? (
+											<VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} />
+										) : (
+											<VisibilityOutlinedIcon sx={{ fontSize: 16 }} />
+										)}
 									</button>
 								</div>
 							</div>
@@ -503,19 +647,51 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 								<label>New Password</label>
 								<div className="mp-profile__input-wrap">
 									<LockOutlinedIcon sx={{ fontSize: 16 }} />
-									<input type={showNew ? 'text' : 'password'} placeholder="Enter new password" value={newPassword} disabled={!currentPassword.trim()} onChange={(e) => setNewPassword(e.target.value)} />
-									<button className="mp-profile__pw-toggle" onClick={() => setShowNew(!showNew)} disabled={!currentPassword.trim()}>
-										{showNew ? <VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} /> : <VisibilityOutlinedIcon sx={{ fontSize: 16 }} />}
+									<input
+										type={showNew ? 'text' : 'password'}
+										placeholder="Enter new password"
+										value={newPassword}
+										disabled={!currentPassword.trim()}
+										onChange={(e) => setNewPassword(e.target.value)}
+									/>
+									<button
+										className="mp-profile__pw-toggle"
+										onClick={() => setShowNew(!showNew)}
+										disabled={!currentPassword.trim()}
+									>
+										{showNew ? (
+											<VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} />
+										) : (
+											<VisibilityOutlinedIcon sx={{ fontSize: 16 }} />
+										)}
 									</button>
 								</div>
 							</div>
 							<div className={`mp-profile__field${!currentPassword.trim() ? ' mp-profile__field--locked' : ''}`}>
 								<label>Confirm New Password</label>
-								<div className={`mp-profile__input-wrap${confirmPassword && newPassword !== confirmPassword ? ' mp-profile__input-wrap--error' : ''}`}>
+								<div
+									className={`mp-profile__input-wrap${
+										confirmPassword && newPassword !== confirmPassword ? ' mp-profile__input-wrap--error' : ''
+									}`}
+								>
 									<LockOutlinedIcon sx={{ fontSize: 16 }} />
-									<input type={showConfirm ? 'text' : 'password'} placeholder="Confirm new password" value={confirmPassword} disabled={!currentPassword.trim()} onChange={(e) => setConfirmPassword(e.target.value)} />
-									<button className="mp-profile__pw-toggle" onClick={() => setShowConfirm(!showConfirm)} disabled={!currentPassword.trim()}>
-										{showConfirm ? <VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} /> : <VisibilityOutlinedIcon sx={{ fontSize: 16 }} />}
+									<input
+										type={showConfirm ? 'text' : 'password'}
+										placeholder="Confirm new password"
+										value={confirmPassword}
+										disabled={!currentPassword.trim()}
+										onChange={(e) => setConfirmPassword(e.target.value)}
+									/>
+									<button
+										className="mp-profile__pw-toggle"
+										onClick={() => setShowConfirm(!showConfirm)}
+										disabled={!currentPassword.trim()}
+									>
+										{showConfirm ? (
+											<VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} />
+										) : (
+											<VisibilityOutlinedIcon sx={{ fontSize: 16 }} />
+										)}
 									</button>
 								</div>
 								{confirmPassword && newPassword !== confirmPassword && (

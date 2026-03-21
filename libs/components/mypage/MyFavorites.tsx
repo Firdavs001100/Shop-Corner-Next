@@ -46,11 +46,13 @@ const MyFavorites: NextPage = () => {
 	if (device === 'mobile') {
 		return (
 			<div className="mp-favorites mp-favorites--mobile">
-				<div className="mp-favorites__mob-header">
-					<div className="mp-favorites__mob-header-left">
-						<h2 className="mp-favorites__mob-title">My Favorites</h2>
-						<span className="mp-favorites__mob-count">{total}</span>
+				<div className="mp-page-bar">
+					<div className="mp-page-bar__left">
+						<span className="mp-page-bar__eyebrow">Library</span>
+						<h2 className="mp-page-bar__title">My Favorites</h2>
+						<p className="mp-page-bar__sub">Products you've saved and loved</p>
 					</div>
+					{total > 0 && <span className="mp-favorites--mobile__mob-count">{total}</span>}
 				</div>
 
 				{myFavorites.length === 0 ? (

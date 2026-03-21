@@ -4,51 +4,18 @@
 			display: flex;
 			flex-direction: column;
 			gap: 20px;
+			font-family: 'DM Sans', sans-serif;
 
-			// ── Page bar ──────────────────────────────────────────────────────
-
-			.mp-page-bar {
-				display: flex;
-				align-items: flex-start;
-				justify-content: space-between;
-
-				&__left {
-					display: flex;
-					flex-direction: column;
-					gap: 4px;
-				}
-
-				&__eyebrow {
-					font-size: 12px;
-					font-weight: 600;
-					color: #8a94a6;
-					text-transform: uppercase;
-					letter-spacing: 0.08em;
-				}
-
-				&__title {
-					font-size: 22px;
-					font-weight: 800;
-					color: #0f2035;
-					margin: 0;
-					line-height: 1.2;
-				}
-
-				&__sub {
-					font-size: 13px;
-					color: #8a94a6;
-					margin: 0;
-				}
-			}
+			// ── Write button ──────────────────────────────────────────────────
 
 			&__write-btn {
 				display: inline-flex;
 				align-items: center;
 				gap: 7px;
-				height: 38px;
-				padding: 0 20px;
+				height: 40px;
+				padding: 0 22px;
 				background: #0f2035;
-				color: #ffffff;
+				color: #fff;
 				border: none;
 				border-radius: 999px;
 				font-family: 'DM Sans', sans-serif;
@@ -57,6 +24,7 @@
 				cursor: pointer;
 				transition: background 0.18s ease;
 				white-space: nowrap;
+				flex-shrink: 0;
 
 				&:hover {
 					background: #1a3a5c;
@@ -84,7 +52,7 @@
 				gap: 5px;
 				height: 34px;
 				padding: 0 14px;
-				background: #f8f9fb;
+				background: #fff;
 				border: 1.5px solid #e8ecf0;
 				border-radius: 999px;
 				font-family: 'DM Sans', sans-serif;
@@ -102,7 +70,7 @@
 				&.active {
 					background: #0f2035;
 					border-color: #0f2035;
-					color: #ffffff;
+					color: #fff;
 				}
 			}
 
@@ -112,11 +80,16 @@
 				gap: 8px;
 				height: 36px;
 				padding: 0 14px;
-				background: #f8f9fb;
+				background: #fff;
 				border: 1.5px solid #e8ecf0;
 				border-radius: 10px;
 				color: #8a94a6;
 				margin-left: auto;
+				transition: border-color 0.18s ease;
+
+				&:focus-within {
+					border-color: #0f2035;
+				}
 
 				input {
 					border: none;
@@ -138,160 +111,73 @@
 			&__stats {
 				display: flex;
 				align-items: center;
-				gap: 8px;
 			}
 
 			&__stats-count {
 				font-size: 13px;
 				font-weight: 600;
-				color: #8a94a6;
+				color: #94a3b8;
 			}
 
-			// ── Grid ──────────────────────────────────────────────────────────
+			// ── Article list (wraps ArticleCard) ──────────────────────────────
 
-			&__grid {
+			&__list {
 				display: flex;
 				flex-direction: column;
-				gap: 0;
-				background: #ffffff;
-				border-radius: 16px;
-				border: 1px solid #f0f0ee;
-				overflow: hidden;
+				gap: 24px;
 			}
 
-			// ── Card ──────────────────────────────────────────────────────────
+			// ── Card wrapper — positions the action buttons over the card ─────
 
-			&__card {
-				display: flex;
-				gap: 16px;
-				padding: 18px 20px;
-				border-bottom: 1px solid #f5f5f3;
-				cursor: pointer;
-				transition: background 0.15s ease;
+			&__card-wrap {
 				position: relative;
 
-				&:last-child {
-					border-bottom: none;
-				}
-				&:hover {
-					background: #fafafa;
-				}
-
+				// Show actions on hover
 				&:hover .mp-my-articles__card-actions {
 					opacity: 1;
+					pointer-events: auto;
 				}
-			}
 
-			&__card-thumb {
-				width: 96px;
-				height: 72px;
-				border-radius: 10px;
-				overflow: hidden;
-				flex-shrink: 0;
-				background: #f0f4f8;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-
-				img {
+				// Make ArticleCard fill wrapper cleanly
+				.com-article-card {
 					width: 100%;
-					height: 100%;
-					object-fit: cover;
-					transition: transform 0.3s ease;
-				}
-
-				&--placeholder {
-					color: #c0c8d4;
-					flex-direction: column;
-					gap: 4px;
+					margin: 0;
 				}
 			}
 
-			&__card-cat {
-				font-size: 9px;
-				font-weight: 700;
-				color: #8a94a6;
-				text-transform: uppercase;
-				letter-spacing: 0.06em;
-			}
-
-			&__card-body {
-				display: flex;
-				flex-direction: column;
-				gap: 5px;
-				flex: 1;
-				min-width: 0;
-			}
-
-			&__card-title {
-				font-size: 15px;
-				font-weight: 700;
-				color: #0f2035;
-				margin: 0;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-
-			&__card-excerpt {
-				font-size: 13px;
-				color: #8a94a6;
-				line-height: 1.5;
-				display: -webkit-box;
-				-webkit-line-clamp: 2;
-				-webkit-box-orient: vertical;
-				overflow: hidden;
-				margin: 0;
-			}
-
-			&__card-meta {
-				display: flex;
-				align-items: center;
-				gap: 12px;
-				font-size: 12px;
-				color: #a0aab8;
-				font-weight: 500;
-				margin-top: 2px;
-
-				span {
-					display: inline-flex;
-					align-items: center;
-					gap: 4px;
-				}
-			}
-
-			&__card-date {
-				margin-left: auto;
-				font-size: 11px;
-				color: #b0bac8;
-			}
+			// ── Edit / Delete overlay ─────────────────────────────────────────
 
 			&__card-actions {
 				position: absolute;
-				top: 16px;
-				right: 16px;
+				top: 14px;
+				right: 14px;
 				display: flex;
 				gap: 6px;
 				opacity: 0;
+				pointer-events: none;
 				transition: opacity 0.18s ease;
+				z-index: 10;
 			}
 
 			&__action-btn {
 				display: inline-flex;
 				align-items: center;
 				justify-content: center;
-				width: 32px;
-				height: 32px;
+				width: 34px;
+				height: 34px;
 				border-radius: 8px;
 				border: none;
 				cursor: pointer;
 				transition: all 0.15s ease;
-				background: #f0f4f8;
+				background: rgba(255, 255, 255, 0.92);
+				backdrop-filter: blur(4px);
 				color: #5a6a7e;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
 				&:hover {
 					background: #e0e8f0;
 					color: #0f2035;
+					box-shadow: 0 2px 12px rgba(0, 0, 0, 0.14);
 				}
 
 				&--delete:hover {
@@ -300,7 +186,7 @@
 				}
 			}
 
-			// ── Empty ─────────────────────────────────────────────────────────
+			// ── Empty state ───────────────────────────────────────────────────
 
 			&__empty {
 				display: flex;
@@ -309,14 +195,15 @@
 				justify-content: center;
 				gap: 14px;
 				padding: 80px 0;
-				background: #ffffff;
+				background: #fff;
 				border-radius: 16px;
-				border: 1px solid #f0f0ee;
+				border: 1.5px solid #e8edf3;
 				color: #c0c8d4;
 
 				svg {
 					font-size: 40px !important;
 				}
+
 				p {
 					font-size: 14px;
 					font-weight: 500;
@@ -331,10 +218,10 @@
 				border: 3px solid #e8ecf0;
 				border-top-color: #0f2035;
 				border-radius: 50%;
-				animation: mp-spin 0.7s linear infinite;
+				animation: mp-articles-spin 0.7s linear infinite;
 			}
 
-			@keyframes mp-spin {
+			@keyframes mp-articles-spin {
 				to {
 					transform: rotate(360deg);
 				}
@@ -354,10 +241,10 @@
 				display: inline-flex;
 				align-items: center;
 				justify-content: center;
-				min-width: 34px;
-				height: 34px;
-				padding: 0 10px;
-				background: #ffffff;
+				min-width: 36px;
+				height: 36px;
+				padding: 0 12px;
+				background: #fff;
 				border: 1.5px solid #e8ecf0;
 				border-radius: 8px;
 				font-family: 'DM Sans', sans-serif;
@@ -371,11 +258,13 @@
 					border-color: #0f2035;
 					color: #0f2035;
 				}
+
 				&.active {
 					background: #0f2035;
 					border-color: #0f2035;
-					color: #ffffff;
+					color: #fff;
 				}
+
 				&:disabled {
 					opacity: 0.4;
 					cursor: not-allowed;

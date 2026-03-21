@@ -1,31 +1,23 @@
 #mobile-wrap {
 	#my-page {
 		.mp-favorites--mobile {
-			padding: 16px 16px 40px;
 			display: flex;
 			flex-direction: column;
 			gap: 16px;
 
-			.mp-favorites__mob-header {
+			// ── Header — uses shared mp-page-bar pattern ──────────────────────
+
+			.mp-page-bar {
 				display: flex;
-				align-items: center;
+				align-items: flex-start;
 				justify-content: space-between;
+				gap: 12px;
+				flex-wrap: wrap;
 			}
 
-			.mp-favorites__mob-header-left {
-				display: flex;
-				align-items: center;
-				gap: 8px;
-			}
+			// ── Count badge ───────────────────────────────────────────────────
 
-			.mp-favorites__mob-title {
-				font-size: 18px;
-				font-weight: 700;
-				color: #0f2035;
-				margin: 0;
-			}
-
-			.mp-favorites__mob-count {
+			&__mob-count {
 				display: inline-flex;
 				align-items: center;
 				justify-content: center;
@@ -38,9 +30,14 @@
 				color: #e53935;
 				font-size: 12px;
 				font-weight: 700;
+				flex-shrink: 0;
+				align-self: flex-start;
+				margin-top: 4px;
 			}
 
-			.mp-favorites__empty {
+			// ── Empty ─────────────────────────────────────────────────────────
+
+			&__empty {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
@@ -63,13 +60,17 @@
 				}
 			}
 
-			.mp-favorites__mob-list {
+			// ── List ─────────────────────────────────────────────────────────
+
+			&__mob-list {
 				display: flex;
 				flex-direction: column;
 				gap: 14px;
 			}
 
-			.mp-favorites__pagination {
+			// ── Pagination ────────────────────────────────────────────────────
+
+			&__pagination {
 				display: flex;
 				justify-content: center;
 				padding: 4px 0 8px;
@@ -90,18 +91,16 @@
 
 					&.Mui-selected {
 						background: #0f2035 !important;
-						color: #ffffff !important;
-
+						color: #fff !important;
 						&:hover {
 							background: #1a3a5c !important;
 						}
 					}
 
 					&.MuiPaginationItem-previousNext {
-						background: #ffffff !important;
+						background: #fff !important;
 						border: 1px solid #e0e0e0 !important;
 						color: #1a1a1a !important;
-
 						&:hover {
 							border-color: #0f2035 !important;
 						}

@@ -5,39 +5,6 @@
 			flex-direction: column;
 			gap: 28px;
 
-			.mp-page-bar {
-				display: flex;
-				align-items: flex-start;
-				justify-content: space-between;
-
-				&__left {
-					display: flex;
-					flex-direction: column;
-					gap: 4px;
-				}
-
-				&__eyebrow {
-					font-size: 11px;
-					font-weight: 700;
-					letter-spacing: 0.12em;
-					text-transform: uppercase;
-					color: #8a94a6;
-				}
-
-				&__title {
-					font-size: 22px;
-					font-weight: 700;
-					color: #0f2035;
-					margin: 0;
-				}
-
-				&__sub {
-					font-size: 13px;
-					color: #8a94a6;
-					margin: 0;
-				}
-			}
-
 			&__total-badge {
 				display: inline-flex;
 				align-items: center;
@@ -49,12 +16,19 @@
 				font-size: 12px;
 				font-weight: 700;
 				color: #0f2035;
+				align-self: flex-start;
 			}
 
 			&__grid {
 				display: grid;
 				grid-template-columns: repeat(3, 1fr);
 				gap: 20px;
+				width: 100%;
+
+				> * {
+					min-width: 0;
+					width: 100%;
+				}
 			}
 
 			&__empty {
@@ -106,18 +80,16 @@
 
 					&.Mui-selected {
 						background: #0f2035 !important;
-						color: #ffffff !important;
-
+						color: #fff !important;
 						&:hover {
 							background: #1a3a5c !important;
 						}
 					}
 
 					&.MuiPaginationItem-previousNext {
-						background: #ffffff !important;
+						background: #fff !important;
 						border: 1px solid #e0e0e0 !important;
 						color: #1a1a1a !important;
-
 						&:hover {
 							border-color: #0f2035 !important;
 						}

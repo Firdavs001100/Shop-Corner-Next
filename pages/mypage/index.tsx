@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
@@ -73,9 +73,16 @@ const MyPage: NextPage = () => {
 	const category = (router.query?.category as string) ?? 'myProfile';
 	const isAdmin = user?.memberType === MemberType.ADMIN;
 
+	const [mounted, setMounted] = useState(false);
+
 	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	useEffect(() => {
+		if (!mounted) return;
 		if (!user._id) router.push('/').then();
-	}, [user]);
+	}, [user, mounted]);
 
 	const navigate = (key: string) => {
 		router.push({ pathname: '/mypage', query: { category: key } }, undefined, { shallow: true });

@@ -1,84 +1,69 @@
 #mobile-wrap {
 	#my-page {
-		.mp-my-articles--mobile {
-			padding: 16px 16px 40px;
+		.mp-my-articles {
 			display: flex;
 			flex-direction: column;
 			gap: 16px;
+			font-family: 'DM Sans', sans-serif;
 
-			.mp-my-articles__mob-header {
+			// ── Page bar override for mobile ──────────────────────────────────
+
+			.mp-page-bar {
 				display: flex;
-				align-items: center;
+				align-items: flex-start;
 				justify-content: space-between;
+				gap: 12px;
+				flex-wrap: wrap;
 			}
 
-			.mp-my-articles__mob-header-left {
-				display: flex;
-				align-items: center;
-				gap: 8px;
-			}
+			// ── Write button ──────────────────────────────────────────────────
 
-			.mp-my-articles__mob-title {
-				font-size: 18px;
-				font-weight: 700;
-				color: #0f2035;
-				margin: 0;
-			}
-
-			.mp-my-articles__mob-count {
+			&__write-btn {
 				display: inline-flex;
 				align-items: center;
-				justify-content: center;
-				min-width: 24px;
-				height: 24px;
-				padding: 0 7px;
-				border-radius: 999px;
+				gap: 6px;
+				height: 36px;
+				padding: 0 16px;
 				background: #0f2035;
-				color: #ffffff;
-				font-size: 11px;
-				font-weight: 700;
-			}
-
-			.mp-my-articles__write-btn {
-				display: inline-flex;
-				align-items: center;
-				gap: 5px;
-				height: 34px;
-				padding: 0 14px;
-				background: #0f2035;
-				color: #ffffff;
+				color: #fff;
 				border: none;
 				border-radius: 999px;
 				font-family: 'DM Sans', sans-serif;
 				font-size: 12px;
 				font-weight: 700;
 				cursor: pointer;
+				white-space: nowrap;
+				flex-shrink: 0;
 			}
 
-			.mp-my-articles__filters {
+			// ── Filters ───────────────────────────────────────────────────────
+
+			&__filters {
 				display: flex;
 				flex-direction: column;
 				gap: 10px;
 			}
 
-			.mp-my-articles__categories {
+			&__categories {
 				display: flex;
 				gap: 6px;
 				overflow-x: auto;
-				padding-bottom: 2px;
-
+				flex-wrap: nowrap;
+				padding-bottom: 4px;
+				-webkit-overflow-scrolling: touch;
+				scrollbar-width: none;
 				&::-webkit-scrollbar {
 					display: none;
 				}
 			}
 
-			.mp-my-articles__cat-btn {
+			&__cat-btn {
 				display: inline-flex;
 				align-items: center;
 				gap: 4px;
-				height: 30px;
+				height: 32px;
 				padding: 0 12px;
-				background: #f8f9fb;
+				background: #fff;
 				border: 1.5px solid #e8ecf0;
 				border-radius: 999px;
 				font-family: 'DM Sans', sans-serif;
@@ -87,24 +72,30 @@
 				color: #8a94a6;
 				cursor: pointer;
 				white-space: nowrap;
+				flex-shrink: 0;
+				transition: all 0.15s ease;
 
 				&.active {
 					background: #0f2035;
 					border-color: #0f2035;
-					color: #ffffff;
+					color: #fff;
 				}
 			}
 
-			.mp-my-articles__search {
+			&__search {
 				display: flex;
 				align-items: center;
 				gap: 8px;
-				height: 36px;
-				padding: 0 12px;
-				background: #f8f9fb;
+				height: 38px;
+				padding: 0 14px;
+				background: #fff;
 				border: 1.5px solid #e8ecf0;
 				border-radius: 10px;
 				color: #8a94a6;
+
+				&:focus-within {
+					border-color: #0f2035;
+				}
 
 				input {
 					flex: 1;
@@ -114,138 +105,155 @@
 					font-size: 13px;
 					color: #0f2035;
 					outline: none;
-
 					&::placeholder {
 						color: #a0aab8;
 					}
 				}
 			}
 
-			.mp-my-articles__grid {
-				display: flex;
-				flex-direction: column;
-				gap: 10px;
-			}
+			// ── Stats ─────────────────────────────────────────────────────────
 
-			.mp-my-articles__card {
-				display: flex;
-				gap: 12px;
-				background: #ffffff;
-				border-radius: 14px;
-				border: 1px solid #f0f0ee;
-				padding: 12px;
-				cursor: pointer;
-			}
-
-			.mp-my-articles__card-thumb {
-				width: 72px;
-				height: 60px;
-				border-radius: 8px;
-				overflow: hidden;
-				flex-shrink: 0;
-				background: #f0f4f8;
+			&__stats {
 				display: flex;
 				align-items: center;
-				justify-content: center;
-
-				img {
-					width: 100%;
-					height: 100%;
-					object-fit: cover;
-				}
 			}
 
-			.mp-my-articles__card-body {
-				display: flex;
-				flex-direction: column;
-				gap: 3px;
-				flex: 1;
-				min-width: 0;
-			}
-
-			.mp-my-articles__card-cat {
-				font-size: 9px;
-				font-weight: 700;
-				color: #8a94a6;
-				text-transform: uppercase;
-				letter-spacing: 0.06em;
-			}
-
-			.mp-my-articles__card-title {
-				font-size: 13px;
-				font-weight: 700;
-				color: #0f2035;
-				margin: 0;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-
-			.mp-my-articles__card-excerpt {
+			&__stats-count {
 				font-size: 12px;
-				color: #8a94a6;
-				line-height: 1.4;
-				margin: 0;
-				display: -webkit-box;
-				-webkit-line-clamp: 2;
-				-webkit-box-orient: vertical;
-				overflow: hidden;
+				font-weight: 600;
+				color: #94a3b8;
 			}
 
-			.mp-my-articles__card-meta {
-				display: flex;
-				align-items: center;
-				gap: 8px;
-				font-size: 11px;
-				color: #a0aab8;
+			// ── Article list ──────────────────────────────────────────────────
 
-				span {
-					display: inline-flex;
-					align-items: center;
-					gap: 3px;
+			&__list {
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+			}
+
+			// ── Card wrapper ──────────────────────────────────────────────────
+
+			&__card-wrap {
+				position: relative;
+
+				.com-article-card {
+					width: 100%;
+					margin: 0;
 				}
 			}
 
-			.mp-my-articles__empty {
+			// ── Edit / Delete — always visible on mobile (no hover) ───────────
+
+			&__card-actions {
+				position: absolute;
+				top: 10px;
+				right: 10px;
+				display: flex;
+				gap: 5px;
+				z-index: 10;
+				opacity: 1; // always visible on mobile
+				pointer-events: auto;
+			}
+
+			&__action-btn {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				width: 32px;
+				height: 32px;
+				border-radius: 8px;
+				border: none;
+				cursor: pointer;
+				background: rgba(255, 255, 255, 0.92);
+				backdrop-filter: blur(4px);
+				color: #5a6a7e;
+				box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+
+				&--delete {
+					color: #e53935;
+					background: rgba(255, 232, 232, 0.92);
+				}
+			}
+
+			// ── Empty state ───────────────────────────────────────────────────
+
+			&__empty {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 				justify-content: center;
-				gap: 10px;
-				padding: 60px 0;
+				gap: 12px;
+				padding: 60px 20px;
+				background: #fff;
+				border-radius: 14px;
+				border: 1.5px solid #e8edf3;
 				color: #c0c8d4;
+				text-align: center;
+
+				svg {
+					font-size: 36px !important;
+				}
 
 				p {
 					font-size: 13px;
+					font-weight: 500;
 					color: #8a94a6;
 					margin: 0;
 				}
 			}
 
-			.mp-my-articles__pagination {
+			&__spinner {
+				width: 32px;
+				height: 32px;
+				border: 3px solid #e8ecf0;
+				border-top-color: #0f2035;
+				border-radius: 50%;
+				animation: mp-articles-mob-spin 0.7s linear infinite;
+			}
+
+			@keyframes mp-articles-mob-spin {
+				to {
+					transform: rotate(360deg);
+				}
+			}
+
+			// ── Pagination ────────────────────────────────────────────────────
+
+			&__pagination {
 				display: flex;
 				justify-content: center;
+				align-items: center;
 				gap: 5px;
-				padding: 4px 0;
+				padding: 4px 0 8px;
+				flex-wrap: wrap;
+			}
 
-				.MuiPagination-root .MuiPaginationItem-root {
-					font-size: 12px !important;
-					font-weight: 500 !important;
-					color: #555 !important;
-					border-radius: 8px !important;
-					min-width: 32px !important;
-					height: 32px !important;
-					transition: all 0.15s ease !important;
+			&__page-btn {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				min-width: 34px;
+				height: 34px;
+				padding: 0 10px;
+				background: #fff;
+				border: 1.5px solid #e8ecf0;
+				border-radius: 8px;
+				font-family: 'DM Sans', sans-serif;
+				font-size: 12px;
+				font-weight: 600;
+				color: #5a6a7e;
+				cursor: pointer;
 
-					&.Mui-selected {
-						background: #0f2035 !important;
-						color: #ffffff !important;
-					}
+				&.active {
+					background: #0f2035;
+					border-color: #0f2035;
+					color: #fff;
+				}
 
-					&.MuiPaginationItem-previousNext {
-						background: #ffffff !important;
-						border: 1px solid #e0e0e0 !important;
-					}
+				&:disabled {
+					opacity: 0.4;
+					cursor: not-allowed;
 				}
 			}
 		}

@@ -24,7 +24,7 @@ interface PageConfig {
 const PAGE_CONFIG: Record<string, PageConfig> = {
 	'/product': { title: 'shop', bgImage: '/img/banner/shop-hero2.jpg' },
 	'/product/detail': { title: 'productDetail', bgImage: '/img/banner/shop-hero.webp' },
-	'/mypage': { title: 'mypage', bgImage: '/img/banner/mypage2.jpg' },
+	'/mypage': { title: 'mypage', bgImage: '/img/banner/mypage.jpg' },
 	'/community': { title: 'community', bgImage: '/img/community/header1.jpg' },
 	'/community/detail': { title: 'community', bgImage: '/img/community/header1.jpg' },
 	'/cs': { title: 'cs', bgImage: '/img/banner/cs/banner1.jpg' },
