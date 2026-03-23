@@ -14,7 +14,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
-// ─── Page config (USE KEYS, NOT TEXT) ─────────────────────────────────────────
+// ─── Page config ─────────────────────────────────────────
 
 interface PageConfig {
 	title: string;

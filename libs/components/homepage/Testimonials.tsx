@@ -1,87 +1,88 @@
-import { useState, useEffect } from 'react';
-import { Box, Typography, Avatar, IconButton } from '@mui/material';
+import { useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { Box, Typography, Avatar, IconButton, CircularProgress } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-
-interface Testimonial {
-	name: string;
-	from: string;
-	avatar: string;
-	rating: number;
-	review: string;
-}
-
-const testimonials: Testimonial[] = [
-	{
-		name: 'Emma Johnson',
-		from: 'VERIFIED BUYER',
-		avatar: 'https://i.pravatar.cc/150?img=47',
-		rating: 5,
-		review:
-			'"An elevated essential for any wardrobe. Thoughtful details, flawless fit, and exceptional quality. Designed to feel polished in every moment."',
-	},
-	{
-		name: 'James Carter',
-		from: 'LOYAL CUSTOMER',
-		avatar: 'https://i.pravatar.cc/150?img=12',
-		rating: 5,
-		review:
-			'"Absolutely stunning craftsmanship. The attention to detail is unmatched and the fit is perfect. I get compliments every time I wear it."',
-	},
-	{
-		name: 'Sofia Rossi',
-		from: 'VERIFIED BUYER',
-		avatar: 'https://i.pravatar.cc/150?img=32',
-		rating: 4,
-		review:
-			'"This piece has become a staple in my wardrobe. Versatile, elegant, and incredibly comfortable. Worth every penny."',
-	},
-];
+import { GET_COMMENTS } from '../../../apollo/user/query';
+import { CommentGroup } from '../../enums/comment.enum';
+import { Comment } from '../../types/comment/comment';
 
 export default function Testimonials() {
 	const device = useDeviceDetect();
 	const [current, setCurrent] = useState<number>(0);
 
-	const prev = () => {
-		const prevIndex = current === 0 ? testimonials.length - 1 : current - 1;
-		setCurrent(prevIndex);
-	};
+	const { data, loading } = useQuery(GET_COMMENTS, {
+		variables: {
+			input: {
+				page: 1,
+				limit: 4,
+				sort: 'createdAt',
+				direction: 'DESC',
+				search: {
+					commentRefId: '',
+					commentGroup: CommentGroup.PRODUCT,
+					commentRating: 4,
+				},
+			},
+		},
+		fetchPolicy: 'cache-and-network',
+	});
 
-	const next = () => {
-		const nextIndex = current === testimonials.length - 1 ? 0 : current + 1;
-		setCurrent(nextIndex);
-	};
+	const comments: Comment[] = data?.getComments?.list ?? [];
 
-	const { name, from, avatar, rating, review } = testimonials[current];
+	const prev = () => setCurrent((prev) => (prev === 0 ? comments.length - 1 : prev - 1));
+	const next = () => setCurrent((prev) => (prev === comments.length - 1 ? 0 : prev + 1));
+
+	if (loading) {
+		return (
+			<Box className="testimonials" display="flex" justifyContent="center" alignItems="center" minHeight={300}>
+				<CircularProgress />
+			</Box>
+		);
+	}
+
+	if (!comments.length) return null;
+
+	const { memberData, commentContent, commentRating } = comments[current];
 
 	const leftContent = (
 		<Box className="testimonials__left">
 			<Typography className="testimonials__eyebrow">TESTIMONIALS</Typography>
 			<Typography className="testimonials__heading">From The People</Typography>
 
-			<Avatar src={avatar} alt={name} className="testimonials__avatar" />
+			<Avatar
+				src={memberData?.memberImage ?? ''}
+				alt={memberData?.memberNick ?? 'User'}
+				className="testimonials__avatar"
+			/>
 
 			<Box className="testimonials__stars">
-				{Array.from({ length: 5 }).map((_, i) => (
-					<StarIcon key={i} className={i < rating ? 'star filled' : 'star'} />
-				))}
+				{Array.from({ length: 5 }).map((_, i) =>
+					i < (commentRating ?? 0) ? (
+						<StarIcon key={i} className="star filled" />
+					) : (
+						<StarBorderIcon key={i} className="star" />
+					),
+				)}
 			</Box>
 
-			<Typography className="testimonials__review">{review}</Typography>
+			<Typography className="testimonials__review">"{commentContent}"</Typography>
+			<Typography className="testimonials__name">{memberData?.memberNick ?? 'Anonymous'}</Typography>
+			<Typography className="testimonials__from">VERIFIED BUYER</Typography>
 
-			<Typography className="testimonials__name">{name}</Typography>
-			<Typography className="testimonials__from">{from}</Typography>
-
-			<Box className="testimonials__controls">
-				<IconButton onClick={prev} className="arrow-btn">
-					<ArrowBackIosNewIcon />
-				</IconButton>
-				<IconButton onClick={next} className="arrow-btn">
-					<ArrowForwardIosIcon />
-				</IconButton>
-			</Box>
+			{comments.length > 1 && (
+				<Box className="testimonials__controls">
+					<IconButton onClick={prev} className="arrow-btn">
+						<ArrowBackIosNewIcon />
+					</IconButton>
+					<IconButton onClick={next} className="arrow-btn">
+						<ArrowForwardIosIcon />
+					</IconButton>
+				</Box>
+			)}
 		</Box>
 	);
 
@@ -92,23 +93,6 @@ export default function Testimonials() {
 					<Box className="testimonials__wrap">
 						<Box className="testimonials__inner">
 							{leftContent}
-
-							<Box className="testimonials__right">
-								<img src="/img/banner/ts1.jpg" alt="Testimonial" className="testimonials__img" />
-							</Box>
-						</Box>
-					</Box>
-				</div>
-			</Box>
-		);
-	} else {
-		return (
-			<Box className="testimonials">
-				<div className="container">
-					<Box className="testimonials__wrap">
-						<Box className="testimonials__inner">
-							{leftContent}
-
 							<Box className="testimonials__right">
 								<img src="/img/banner/ts1.jpg" alt="Testimonial" className="testimonials__img" />
 							</Box>
@@ -118,4 +102,19 @@ export default function Testimonials() {
 			</Box>
 		);
 	}
+
+	return (
+		<Box className="testimonials">
+			<div className="container">
+				<Box className="testimonials__wrap">
+					<Box className="testimonials__inner">
+						{leftContent}
+						<Box className="testimonials__right">
+							<img src="/img/banner/ts1.jpg" alt="Testimonial" className="testimonials__img" />
+						</Box>
+					</Box>
+				</Box>
+			</div>
+		</Box>
+	);
 }

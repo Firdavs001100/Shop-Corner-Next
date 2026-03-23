@@ -6,6 +6,7 @@ import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import MyFavorites from '../../libs/components/mypage/MyFavorites';
 import RecentlyVisited from '../../libs/components/mypage/RecentlyVisited';
 import MyProfile from '../../libs/components/mypage/MyProfile';
+import MyOrders from '../../libs/components/mypage/MyOrders';
 import MyArticles from '../../libs/components/mypage/MyArticles';
 import WriteArticle from '../../libs/components/mypage/WriteArticle';
 import MemberFollowers from '../../libs/components/member/MemberFollowers';
@@ -26,6 +27,7 @@ import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
+import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -36,7 +38,10 @@ export const getStaticProps = async ({ locale }: any) => ({
 const MENU_ITEMS = [
 	{
 		group: 'Account',
-		items: [{ key: 'myProfile', label: 'My Profile', icon: <PersonOutlineIcon /> }],
+		items: [
+			{ key: 'myProfile', label: 'My Profile', icon: <PersonOutlineIcon /> },
+			{ key: 'myOrders', label: 'My Orders', icon: <ShoppingBagOutlinedIcon /> },
+		],
 	},
 	{
 		group: 'Content',
@@ -145,6 +150,7 @@ const MyPage: NextPage = () => {
 	const renderContent = () => (
 		<>
 			{category === 'myProfile' && <MyProfile />}
+			{category === 'myOrders' && <MyOrders />}
 			{category === 'myArticles' && <MyArticles />}
 			{category === 'writeArticle' && <WriteArticle />}
 			{category === 'myFavorites' && <MyFavorites />}
