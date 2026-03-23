@@ -18,7 +18,7 @@ export default function Testimonials() {
 		variables: {
 			input: {
 				page: 1,
-				limit: 4,
+				limit: 10,
 				sort: 'createdAt',
 				direction: 'DESC',
 				search: {

@@ -171,7 +171,7 @@
 					position: relative;
 					overflow: hidden;
 					background: #c8cdd6;
-					min-height: 300px;
+					height: 360px;
 				}
 
 				&__img {
@@ -360,18 +360,13 @@
 		.best-sellers {
 			display: flex;
 			flex-direction: column;
-			padding: 60px 0 0 0;
+			margin: 60px 0 0 0;
 			min-height: unset;
 			font-family: 'DM Sans', sans-serif;
 
-			.container {
-				display: block;
-			}
-
 			&__left {
-				background: #e6e5e2;
 				overflow: hidden;
-				height: 320px;
+				height: 360px;
 			}
 
 			&__hero-img {
@@ -573,11 +568,6 @@
 			background: #fff;
 			padding: 60px 0 0 0;
 
-			.container {
-				flex-direction: column;
-				gap: 0;
-			}
-
 			&__left {
 				flex: 1;
 				display: flex;
@@ -585,7 +575,7 @@
 				align-items: center;
 				justify-content: center;
 				text-align: center;
-				padding: 36px 24px;
+				padding: 0px 24px 36px;
 				gap: 16px;
 			}
 
@@ -641,8 +631,8 @@
 				position: relative;
 				overflow: hidden;
 				background: #f0f0ee;
-				height: 380px;
-				width: 380px;
+				height: 360px;
+				width: 100%;
 			}
 
 			&__img-wrap {
@@ -774,7 +764,7 @@
 				align-items: center;
 				justify-content: center;
 				text-align: center;
-				padding: 40px 20px;
+				padding: 0px 24px 36px;
 				gap: 16px;
 			}
 
@@ -850,6 +840,7 @@
 		.features-banner {
 			background-color: #fafadc;
 			padding: 32px 16px;
+			margin: 60px 0 0 0;
 
 			.features-grid {
 				display: grid;
@@ -894,7 +885,7 @@
 
 		.testimonials {
 			background-color: #ffffff;
-			padding: 60px 0 0 0;
+			margin: 60px 0 0 0;
 
 			.testimonials__wrap {
 				width: 100%;
@@ -910,7 +901,7 @@
 			.testimonials__left {
 				display: flex;
 				flex-direction: column;
-				align-items: flex-start;
+				align-items: center;
 				padding: 0 20px;
 			}
 
@@ -1009,7 +1000,7 @@
 			}
 
 			.testimonials__right {
-				height: 380px;
+				height: 360px;
 				overflow: hidden;
 			}
 
@@ -1086,6 +1077,7 @@
 				display: flex;
 				flex-direction: column;
 				gap: 10px;
+				padding: 0 20px;
 			}
 
 			.blog__meta {

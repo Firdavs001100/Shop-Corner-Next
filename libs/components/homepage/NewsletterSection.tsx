@@ -58,8 +58,8 @@ const NewsletterSection = () => {
 			<Box className="newsletter">
 				<div className="container">
 					<Box className="newsletter__inner">
-						{leftContent}
 						{rightContent}
+						{leftContent}
 					</Box>
 				</div>
 			</Box>
