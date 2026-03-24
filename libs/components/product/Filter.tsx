@@ -397,7 +397,7 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput, onSearch }
 				onReset={() => resetSection('brandList')}
 			>
 				<div className="product-filter__check-list">
-					{BRANDS.map((brand) => (
+					{BRANDS.map((brand: any) => (
 						<div key={brand} className="product-filter__check-item">
 							<Checkbox
 								size="small"

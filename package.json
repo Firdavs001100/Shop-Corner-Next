@@ -75,6 +75,7 @@
 		"react-spring": "^9.4.5",
 		"react-telegram-auth": "^1.0.3",
 		"react-tree": "^0.0.4",
+		"recharts": "^3.8.0",
 		"sass": "^1.49.9",
 		"sass-loader": "^12.6.0",
 		"slick-carousel": "^1.8.1",

@@ -349,3 +349,108 @@ export const GET_ALL_ORDERS_BY_ADMIN = gql`
 		}
 	}
 `;
+
+/**************************
+ *       DASHBOARD       *
+ *************************/
+export const GET_DASHBOARD_OVERVIEW = gql`
+	query GetDashboardOverview {
+		getDashboardOverview {
+			totalMembers
+			totalProducts
+			totalOrders
+			totalArticles
+			totalRevenue
+			todayRevenue
+			todayOrders
+		}
+	}
+`;
+
+export const GET_SALES_ANALYTICS = gql`
+	query GetSalesAnalytics($input: DashboardPeriodFilterInput!) {
+		getSalesAnalytics(input: $input) {
+			list {
+				date
+				revenue
+				orders
+			}
+		}
+	}
+`;
+
+export const GET_RECENT_ACTIVITY = gql`
+	query GetRecentActivity($input: DashboardActivityInput!) {
+		getRecentActivity(input: $input) {
+			recentOrders {
+				_id
+				orderTotal
+				createdAt
+				memberId
+			}
+			recentMembers {
+				_id
+				memberNick
+				createdAt
+			}
+			recentArticles {
+				_id
+				articleTitle
+				createdAt
+			}
+		}
+	}
+`;
+
+export const GET_ADMIN_ALERTS = gql`
+	query GetAdminAlerts {
+		getAdminAlerts {
+			lowStockProducts
+			pendingOrders
+			deletedArticles
+		}
+	}
+`;
+
+export const GET_DASHBOARD_INSIGHTS = gql`
+	query GetDashboardInsights {
+		getDashboardInsights {
+			topSellingProducts {
+				_id
+				productName
+				soldCount
+			}
+			topCustomers {
+				_id
+				memberNick
+				totalSpent
+			}
+			orderStatusStats {
+				status
+				count
+			}
+		}
+	}
+`;
+
+export const GET_INVENTORY_STATUS = gql`
+	query GetInventoryStatus {
+		getInventoryStatus {
+			inStock
+			lowStock
+			outOfStock
+		}
+	}
+`;
+
+export const GET_REVENUE_BY_PERIOD = gql`
+	query GetRevenueByPeriod($input: DashboardDateRangeInput!) {
+		getRevenueByPeriod(input: $input) {
+			total
+			breakdown {
+				date
+				amount
+			}
+		}
+	}
+`;
