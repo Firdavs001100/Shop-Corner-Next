@@ -177,6 +177,7 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 	};
 
 	const activeFilterCount =
+		(searchFilter.search?.text ? 1 : 0) +
 		(searchFilter.search?.categoryList?.length ?? 0) +
 		(searchFilter.search?.sizeList?.length ?? 0) +
 		(searchFilter.search?.colorList?.length ?? 0) +
@@ -241,13 +242,7 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 
 				{/* Products — always grid on mobile */}
 				<div className="mobile-content">
-					{getProductsLoading ? (
-						<div className="product-page__loading">
-							{[...Array(4)].map((_, i) => (
-								<div key={i} className="product-page__skeleton" />
-							))}
-						</div>
-					) : products.length === 0 ? (
+					{products.length === 0 && !getProductsLoading ? (
 						<div className="product-page__empty">
 							<p>No products found</p>
 							<span>
@@ -258,15 +253,22 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 							</span>
 						</div>
 					) : (
-						<div className="product-page__grid product-page__grid--grid">
-							{products.map((product: Product) => (
-								<ProductCard
-									key={product._id}
-									product={product}
-									likeProductHandler={likeProductHandler}
-									listView={false}
-								/>
-							))}
+						<div className="product-page__grid-wrap">
+							{getProductsLoading && <div className="product-page__grid-overlay" />}
+							<div
+								className={`product-page__grid product-page__grid--grid${
+									getProductsLoading ? ' product-page__grid--loading' : ''
+								}`}
+							>
+								{products.map((product: Product) => (
+									<ProductCard
+										key={product._id}
+										product={product}
+										likeProductHandler={likeProductHandler}
+										listView={false}
+									/>
+								))}
+							</div>
 						</div>
 					)}
 
@@ -305,7 +307,12 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 					</div>
 
 					<div className="mobile-filter-drawer__body">
-						<ProductFilter searchFilter={searchFilter} setSearchFilter={updateFilter} initialInput={initialInput} />
+						<ProductFilter
+							searchFilter={searchFilter}
+							setSearchFilter={updateFilter}
+							initialInput={initialInput}
+							onSearch={() => setDrawerOpen(false)}
+						/>
 					</div>
 
 					<div className="mobile-filter-drawer__footer">
@@ -368,13 +375,7 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 							</div>
 						</div>
 
-						{getProductsLoading ? (
-							<div className="product-page__loading">
-								{[...Array(9)].map((_, i) => (
-									<div key={i} className="product-page__skeleton" />
-								))}
-							</div>
-						) : products.length === 0 ? (
+						{products.length === 0 && !getProductsLoading ? (
 							<div className="product-page__empty">
 								<p>No products found</p>
 								<span>
@@ -385,15 +386,22 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 								</span>
 							</div>
 						) : (
-							<div className={`product-page__grid product-page__grid--${gridView}`}>
-								{products.map((product: Product) => (
-									<ProductCard
-										key={product._id}
-										product={product}
-										likeProductHandler={likeProductHandler}
-										listView={gridView === 'list'}
-									/>
-								))}
+							<div className="product-page__grid-wrap">
+								{getProductsLoading && <div className="product-page__grid-overlay" />}
+								<div
+									className={`product-page__grid product-page__grid--${gridView}${
+										getProductsLoading ? ' product-page__grid--loading' : ''
+									}`}
+								>
+									{products.map((product: Product) => (
+										<ProductCard
+											key={product._id}
+											product={product}
+											likeProductHandler={likeProductHandler}
+											listView={gridView === 'list'}
+										/>
+									))}
+								</div>
 							</div>
 						)}
 

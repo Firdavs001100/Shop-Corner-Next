@@ -152,6 +152,12 @@ export const GET_PRODUCTS = gql`
 	}
 `;
 
+export const GET_PRODUCT_BRANDS = gql`
+	query GetProductBrands {
+		getProductBrands
+	}
+`;
+
 export const GET_FAVORITES = gql`
 	query GetFavorites($input: OrdinaryInquiry!) {
 		getFavorites(input: $input) {

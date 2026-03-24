@@ -31,7 +31,7 @@ const BlogCard = ({ post }: { post: BoardArticle }) => {
 				<Typography className="blog__title" onClick={handleNavigate} sx={{ cursor: 'pointer' }}>
 					{post.articleTitle}
 				</Typography>
-				<Typography className="blog__excerpt">{post.articleContent}</Typography>
+				<Typography className="blog__excerpt" dangerouslySetInnerHTML={{ __html: post.articleContent }} />
 				<Box className="blog__read-more" onClick={handleNavigate}>
 					Read More <ArrowForwardIcon className="blog__arrow" />
 				</Box>

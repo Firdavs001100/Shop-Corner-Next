@@ -1162,6 +1162,89 @@
 				font-weight: 400;
 				color: #6b7a8a;
 				line-height: 1.7;
+
+				// ✅ clamp to 3 lines
+				display: -webkit-box;
+				-webkit-line-clamp: 6;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+
+				// ✅ hide media
+				img,
+				figure,
+				video,
+				iframe {
+					display: none !important;
+				}
+
+				// ✅ normalize heading sizes
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6 {
+					font-size: 14px;
+					font-weight: 600;
+					color: #1a2332;
+					margin: 0;
+				}
+
+				// ✅ reset paragraph spacing
+				p {
+					margin: 0;
+					&:not(:last-child) {
+						margin-bottom: 4px;
+					}
+				}
+
+				// ✅ style inline elements naturally
+				strong,
+				b {
+					font-weight: 600;
+					color: #1a2332;
+				}
+				em,
+				i {
+					font-style: italic;
+				}
+				a {
+					color: #1a2332;
+					text-decoration: underline;
+				}
+
+				// ✅ simple list reset
+				ul,
+				ol {
+					padding-left: 1.2em;
+					margin: 0;
+					li {
+						margin: 0;
+					}
+				}
+
+				// ✅ subtle blockquote
+				blockquote {
+					border-left: 2px solid #d0d8e4;
+					padding-left: 10px;
+					margin: 0;
+					color: #8a9aaa;
+					font-style: italic;
+				}
+
+				// ✅ inline code
+				code {
+					background: #f0f4f8;
+					padding: 1px 4px;
+					border-radius: 3px;
+					font-size: 12px;
+					color: #1a2332;
+				}
+
+				// ✅ hide code blocks entirely — too noisy in excerpt
+				pre {
+					display: none !important;
+				}
 			}
 
 			.blog__read-more {

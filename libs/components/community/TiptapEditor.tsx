@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { BoardArticleCategory } from '../../enums/board-article.enum';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -15,13 +15,14 @@ import { getJwtToken } from '../../auth';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { toastErrorHandling, toastSmallSuccess } from '../../toast';
-import { useMutation } from '@apollo/client';
-import { CREATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
+import { useMutation, useQuery } from '@apollo/client';
+import { CREATE_BOARD_ARTICLE, UPDATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
+import { GET_BOARD_ARTICLE } from '../../../apollo/user/query';
+import { T } from '../../types/common';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 
 // ── Force toolbar re-render on editor state change ────────────────────────────
-// Tiptap doesn't trigger React re-renders on selection/format change by default.
 const useEditorForceUpdate = (editor: any) => {
 	const [, setTick] = useState(0);
 	React.useEffect(() => {
@@ -68,7 +69,7 @@ const ToolbarBtn = ({
 
 const Sep = () => <span className="tiptap-toolbar__sep" />;
 
-// ── Upload helper — matches imagesUploader spec exactly ───────────────────────
+// ── Upload helper ─────────────────────────────────────────────────────────────
 const uploadImages = async (files: File[], token: string): Promise<string[]> => {
 	if (files.length === 0) return [];
 
@@ -103,9 +104,14 @@ const uploadImages = async (files: File[], token: string): Promise<string[]> => 
 };
 
 // ── Main component ────────────────────────────────────────────────────────────
-const TiptapEditor = () => {
+interface TiptapEditorProps {
+	editId?: string;
+}
+
+const TiptapEditor = ({ editId }: TiptapEditorProps) => {
 	const token = getJwtToken();
 	const router = useRouter();
+	const isEdit = !!editId;
 
 	const [articleCategory, setArticleCategory] = useState<BoardArticleCategory>(BoardArticleCategory.QUESTION);
 	const [articleTitle, setArticleTitle] = useState('');
@@ -114,14 +120,34 @@ const TiptapEditor = () => {
 	const [coverUploading, setCoverUploading] = useState(false);
 	const [imgUploading, setImgUploading] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
+	const [editorReady, setEditorReady] = useState(false);
 
 	const [createBoardArticle] = useMutation(CREATE_BOARD_ARTICLE);
+	const [updateBoardArticle] = useMutation(UPDATE_BOARD_ARTICLE);
 
-	// ── Editor setup ─────────────────────────────────────────────────────────
+	// ── Load existing article for edit ────────────────────────────────────────
+	const { data: editData } = useQuery(GET_BOARD_ARTICLE, {
+		fetchPolicy: 'network-only',
+		variables: { input: editId },
+		skip: !editId,
+	});
+
+	useEffect(() => {
+		const article = editData?.getBoardArticle;
+		if (!article) return;
+		setArticleTitle(article.articleTitle ?? '');
+		setArticleCategory(article.articleCategory ?? BoardArticleCategory.QUESTION);
+		if (article.articleImage?.[0]) {
+			setCoverPath(article.articleImage[0]);
+			setCoverPreview(`${process.env.NEXT_PUBLIC_API_URL}/${article.articleImage[0]}`);
+		}
+	}, [editData]);
+
+	// ── Editor setup ──────────────────────────────────────────────────────────
 	const editor = useEditor({
 		immediatelyRender: false,
 		extensions: [
-			StarterKit,
+			StarterKit.configure({ link: false }),
 			Underline,
 			Image.configure({ inline: false, allowBase64: false }),
 			Link.configure({ openOnClick: false, autolink: true }),
@@ -133,9 +159,18 @@ const TiptapEditor = () => {
 			Placeholder.configure({ placeholder: 'Start writing your article…' }),
 		],
 		content: '',
+		onCreate: () => setEditorReady(true),
 	});
 
 	useEditorForceUpdate(editor);
+
+	// ── Populate editor content once both editor and data are ready ───────────
+	useEffect(() => {
+		const article = editData?.getBoardArticle;
+		if (editorReady && editor && article?.articleContent) {
+			editor.commands.setContent(article.articleContent);
+		}
+	}, [editorReady, editData, editor]);
 
 	// ── Cover image upload ────────────────────────────────────────────────────
 	const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,7 +220,7 @@ const TiptapEditor = () => {
 		input.click();
 	};
 
-	// ── Link ─────────────────────────────────────────────────────────────────
+	// ── Link ──────────────────────────────────────────────────────────────────
 	const handleSetLink = useCallback(() => {
 		const prev = editor?.getAttributes('link').href ?? '';
 		const rawUrl = window.prompt('Enter URL (e.g. https://example.com)', prev);
@@ -203,24 +238,40 @@ const TiptapEditor = () => {
 		editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
 	};
 
-	// ── Publish ───────────────────────────────────────────────────────────────
+	// ── Publish / Save ────────────────────────────────────────────────────────
 	const canPublish = articleTitle.trim().length > 0 && (editor?.getText().trim().length ?? 0) > 0;
 
 	const handleSubmit = async () => {
 		if (!canPublish || submitting) return;
 		try {
 			setSubmitting(true);
-			await createBoardArticle({
-				variables: {
-					input: {
-						articleTitle: articleTitle.trim(),
-						articleContent: editor?.getHTML() ?? '',
-						articleCategory,
-						articleImage: coverPath ? [coverPath] : [],
+
+			if (isEdit) {
+				await updateBoardArticle({
+					variables: {
+						input: {
+							_id: editId,
+							articleTitle: articleTitle.trim(),
+							articleContent: editor?.getHTML() ?? '',
+							articleImage: coverPath ? [coverPath] : [],
+						},
 					},
-				},
-			});
-			toastSmallSuccess('Article published!', 700);
+				});
+				toastSmallSuccess('Article updated!', 700);
+			} else {
+				await createBoardArticle({
+					variables: {
+						input: {
+							articleTitle: articleTitle.trim(),
+							articleContent: editor?.getHTML() ?? '',
+							articleCategory,
+							articleImage: coverPath ? [coverPath] : [],
+						},
+					},
+				});
+				toastSmallSuccess('Article published!', 700);
+			}
+
 			router.push({ pathname: '/mypage', query: { category: 'myArticles' } });
 		} catch (err: any) {
 			toastErrorHandling(err);
@@ -232,7 +283,7 @@ const TiptapEditor = () => {
 	// ── Render ────────────────────────────────────────────────────────────────
 	return (
 		<div className="tiptap-editor">
-			{/* Cover image — on top */}
+			{/* Cover image */}
 			<div className="tiptap-cover">
 				<span className="tiptap-cover__label">Cover Image</span>
 				{coverPreview ? (
@@ -400,7 +451,7 @@ const TiptapEditor = () => {
 					🔗
 				</ToolbarBtn>
 
-				{/* Table controls — only show relevant ones based on context */}
+				{/* Table controls */}
 				{editor?.isActive('table') ? (
 					<>
 						<Sep />
@@ -462,7 +513,7 @@ const TiptapEditor = () => {
 
 				<Sep />
 
-				{/* History — no .focus() so cursor stays where it is */}
+				{/* History */}
 				<ToolbarBtn onClick={() => editor?.chain().undo().run()} disabled={!editor?.can().undo()} title="Undo">
 					↩
 				</ToolbarBtn>
@@ -492,7 +543,7 @@ const TiptapEditor = () => {
 					onClick={handleSubmit}
 					title={!canPublish ? 'Please add a title and some content first' : undefined}
 				>
-					{submitting ? 'Publishing…' : 'Publish Article'}
+					{submitting ? (isEdit ? 'Saving…' : 'Publishing…') : isEdit ? 'Save Changes' : 'Publish Article'}
 				</button>
 			</div>
 		</div>

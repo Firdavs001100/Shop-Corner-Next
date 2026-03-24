@@ -23,7 +23,7 @@ const RecentlyVisited: NextPage = () => {
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
-	const { data: visitedData } = useQuery(GET_VISITED, {
+	const { data: visitedData, refetch: refetchVisited } = useQuery(GET_VISITED, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchVisited },
 	});
@@ -69,7 +69,7 @@ const RecentlyVisited: NextPage = () => {
 								product={product}
 								listView={false}
 								likeProductHandler={(user: any, id: any, isLiked: any) =>
-									likeProductHandler(likeTargetProduct, user, id, isLiked)
+									likeProductHandler(likeTargetProduct, user, id, isLiked).then(() => refetchVisited())
 								}
 							/>
 						))}
@@ -124,7 +124,7 @@ const RecentlyVisited: NextPage = () => {
 							product={product}
 							listView={false}
 							likeProductHandler={(user: any, id: any, isLiked: any) =>
-								likeProductHandler(likeTargetProduct, user, id, isLiked)
+								likeProductHandler(likeTargetProduct, user, id, isLiked).then(() => refetchVisited())
 							}
 						/>
 					))}

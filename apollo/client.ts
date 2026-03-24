@@ -59,7 +59,7 @@ class LoggingWebSocket {
 
 function createIsomorphicLink() {
 	const uploadLink = createUploadLink({
-		uri: process.env.REACT_APP_API_GRAPHQL_URL,
+		uri: process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
 	});
 
 	const errorLink = onError(({ graphQLErrors, networkError }) => {
@@ -88,7 +88,7 @@ function createIsomorphicLink() {
 
 	// 👉 CLIENT: WITH WebSocket
 	const wsLink = new WebSocketLink({
-		uri: process.env.REACT_APP_API_WS ?? 'ws://127.0.0.1:3007',
+		uri: process.env.NEXT_APP_API_WS ?? 'ws://127.0.0.1:3007',
 		options: {
 			reconnect: false,
 			timeout: 30000,

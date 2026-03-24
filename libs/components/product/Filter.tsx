@@ -11,17 +11,19 @@ import { OutlinedInput, IconButton, Checkbox, Tooltip } from '@mui/material';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import SearchIcon from '@mui/icons-material/Search';
 import { formatSize } from '../../utils';
+import { useQuery } from '@apollo/client';
+import { GET_PRODUCT_BRANDS } from '../../../apollo/user/query';
 
 interface ProductFilterProps {
 	searchFilter: ProductsInquiry;
 	setSearchFilter: (filter: ProductsInquiry) => void;
 	initialInput: ProductsInquiry;
+	onSearch?: () => void;
 }
 
 const SIZES = Object.values(ProductSize);
 const CATEGORIES = Object.values(ProductCategory);
 const DRESS_STYLES = Object.values(ProductDressStyle);
-const BRANDS = ['Nike', 'Adidas', 'Zara', 'H&M', 'Uniqlo', "Levi's", 'Gucci', 'Puma'];
 
 const COLORS = [
 	{ label: 'Black', value: 'black', hex: '#1a1a1a' },
@@ -75,7 +77,7 @@ const FilterSection = ({ title, hasActive, onReset, defaultOpen = true, children
 
 /* ─── Filter ──────────────────────────────────────────────────────────────── */
 
-const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductFilterProps) => {
+const ProductFilter = ({ searchFilter, setSearchFilter, initialInput, onSearch }: ProductFilterProps) => {
 	const device = useDeviceDetect();
 
 	const [searchText, setSearchText] = useState(searchFilter?.search?.text ?? '');
@@ -83,6 +85,9 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 		searchFilter?.search?.pricesRange?.start ?? 0,
 		searchFilter?.search?.pricesRange?.end ?? 500000,
 	]);
+
+	const { data: brandsData } = useQuery(GET_PRODUCT_BRANDS);
+	const BRANDS = brandsData?.getProductBrands ?? [];
 
 	useEffect(() => {
 		if (searchFilter?.search?.pricesRange) {
@@ -110,6 +115,7 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 
 	const searchHandler = () => {
 		setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, text: searchText } });
+		onSearch?.();
 	};
 
 	const refreshHandler = () => {
@@ -131,6 +137,37 @@ const ProductFilter = ({ searchFilter, setSearchFilter, initialInput }: ProductF
 						Clear All
 					</button>
 				</div>
+
+				{/* SEARCH */}
+				<FilterSection title="Search">
+					<Stack className="product-filter__search-box">
+						<OutlinedInput
+							className="product-filter__search-input"
+							value={searchText}
+							onChange={(e) => setSearchText(e.target.value)}
+							placeholder="Search products..."
+							onKeyDown={(e) => e.key === 'Enter' && searchHandler()}
+							endAdornment={
+								<>
+									{searchText && (
+										<IconButton
+											size="small"
+											onClick={() => {
+												setSearchText('');
+												setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, text: '' } });
+											}}
+										>
+											<CancelRoundedIcon fontSize="small" />
+										</IconButton>
+									)}
+									<IconButton size="small" onClick={searchHandler}>
+										<SearchIcon fontSize="small" />
+									</IconButton>
+								</>
+							}
+						/>
+					</Stack>
+				</FilterSection>
 
 				{/* CATEGORY */}
 				<FilterSection

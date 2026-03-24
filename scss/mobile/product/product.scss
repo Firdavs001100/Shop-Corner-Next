@@ -98,17 +98,6 @@
 			padding: 16px 16px 40px;
 		}
 
-		// // ─── Product Grid ────────────────────────────────────────────────────────
-
-		// .product-page__grid {
-		// 	display: grid;
-		// 	gap: 14px;
-
-		// 	&--grid { grid-template-columns: repeat(2, 1fr); }
-		// }
-
-		// ─── Loading Skeletons ───────────────────────────────────────────────────
-
 		.product-page__loading {
 			display: grid;
 			grid-template-columns: repeat(2, 1fr);
@@ -387,7 +376,7 @@
 		justify-content: space-between;
 		padding-bottom: 16px;
 		border-bottom: 2px solid #1a1a1a;
-		margin-bottom: 12px;
+		margin: 12px 0px;
 	}
 
 	&__header-left {
@@ -459,6 +448,88 @@
 		width: 100%;
 	}
 
+	&__search-box {
+		width: 100%;
+
+		.MuiOutlinedInput-root {
+			font-family: 'DM Sans', sans-serif;
+			font-size: 13px;
+			border-radius: 8px;
+
+			fieldset {
+				border-color: #e0e0e0;
+				transition: border-color 0.2s ease;
+			}
+
+			&:hover fieldset {
+				border-color: #1a1a1a;
+			}
+
+			&.Mui-focused fieldset {
+				border-color: #1a1a1a;
+				border-width: 1.5px;
+			}
+		}
+
+		.MuiInputBase-input {
+			font-family: 'DM Sans', sans-serif;
+			font-size: 13px;
+			color: #1a1a1a;
+			padding: 10px 14px;
+
+			&::placeholder {
+				color: #b0b7c3;
+				opacity: 1;
+			}
+		}
+
+		.MuiAutocomplete-listbox {
+			font-family: 'DM Sans', sans-serif;
+			font-size: 13px;
+			padding: 6px;
+
+			.MuiAutocomplete-option {
+				border-radius: 6px;
+				font-size: 13px;
+				color: #1a1a1a;
+
+				&:hover {
+					background: #f0f4f8;
+				}
+
+				&[aria-selected='true'] {
+					background: #1a1a1a !important;
+					color: #ffffff !important;
+				}
+			}
+		}
+
+		.MuiChip-root {
+			font-family: 'DM Sans', sans-serif;
+			font-size: 11px;
+			font-weight: 600;
+			background: #1a1a1a;
+			color: #ffffff;
+			border-radius: 6px;
+			height: 24px;
+
+			.MuiChip-deleteIcon {
+				color: #ffffff;
+				opacity: 0.7;
+				font-size: 14px;
+
+				&:hover {
+					opacity: 1;
+					color: #ffffff;
+				}
+			}
+		}
+	}
+
+	&__search-input {
+		width: 100%;
+	}
+
 	// ─── Chip list ─────────────────────────────────────────────────────────────
 
 	&__chip-list {
@@ -480,16 +551,31 @@
 		cursor: pointer;
 		transition: all 0.15s ease;
 		white-space: nowrap;
+		-webkit-tap-highlight-color: transparent; // ✅ kills mobile tap flash
+		outline: none; // ✅ kills focus ring
 
 		&:hover {
 			border-color: #1a1a1a;
 			color: #1a1a1a;
 		}
 
+		&:focus {
+			outline: none;
+			background: #ffffff;
+			color: #444;
+			border-color: #e0e0e0;
+		}
+
 		&--active {
 			background: #1a1a1a;
 			border-color: #1a1a1a;
 			color: #ffffff;
+
+			&:focus {
+				background: #1a1a1a; // ✅ keep active state even when focused
+				color: #ffffff;
+				border-color: #1a1a1a;
+			}
 		}
 	}
 

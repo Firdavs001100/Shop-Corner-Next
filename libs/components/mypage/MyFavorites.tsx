@@ -24,7 +24,7 @@ const MyFavorites: NextPage = () => {
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
 	/** APOLLO **/
-	const { data: favoritesData } = useQuery(GET_FAVORITES, {
+	const { data: favoritesData, refetch: refetchFavorites } = useQuery(GET_FAVORITES, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFavorites },
 	});
@@ -71,7 +71,7 @@ const MyFavorites: NextPage = () => {
 								product={product}
 								listView={false}
 								likeProductHandler={(user: any, id: string, isLiked: boolean) =>
-									likeProductHandler(likeTargetProduct, user, id, isLiked)
+									likeProductHandler(likeTargetProduct, user, id, isLiked).then(() => refetchFavorites())
 								}
 							/>
 						))}
@@ -128,7 +128,7 @@ const MyFavorites: NextPage = () => {
 							product={product}
 							listView={false}
 							likeProductHandler={(user: any, id: string, isLiked: boolean) =>
-								likeProductHandler(likeTargetProduct, user, id, isLiked)
+								likeProductHandler(likeTargetProduct, user, id, isLiked).then(() => refetchFavorites())
 							}
 						/>
 					))}

@@ -85,9 +85,11 @@ const MemberFollowings: NextPage<MemberFollowingsProps> = ({
 			<div className="mp-followings mp-followings--mobile">
 				<div className="mp-followings__mob-header">
 					<div className="mp-followings__mob-header-left">
-						<h2 className="mp-followings__mob-title">Followings</h2>
-						<span className="mp-followings__mob-count">{total}</span>
+						{!isMemberPage && <span className="mp-followings__mob-eyebrow">Network</span>}
+						<h2 className="mp-followings__mob-title">{ownerLabel ? `${ownerLabel} Followings` : 'Followings'}</h2>
+						<p className="mp-followings__mob-sub">{isMemberPage ? 'Inspired by the best' : 'People you follow'}</p>
 					</div>
+					{total > 0 && <span className="mp-followings__mob-count">{total}</span>}
 				</div>
 
 				{memberFollowings.length === 0 ? (

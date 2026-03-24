@@ -185,6 +185,39 @@
 			}
 		}
 
+		// ─── Loading Overlay ──────────────────────────────────────────────────────────
+
+		.product-page__grid-wrap {
+			position: relative;
+		}
+
+		.product-page__grid-overlay {
+			position: absolute;
+			inset: 0;
+			background: rgba(255, 255, 255, 0.6);
+			backdrop-filter: blur(1px);
+			border-radius: 12px;
+			z-index: 2;
+			pointer-events: none;
+			animation: fadeIn 0.15s ease forwards;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+			}
+			to {
+				opacity: 1;
+			}
+		}
+
+		.product-page__grid {
+			transition: opacity 0.2s ease;
+			&--loading {
+				opacity: 0.4;
+			}
+		}
+
 		// ─── Empty State ──────────────────────────────────────────────────────────
 
 		.product-page__empty {
@@ -405,10 +438,91 @@
 
 		&__search-box {
 			width: 100%;
-		}
 
-		&__search-input {
-			width: 100%;
+			.MuiOutlinedInput-root {
+				font-family: 'DM Sans', sans-serif;
+				font-size: 13px;
+				border-radius: 8px;
+
+				fieldset {
+					border-color: #e0e0e0;
+					transition: border-color 0.2s ease;
+				}
+
+				&:hover fieldset {
+					border-color: #1a1a1a;
+				}
+
+				&.Mui-focused fieldset {
+					border-color: #1a1a1a;
+					border-width: 1.5px;
+				}
+			}
+
+			.MuiInputBase-input {
+				font-family: 'DM Sans', sans-serif;
+				font-size: 13px;
+				color: #1a1a1a;
+				padding: 10px 14px;
+
+				&::placeholder {
+					color: #b0b7c3;
+					opacity: 1;
+				}
+			}
+
+			// dropdown list
+			.MuiAutocomplete-listbox {
+				font-family: 'DM Sans', sans-serif;
+				font-size: 13px;
+				padding: 6px;
+
+				.MuiAutocomplete-option {
+					border-radius: 6px;
+					font-size: 13px;
+					color: #1a1a1a;
+
+					&:hover {
+						background: #f0f4f8;
+					}
+
+					&[aria-selected='true'] {
+						background: #1a1a1a !important;
+						color: #ffffff !important;
+					}
+
+					&.Mui-focused {
+						background: #f0f4f8;
+					}
+
+					&.Mui-focused[aria-selected='true'] {
+						background: #1a1a1a !important;
+						color: #ffffff !important;
+					}
+				}
+			}
+
+			// selected chip/tag
+			.MuiChip-root {
+				font-family: 'DM Sans', sans-serif;
+				font-size: 11px;
+				font-weight: 600;
+				background: #1a1a1a;
+				color: #ffffff;
+				border-radius: 6px;
+				height: 24px;
+
+				.MuiChip-deleteIcon {
+					color: #ffffff;
+					opacity: 0.7;
+					font-size: 14px;
+
+					&:hover {
+						opacity: 1;
+						color: #ffffff;
+					}
+				}
+			}
 		}
 
 		/* ───────────────── CHECK LIST ───────────────── */
