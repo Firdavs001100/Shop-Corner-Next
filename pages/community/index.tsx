@@ -162,6 +162,8 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 		return searchCommunity.search.articleCategory === value;
 	};
 
+	const hasImage = (html: string) => /<img/i.test(html);
+
 	// ── MOBILE ────────────────────────────────────────────────────────────────
 
 	if (device === 'mobile') {
@@ -263,12 +265,32 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 											<span className="com-mobile-card__date">{formatDate(article.createdAt)}</span>
 										</div>
 
+										{/* Media hint */}
+										{hasImage(article.articleContent) && (
+											<div className="com-mobile-card__media-hint">
+												<svg
+													width="12"
+													height="12"
+													viewBox="0 0 24 24"
+													fill="none"
+													stroke="currentColor"
+													strokeWidth="2"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+												>
+													<rect x="3" y="3" width="18" height="18" rx="2" />
+													<circle cx="8.5" cy="8.5" r="1.5" />
+													<polyline points="21 15 16 10 5 21" />
+												</svg>
+												Contains images
+											</div>
+										)}
+
 										{/* Excerpt */}
-										<p className="com-mobile-card__excerpt">
-											{article.articleContent.length > 140
-												? `${article.articleContent.slice(0, 140)}...`
-												: article.articleContent}
-										</p>
+										<div
+											className="com-mobile-card__excerpt"
+											dangerouslySetInnerHTML={{ __html: article.articleContent }}
+										/>
 
 										{/* Footer: stats + read more */}
 										<div className="com-mobile-card__footer">

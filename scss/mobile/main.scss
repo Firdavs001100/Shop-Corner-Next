@@ -326,6 +326,240 @@
 		line-height: 1;
 	}
 
+	// ─── Notification ─────────────────────────────────────────────────────────────
+
+	.notif-wrap {
+		position: relative;
+	}
+
+	.notif-dropdown {
+		position: absolute;
+		top: calc(100% + 10px);
+		right: -8px;
+		z-index: 500;
+		width: min(300px, calc(100vw - 24px));
+		background: #ffffff;
+		border-radius: 16px;
+		border: 1px solid rgba(0, 0, 0, 0.06);
+		overflow: hidden;
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 20px 50px -8px rgba(0, 0, 0, 0.15);
+
+		&__header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 14px 16px;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+		}
+
+		&__title {
+			font-family: $font-body;
+			font-size: 14px;
+			font-weight: 700;
+			color: $c-text-primary;
+			letter-spacing: -0.01em;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		&__count {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 20px;
+			height: 20px;
+			padding: 0 6px;
+			background: $c-text-primary;
+			color: #ffffff;
+			font-size: 10px;
+			font-weight: 700;
+			border-radius: 999px;
+			line-height: 1;
+		}
+
+		&__mark-all {
+			background: none;
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			border-radius: 999px;
+			cursor: pointer;
+			font-family: $font-body;
+			font-size: 11px;
+			font-weight: 500;
+			color: $c-text-muted;
+			padding: 5px 12px;
+			letter-spacing: 0.01em;
+			transition: all $t-fast;
+
+			&:hover {
+				border-color: $c-text-primary;
+				color: $c-text-primary;
+				background: rgba(0, 0, 0, 0.03);
+			}
+		}
+
+		&__list {
+			max-height: 55vh;
+			overflow-y: auto;
+			scrollbar-width: none;
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
+		}
+
+		&__empty {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			padding: 40px 20px;
+
+			svg {
+				opacity: 0.25;
+			}
+
+			p {
+				font-family: $font-body;
+				font-size: 13px;
+				color: $c-text-muted;
+				margin: 0;
+			}
+		}
+	}
+
+	// ─── Notification Item ────────────────────────────────────────────────────────
+
+	.notif-item {
+		display: flex;
+		align-items: flex-start;
+		gap: 11px;
+		padding: 13px 16px;
+		cursor: pointer;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+		transition: background $t-fast;
+		position: relative;
+
+		&:last-child {
+			border-bottom: none;
+		}
+
+		&:hover {
+			background: #f9f9f9;
+		}
+
+		&--unread {
+			background: #fafafa;
+
+			&:hover {
+				background: #f4f4f4;
+			}
+
+			.notif-item__title {
+				font-weight: 700;
+				color: $c-text-primary;
+			}
+
+			.notif-item__desc,
+			.notif-item__full-desc {
+				font-weight: 500;
+				color: $c-text-muted;
+			}
+		}
+
+		&__icon-wrap {
+			flex-shrink: 0;
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			background: rgba(0, 0, 0, 0.05);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-top: 1px;
+		}
+
+		&__body {
+			flex: 1;
+			min-width: 0;
+		}
+
+		&__title {
+			font-family: $font-body;
+			font-size: 13px;
+			font-weight: 400;
+			color: $c-text-muted;
+			margin: 0 0 3px;
+			line-height: 1.4;
+		}
+
+		&__desc,
+		&__full-desc {
+			font-family: $font-body;
+			font-size: 12px;
+			font-weight: 400;
+			color: $c-text-muted;
+			margin: 0 0 6px;
+			line-height: 1.5;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		&__full-desc {
+			white-space: normal;
+			overflow: visible;
+			text-overflow: unset;
+		}
+
+		&__footer {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
+		}
+
+		&__time {
+			font-family: $font-body;
+			font-size: 11px;
+			font-weight: 400;
+			color: #999999;
+		}
+
+		&__expand {
+			display: inline-flex;
+			align-items: center;
+			gap: 3px;
+			font-family: $font-body;
+			font-size: 11px;
+			font-weight: 500;
+			color: #999999;
+			transition: color $t-fast;
+
+			&:hover {
+				color: $c-text-primary;
+			}
+		}
+
+		&__chevron {
+			transition: transform $t-fast;
+
+			&--open {
+				transform: rotate(180deg);
+			}
+		}
+
+		&__dot {
+			flex-shrink: 0;
+			width: 7px;
+			height: 7px;
+			border-radius: 50%;
+			background: $c-text-primary;
+			margin-top: 5px;
+		}
+	}
+
 	// ─── Mobile Drawer ────────────────────────────────────────────────────────────
 
 	.mobile-drawer {
