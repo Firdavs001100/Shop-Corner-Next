@@ -216,14 +216,16 @@ const ProductCard = (props: NewProductCardProps) => {
 					</div>
 
 					<div className="like-box">
-						<IconButton color={'default'} onClick={() => likeProductHandler(user, product?._id)}>
-							{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
-								<FavoriteIcon style={{ color: 'red' }} />
-							) : (
-								<FavoriteIcon />
-							)}
-						</IconButton>
-						<Typography className="like-cnt">{formatLikes(product?.productLikes)}</Typography>
+						<button
+							className={`like-btn${product?.meLiked?.[0]?.myFavorite ? ' liked' : ''}`}
+							onClick={(e) => {
+								e.stopPropagation();
+								likeProductHandler(user, product?._id);
+							}}
+						>
+							<FavoriteIcon sx={{ fontSize: 16 }} />
+							<span>{formatLikes(product?.productLikes)}</span>
+						</button>
 					</div>
 				</div>
 

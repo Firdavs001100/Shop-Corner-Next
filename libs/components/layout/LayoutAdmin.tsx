@@ -164,7 +164,7 @@ const withAdminLayout = (Component: any) => {
 		return (
 			<>
 				<Head>
-					<title>ShopCo — Admin</title>
+					<title>{`ShopCo — Admin`}</title>
 				</Head>
 
 				<div id="pc-wrap">

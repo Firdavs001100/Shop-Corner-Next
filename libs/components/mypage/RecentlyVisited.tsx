@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { Pagination } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
@@ -23,15 +23,17 @@ const RecentlyVisited: NextPage = () => {
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
-	useQuery(GET_VISITED, {
+	const { data: visitedData } = useQuery(GET_VISITED, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchVisited },
-		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setRecentlyVisited(data?.getVisited?.list ?? []);
-			setTotal(data?.getVisited?.metaCounter[0]?.total ?? 0);
-		},
 	});
+
+	useEffect(() => {
+		if (visitedData?.getVisited?.list) {
+			setRecentlyVisited(visitedData.getVisited.list);
+			setTotal(visitedData?.getVisited?.metaCounter[0]?.total ?? 0);
+		}
+	}, [visitedData]);
 
 	const paginationHandler = (_: T, value: number) => {
 		setSearchVisited({ ...searchVisited, page: value });

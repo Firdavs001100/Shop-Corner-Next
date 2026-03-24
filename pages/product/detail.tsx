@@ -68,22 +68,27 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	const [ratingError, setRatingError] = useState<boolean>(false);
 
 	/** APOLLO **/
-	const { loading: productLoading, refetch: refetchProduct } = useQuery(GET_PRODUCT, {
+	const {
+		loading: productLoading,
+		data: productData,
+		refetch: refetchProduct,
+	} = useQuery(GET_PRODUCT, {
 		fetchPolicy: 'network-only',
 		variables: { input: productId },
 		skip: !productId,
-		onCompleted: (data: T) => {
-			if (data?.getProduct) {
-				setProduct(data.getProduct);
-				setSlideImage(data.getProduct.productImages?.[0] ?? '');
-				setSlideIndex(0);
-				const colors = data.getProduct.productColor ?? [];
-				setSelectedColor(colors.length >= 1 ? colors[0] : '');
-			}
-		},
 	});
 
-	useQuery(GET_PRODUCTS, {
+	useEffect(() => {
+		if (productData?.getProduct) {
+			setProduct(productData.getProduct);
+			setSlideImage(productData.getProduct.productImages?.[0] ?? '');
+			setSlideIndex(0);
+			const colors = productData.getProduct.productColor ?? [];
+			setSelectedColor(colors.length >= 1 ? colors[0] : '');
+		}
+	}, [productData]);
+
+	const { data: relatedProductsData } = useQuery(GET_PRODUCTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: {
 			input: {
@@ -97,23 +102,26 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 			},
 		},
 		skip: !product,
-		onCompleted: (data: T) => {
-			if (data?.getProducts?.list) {
-				setRelatedProducts(data.getProducts.list.filter((p: Product) => p._id !== productId));
-			}
-		},
 	});
 
-	const { refetch: refetchComments } = useQuery(GET_COMMENTS, {
+	useEffect(() => {
+		if (relatedProductsData?.getProducts?.list) {
+			setRelatedProducts(relatedProductsData.getProducts.list.filter((p: Product) => p._id !== productId));
+		}
+	}, [relatedProductsData]);
+
+	const { refetch: refetchComments, data: commentsData } = useQuery(GET_COMMENTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: commentInquiry },
 		skip: !commentInquiry.search.commentRefId,
-		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			if (data?.getComments?.list) setComments(data.getComments.list);
-			setCommentTotal(data?.getComments?.metaCounter[0]?.total ?? 0);
-		},
 	});
+
+	useEffect(() => {
+		if (commentsData?.getComments?.list) {
+			setComments(commentsData.getComments.list);
+			setCommentTotal(commentsData?.getComments?.metaCounter[0]?.total ?? 0);
+		}
+	}, [commentsData]);
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 	const [createComment] = useMutation(CREATE_COMMENT);
@@ -147,7 +155,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	}, [commentInquiry]);
 
 	/** HANDLERS **/
-	const likeHandler = async () => {
+	const likeProductHandler = async () => {
 		try {
 			if (!user?._id) {
 				const ok = await toastLoginConfirm('Please log in to like this product');
@@ -208,7 +216,6 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 				return;
 			}
 
-			// ── Rating required: scroll to stars and show error state ──
 			if (userRating === 0) {
 				setRatingError(true);
 				const leaveEl = document.getElementById(device === 'mobile' ? 'pdm-leave-stars' : 'pd-leave-stars');
@@ -230,15 +237,8 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 			setUserRating(0);
 			setRatingError(false);
 
-			const { data: commentsData } = await refetchComments({ input: commentInquiry });
-			const { data: productData } = await refetchProduct({ input: productId });
-
-			if (productData?.getProduct) {
-				setProduct(productData.getProduct);
-			}
-
-			if (commentsData?.getComments?.list) setComments(commentsData.getComments.list);
-			setCommentTotal(commentsData?.getComments?.metaCounter[0]?.total ?? 0);
+			await refetchComments({ input: commentInquiry });
+			await refetchProduct({ input: productId });
 
 			toastSmallSuccess('Review submitted!', 1000);
 
@@ -311,7 +311,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 							<KeyboardArrowLeftIcon />
 						</button>
 						<div className="pdm-topbar__actions">
-							<button className="pdm-topbar__btn" onClick={likeHandler} aria-label="Like">
+							<button className="pdm-topbar__btn" onClick={likeProductHandler} aria-label="Like">
 								{product?.meLiked?.[0]?.myFavorite ? (
 									<FavoriteIcon fontSize="small" style={{ color: '#e53935' }} />
 								) : (
@@ -560,7 +560,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 						<h3 className="pdm-related__title">You May Also Like</h3>
 						<div className="pdm-related__grid">
 							{relatedProducts.slice(0, 4).map((p: Product) => (
-								<ProductCard key={p._id} product={p} likeProductHandler={likeHandler} listView={false} />
+								<ProductCard key={p._id} product={p} likeProductHandler={likeProductHandler} listView={false} />
 							))}
 						</div>
 					</div>
@@ -604,7 +604,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 								src={slideImage ? `${NEXT_PUBLIC_API_URL}/${slideImage}` : '/img/product/default.webp'}
 								alt={product?.productName}
 							/>
-							<button className="pd-images__like" onClick={likeHandler} aria-label="Like">
+							<button className="pd-images__like" onClick={likeProductHandler} aria-label="Like">
 								{product?.meLiked?.[0]?.myFavorite ? (
 									<FavoriteIcon fontSize="small" style={{ color: '#e53935' }} />
 								) : (
@@ -767,7 +767,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 							>
 								Add To Bag
 							</button>
-							<button className="pd-info__wish-btn" onClick={likeHandler} aria-label="Wishlist">
+							<button className="pd-info__wish-btn" onClick={likeProductHandler} aria-label="Wishlist">
 								{product?.meLiked?.[0]?.myFavorite ? (
 									<FavoriteIcon fontSize="small" style={{ color: '#e53935' }} />
 								) : (
@@ -915,7 +915,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 						<h3 className="pd-related__title">You May Also Like</h3>
 						<div className="pd-related__grid">
 							{relatedProducts.slice(0, 4).map((p: Product) => (
-								<ProductCard key={p._id} product={p} likeProductHandler={likeHandler} listView={false} />
+								<ProductCard key={p._id} product={p} likeProductHandler={likeProductHandler} listView={false} />
 							))}
 						</div>
 					</div>

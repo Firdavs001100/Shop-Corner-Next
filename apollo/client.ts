@@ -58,58 +58,58 @@ class LoggingWebSocket {
 }
 
 function createIsomorphicLink() {
-	if (typeof window !== 'undefined') {
-		const authLink = new ApolloLink((operation, forward) => {
-			operation.setContext(({ headers = {} }) => ({
-				headers: {
-					...headers,
-					...getHeaders(),
-				},
-			}));
-			console.warn('requesting.. ', operation);
-			return forward(operation);
-		});
+	const uploadLink = createUploadLink({
+		uri: process.env.REACT_APP_API_GRAPHQL_URL,
+	});
 
-		// @ts-ignore
-		const link = new createUploadLink({
-			uri: process.env.REACT_APP_API_GRAPHQL_URL,
-		});
+	const errorLink = onError(({ graphQLErrors, networkError }) => {
+		if (graphQLErrors) {
+			graphQLErrors.forEach(({ message, locations, path }) => {
+				console.log(`[GraphQL error]: ${message}`, locations, path);
+			});
+		}
+		if (networkError) console.log(`[Network error]: ${networkError}`);
+	});
 
-		/* WEBSOCKET SUBSCRIPTION LINK */
-		const wsLink = new WebSocketLink({
-			uri: process.env.REACT_APP_API_WS ?? 'ws://127.0.0.1:3007',
-			options: {
-				reconnect: false,
-				timeout: 30000,
-				connectionParams: () => {
-					return { headers: getHeaders() };
-				},
+	const authLink = new ApolloLink((operation, forward) => {
+		operation.setContext(({ headers = {} }) => ({
+			headers: {
+				...headers,
+				...getHeaders(),
 			},
-			webSocketImpl: LoggingWebSocket,
-		});
+		}));
+		return forward(operation);
+	});
 
-		const errorLink = onError(({ graphQLErrors, networkError }) => {
-			if (graphQLErrors) {
-				graphQLErrors.map(({ message, locations, path }) => {
-					console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
-				});
-			}
-			if (networkError) console.log(`[Network error]: ${networkError}`);
-		});
-
-		const splitLink = split(
-			({ query }) => {
-				const definition = getMainDefinition(query);
-				return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
-			},
-			wsLink,
-			authLink.concat(link),
-		);
-
-		return from([errorLink, tokenRefreshLink, splitLink]);
+	// 👉 SSR: NO WebSocket
+	if (typeof window === 'undefined') {
+		return from([errorLink, tokenRefreshLink, authLink.concat(uploadLink)]);
 	}
-}
 
+	// 👉 CLIENT: WITH WebSocket
+	const wsLink = new WebSocketLink({
+		uri: process.env.REACT_APP_API_WS ?? 'ws://127.0.0.1:3007',
+		options: {
+			reconnect: false,
+			timeout: 30000,
+			connectionParams: () => ({
+				headers: getHeaders(),
+			}),
+		},
+		webSocketImpl: LoggingWebSocket,
+	});
+
+	const splitLink = split(
+		({ query }) => {
+			const definition = getMainDefinition(query);
+			return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+		},
+		wsLink,
+		authLink.concat(uploadLink),
+	);
+
+	return from([errorLink, tokenRefreshLink, splitLink]);
+}
 function createApolloClient() {
 	return new ApolloClient({
 		ssrMode: typeof window === 'undefined',

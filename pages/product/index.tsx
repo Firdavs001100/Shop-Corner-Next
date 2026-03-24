@@ -47,15 +47,21 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 	const [drawerOpen, setDrawerOpen] = useState(false); // mobile only
 
 	/** APOLLO **/
-	const { loading: getProductsLoading } = useQuery(GET_PRODUCTS, {
+	const {
+		loading: getProductsLoading,
+		refetch: getProductsRefetch,
+		data: productsData,
+	} = useQuery(GET_PRODUCTS, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
-		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setProducts(data?.getProducts?.list ?? []);
-			setTotal(data?.getProducts?.metaCounter[0]?.total ?? 0);
-		},
 	});
+
+	useEffect(() => {
+		if (productsData) {
+			setProducts(productsData?.getProducts?.list ?? []);
+			setTotal(productsData?.getProducts?.metaCounter[0]?.total ?? 0);
+		}
+	}, [productsData]);
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
@@ -127,9 +133,10 @@ const ProductList: NextPage = ({ initialInput }: any) => {
 				}
 				return;
 			}
-			
+
 			await likeTargetProduct({ variables: { input: id } });
 			toastSmallSuccess('Success', 800);
+			await getProductsRefetch({ input: searchFilter });
 		} catch (err: any) {
 			toastErrorHandling(err.message);
 		}

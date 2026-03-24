@@ -28,7 +28,6 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import ArticleCard from '../../libs/components/community/ArticleCard';
 
 export const getStaticProps = async ({ locale }: any) => ({
@@ -75,17 +74,12 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 	if (articleCategory) initialInput.search.articleCategory = articleCategory as BoardArticleCategory;
 
 	/** APOLLO **/
-	const { refetch: getBoardArticlesRefetch } = useQuery(GET_BOARD_ARTICLES, {
+	const { refetch: getBoardArticlesRefetch, data: boardArticlesData } = useQuery(GET_BOARD_ARTICLES, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: searchCommunity },
-		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setBoardArticles(data?.getBoardArticles?.list ?? []);
-			setTotalCount(data?.getBoardArticles?.metaCounter[0]?.total ?? 0);
-		},
 	});
 
-	useQuery(GET_BOARD_ARTICLES, {
+	const { data: recentArticlesData } = useQuery(GET_BOARD_ARTICLES, {
 		fetchPolicy: 'cache-and-network',
 		variables: {
 			input: {
@@ -96,10 +90,20 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 				search: { articleCategory: searchCommunity.search.articleCategory },
 			},
 		},
-		onCompleted: (data: T) => {
-			setRecentArticles(data?.getBoardArticles?.list ?? []);
-		},
 	});
+
+	useEffect(() => {
+		if (boardArticlesData?.getBoardArticles?.list) {
+			setBoardArticles(boardArticlesData.getBoardArticles.list);
+			setTotalCount(boardArticlesData?.getBoardArticles?.metaCounter[0]?.total ?? 0);
+		}
+	}, [boardArticlesData]);
+
+	useEffect(() => {
+		if (recentArticlesData?.getBoardArticles?.list) {
+			setRecentArticles(recentArticlesData.getBoardArticles.list);
+		}
+	}, [recentArticlesData]);
 
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_ARTICLE);
 

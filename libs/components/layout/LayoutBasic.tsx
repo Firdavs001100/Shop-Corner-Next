@@ -161,7 +161,7 @@ const withLayoutBasic = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>{pageTitle} | ShopCo</title>
+						<title>{`${pageTitle} | ShopCo`}</title>
 						<meta name="title" content={`${pageTitle} | ShopCo`} />
 					</Head>
 
@@ -197,7 +197,7 @@ const withLayoutBasic = (Component: any) => {
 		return (
 			<>
 				<Head>
-					<title>{pageTitle} | ShopCo</title>
+					<title>{`${pageTitle} | ShopCo`}</title>
 					<meta name="title" content={`${pageTitle} | ShopCo`} />
 				</Head>
 

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -14,7 +14,7 @@ import { ProductsInquiry } from '../../types/product/product.input';
 import { T } from '../../types/common';
 import { Message } from '../../enums/common.enum';
 
-import { toastErrorHandling, toastSmallSuccess } from '../../toast';
+import { toastErrorHandling, toastLoginConfirm, toastSmallSuccess } from '../../toast';
 import ProductCard from '../common/ProductCard';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 
@@ -34,24 +34,39 @@ const BestSellers = ({ initialInput }: BestSellersProps) => {
 	const isMobile = device === 'mobile';
 	const visibleCards = isMobile ? 1 : 2;
 
-	const { loading: getProductsLoading, refetch } = useQuery(GET_PRODUCTS, {
+	const {
+		loading: getProductsLoading,
+		data: getProductsData,
+		refetch: getProductsRefetch,
+	} = useQuery(GET_PRODUCTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: initialInput },
-		onCompleted: (data: T) => setProducts(data?.getProducts?.list || []),
 	});
+
+	useEffect(() => {
+		if (getProductsData?.getProducts?.list) {
+			setProducts(getProductsData.getProducts.list);
+		}
+	}, [getProductsData]);
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
 	const likeProductHandler = async (user: T, id: string) => {
 		try {
-			if (!id) return;
-			if (!user?._id) throw new Error(Message.NOT_AUTHENTICATED);
-
+			if (!user?._id) {
+				const ok = await toastLoginConfirm('Please log in to like this product');
+				if (ok) {
+					router.push({ pathname: router.pathname, query: { ...router.query, auth: 'login' } }, undefined, {
+						shallow: true,
+					});
+				}
+				return;
+			}
 			await likeTargetProduct({ variables: { input: id } });
-			await refetch({ input: initialInput });
+			await getProductsRefetch({ input: initialInput });
 			toastSmallSuccess('Success', 800);
 		} catch (err: any) {
-			toastErrorHandling(err.message);
+			toastErrorHandling(err);
 		}
 	};
 

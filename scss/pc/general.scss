@@ -275,23 +275,39 @@
 				text-decoration: line-through rgb(232, 104, 104);
 				color: #b0b7c3;
 			}
-
+			
 			.like-box {
 				display: flex;
 				align-items: center;
-				gap: 10px;
 			}
 
-			.MuiIconButton-root {
-				padding: 0;
-				width: 24px;
-				height: 24px;
-				color: #2f425d;
-				transition: color 0.3s ease;
+			.like-btn {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				background: #f0f4f8;
+				border: 1.5px solid #e0e8f0;
+				border-radius: 999px;
+				padding: 6px 12px 6px 10px;
+				font-family: 'DM Sans', sans-serif;
+				font-size: 13px;
+				font-weight: 600;
+				color: #5a6a7e;
+				cursor: pointer;
+				transition: all 0.2s ease;
 
-				&:hover {
-					transform: scale(1.25);
-					color: #ff1a3c;
+				svg {
+					transition: transform 0.25s ease;
+				}
+
+				&:hover svg {
+					transform: scale(1.1);
+				}
+
+				&.liked {
+					background: rgba(229, 57, 53, 0.08);
+					border-color: #e53935;
+					color: #e53935;
 				}
 			}
 

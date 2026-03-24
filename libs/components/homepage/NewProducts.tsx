@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Button, CircularProgress } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper';
@@ -23,14 +23,20 @@ const NewProducts = ({ initialInput }: NewProductsProps) => {
 	const router = useRouter();
 	const [products, setProducts] = useState<Product[]>([]);
 
-	const { loading: getProductsLoading, refetch: getProductsRefetch } = useQuery(GET_PRODUCTS, {
+	const {
+		loading: getProductsLoading,
+		data: getProductsData,
+		refetch: getProductsRefetch,
+	} = useQuery(GET_PRODUCTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: initialInput },
-		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setProducts(data?.getProducts?.list || []);
-		},
 	});
+
+	useEffect(() => {
+		if (getProductsData?.getProducts?.list) {
+			setProducts(getProductsData.getProducts.list);
+		}
+	}, [getProductsData]);
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { Pagination } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
@@ -24,15 +24,17 @@ const MyFavorites: NextPage = () => {
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
 	/** APOLLO **/
-	useQuery(GET_FAVORITES, {
+	const { data: favoritesData } = useQuery(GET_FAVORITES, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFavorites },
-		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setMyFavorites(data?.getFavorites?.list ?? []);
-			setTotal(data?.getFavorites?.metaCounter[0]?.total ?? 0);
-		},
 	});
+
+	useEffect(() => {
+		if (favoritesData?.getFavorites?.list) {
+			setMyFavorites(favoritesData.getFavorites.list);
+			setTotal(favoritesData?.getFavorites?.metaCounter[0]?.total ?? 0);
+		}
+	}, [favoritesData]);
 
 	/** HANDLERS **/
 	const paginationHandler = (_: T, value: number) => {
