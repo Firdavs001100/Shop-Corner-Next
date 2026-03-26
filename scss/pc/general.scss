@@ -275,7 +275,7 @@
 				text-decoration: line-through rgb(232, 104, 104);
 				color: #b0b7c3;
 			}
-			
+
 			.like-box {
 				display: flex;
 				align-items: center;
@@ -624,6 +624,7 @@
 		line-height: 1.85;
 		margin: 0 0 24px;
 		display: -webkit-box;
+		line-clamp: 4;
 		-webkit-line-clamp: 4;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
