@@ -6,8 +6,8 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { onError } from '@apollo/client/link/error';
 import { getJwtToken } from '../libs/auth';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
-import { toastError } from '../libs/toast';
 import { socketVar } from './store';
+import decodeJWT from 'jwt-decode';
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 function getHeaders() {
@@ -19,13 +19,49 @@ function getHeaders() {
 }
 
 const tokenRefreshLink = new TokenRefreshLink({
-	accessTokenField: 'accessToken',
+	accessTokenField: 'refreshToken',
+
 	isTokenValidOrUndefined: () => {
-		return true;
-	}, // @ts-ignore
+		const token = getJwtToken();
+		if (!token) return true;
+
+		try {
+			const { exp }: any = decodeJWT(token);
+			return Date.now() < exp * 1000 - 5000;
+		} catch {
+			return false;
+		}
+	},
+
 	fetchAccessToken: () => {
-		// execute refresh token
-		return null;
+		const refreshToken = localStorage.getItem('refreshToken');
+
+		return fetch(process.env.NEXT_PUBLIC_API_GRAPHQL_URL as string, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-refresh-token': refreshToken || '',
+			},
+			body: JSON.stringify({
+				query: `mutation { refreshToken }`,
+			}),
+		});
+	},
+
+	handleFetch: (newAccessToken: string) => {
+		localStorage.setItem('accessToken', newAccessToken);
+
+		const socket = socketVar();
+
+		if (socket) {
+			socket.close();
+			socketVar(null);
+		}
+	},
+
+	handleError: () => {
+		localStorage.removeItem('accessToken');
+		localStorage.removeItem('refreshToken');
 	},
 });
 
@@ -34,7 +70,7 @@ class LoggingWebSocket {
 	private socket: WebSocket;
 
 	constructor(url: string) {
-		this.socket = new WebSocket(`${url}?token=${getJwtToken()}`);
+		this.socket = new WebSocket(url);
 		socketVar(this.socket);
 
 		this.socket.onopen = () => {
@@ -90,7 +126,7 @@ function createIsomorphicLink() {
 	const wsLink = new WebSocketLink({
 		uri: process.env.NEXT_APP_API_WS ?? 'ws://127.0.0.1:3007',
 		options: {
-			reconnect: false,
+			reconnect: true,
 			timeout: 30000,
 			connectionParams: () => ({
 				headers: getHeaders(),

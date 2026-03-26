@@ -85,5 +85,50 @@
 	"phone": "+ (555) – 123-6868",
 	"email": "Shop.Co@gmail.com",
 
-	"copyright": "© 2026 ShopCo. 모든 권리 보유."
+	"copyright": "© 2026 ShopCo. 모든 권리 보유.",
+
+	"account": "계정",
+	"content": "콘텐츠",
+	"library": "라이브러리",
+	"network": "네트워크",
+
+	"myProfile": "내 프로필",
+	"myOrders": "내 주문",
+	"myArticles": "내 게시글",
+	"writeArticle": "글 작성",
+	"favorites": "즐겨찾기",
+	"recentlyVisited": "최근 본 항목",
+
+	"followers": "팔로워",
+	"followings": "팔로잉",
+
+	"adminPanel": "관리자 페이지",
+	"administrator": "관리자",
+
+	"signIn": "로그인",
+	"register": "회원가입",
+	"signInSubtitle": "로그인 정보를 입력해주세요.",
+	"registerSubtitle": "회원가입 정보를 입력해주세요.",
+
+	"nickname": "성명",
+	"password": "비밀번호",
+	"enterNickname": "닉네임 입력",
+	"phoneInput": "전화번호",
+	"emailInput": "이메일",
+	"passwordInput": "비밀번호",
+
+	"login": "로그인",
+	"show": "보기",
+	"hide": "숨기기",
+
+	"noAccount": "계정이 없으신가요? 회원가입",
+	"haveAccount": "이미 계정이 있으신가요? 로그인",
+
+	"forgotPassword": "비밀번호를 잊으셨나요?",
+	"newsletter": "뉴스레터 구독하기",
+	"termsText": "회원가입 시 이용약관 및 개인정보 처리방침에 동의하게 됩니다.",
+
+	"accountCreated": "계정이 생성되었습니다!",
+	"welcomeBack": "다시 오신 것을 환영합니다!",
+	"passwordResetUnavailable": "비밀번호 재설정은 현재 사용할 수 없습니다. 나중에 다시 시도해주세요."
 }

@@ -28,6 +28,7 @@ import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
+import { useTranslation } from 'next-i18next';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -35,44 +36,46 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
-const MENU_ITEMS = [
+const getMenuItems = (t: any) => [
 	{
-		group: 'Account',
+		group: t('account'),
 		items: [
-			{ key: 'myProfile', label: 'My Profile', icon: <PersonOutlineIcon /> },
-			{ key: 'myOrders', label: 'My Orders', icon: <ShoppingBagOutlinedIcon /> },
+			{ key: 'myProfile', label: t('myProfile'), icon: <PersonOutlineIcon /> },
+			{ key: 'myOrders', label: t('myOrders'), icon: <ShoppingBagOutlinedIcon /> },
 		],
 	},
 	{
-		group: 'Content',
+		group: t('content'),
 		items: [
-			{ key: 'myArticles', label: 'My Articles', icon: <ArticleOutlinedIcon /> },
-			{ key: 'writeArticle', label: 'Write Article', icon: <EditNoteOutlinedIcon /> },
+			{ key: 'myArticles', label: t('myArticles'), icon: <ArticleOutlinedIcon /> },
+			{ key: 'writeArticle', label: t('writeArticle'), icon: <EditNoteOutlinedIcon /> },
 		],
 	},
 	{
-		group: 'Library',
+		group: t('library'),
 		items: [
-			{ key: 'myFavorites', label: 'Favorites', icon: <FavoriteBorderIcon /> },
-			{ key: 'recentlyVisited', label: 'Recently Visited', icon: <HistoryOutlinedIcon /> },
+			{ key: 'myFavorites', label: t('favorites'), icon: <FavoriteBorderIcon /> },
+			{ key: 'recentlyVisited', label: t('recentlyVisited'), icon: <HistoryOutlinedIcon /> },
 		],
 	},
 	{
-		group: 'Network',
+		group: t('network'),
 		items: [
-			{ key: 'followers', label: 'Followers', icon: <PeopleAltOutlinedIcon /> },
-			{ key: 'followings', label: 'Followings', icon: <PersonAddAltOutlinedIcon /> },
+			{ key: 'followers', label: t('followers'), icon: <PeopleAltOutlinedIcon /> },
+			{ key: 'followings', label: t('followings'), icon: <PersonAddAltOutlinedIcon /> },
 		],
 	},
 ];
 
-const FLAT_MENU = MENU_ITEMS.flatMap((g) => g.items);
-
 const MyPage: NextPage = () => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const category: string = (router.query?.category as string) ?? 'myProfile';
+
+	const MENU_ITEMS = getMenuItems(t);
+	const FLAT_MENU = MENU_ITEMS.flatMap((g) => g.items);
 
 	const [subscribe] = useMutation(SUBSCRIBE);
 	const [unsubscribe] = useMutation(UNSUBSCRIBE);
@@ -178,13 +181,13 @@ const MyPage: NextPage = () => {
 						<span className="mp-mob-header__online-dot" />
 					</div>
 					<div className="mp-mob-header__info">
-						<span className="mp-mob-header__nick">{user?.memberNick ?? 'Member'}</span>
+						<span className="mp-mob-header__nick">{user?.memberNick ?? t('member')}</span>
 						<span className="mp-mob-header__email">{user?.memberEmail ?? ''}</span>
 					</div>
 					{isAdmin && (
 						<button className="mp-mob-header__admin-btn" onClick={() => router.push('/_admin')}>
 							<AdminPanelSettingsOutlinedIcon sx={{ fontSize: 14 }} />
-							Admin Panel
+							{t('adminPanel')}
 						</button>
 					)}
 				</div>
@@ -227,9 +230,9 @@ const MyPage: NextPage = () => {
 								<span className="mp-sidebar__online-dot" />
 							</div>
 							<div className="mp-sidebar__user-info">
-								<span className="mp-sidebar__nick">{user?.memberNick ?? 'Member'}</span>
+								<span className="mp-sidebar__nick">{user?.memberNick ?? t('member')}</span>
 								<span className="mp-sidebar__email">{user?.memberEmail ?? ''}</span>
-								{isAdmin && <span className="mp-sidebar__admin-badge">Administrator</span>}
+								{isAdmin && <span className="mp-sidebar__admin-badge">{t('administrator')}</span>}
 							</div>
 						</div>
 
@@ -258,7 +261,7 @@ const MyPage: NextPage = () => {
 								<div className="mp-sidebar__divider" />
 								<button className="mp-sidebar__admin-btn" onClick={() => router.push('/_admin')}>
 									<AdminPanelSettingsOutlinedIcon sx={{ fontSize: 18 }} />
-									<span>Admin Panel</span>
+									<span> {t('adminPanel')} </span>
 								</button>
 							</>
 						)}

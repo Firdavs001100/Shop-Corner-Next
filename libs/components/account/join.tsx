@@ -5,12 +5,15 @@ import { useRouter } from 'next/router';
 import { logIn, signUp } from '../../auth';
 import { toastSmallSuccess, toastErrorHandling, toastBasic } from '../../toast';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { Modal } from '@mui/material';
+import { useTranslation } from 'next-i18next';
 
 type AnimState = 'idle' | 'exit' | 'enter';
 
 const Join: NextPage = () => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const device = useDeviceDetect();
 
@@ -35,22 +38,22 @@ const Join: NextPage = () => {
 	const doLogin = useCallback(async () => {
 		try {
 			await logIn(input.nick, input.password);
-			toastSmallSuccess('Welcome back!', 1000);
+			toastSmallSuccess(t('welcomeBack'), 1000);
 			closeModal();
 		} catch (err: any) {
 			toastErrorHandling(err);
 		}
-	}, [input]);
+	}, [input, t]);
 
 	const doSignUp = useCallback(async () => {
 		try {
 			await signUp(input.nick, input.password, input.phone, input.email, 'USER');
-			toastSmallSuccess('Account created!', 1000);
+			toastSmallSuccess(t('accountCreated'), 1000);
 			closeModal();
 		} catch (err: any) {
 			toastErrorHandling(err);
 		}
-	}, [input]);
+	}, [input, t]);
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		if (e.key === 'Enter') loginView ? doLogin() : doSignUp();
@@ -60,7 +63,7 @@ const Join: NextPage = () => {
 	const signupDisabled = !input.nick || !input.password || !input.phone || !input.email;
 
 	const handleForgotPassword = () => {
-		toastBasic('Password reset is not available at the moment. Please try again later.', 3000);
+		toastBasic(t('passwordResetUnavailable'), 3000);
 	};
 
 	const toggleView = () => {
@@ -89,22 +92,20 @@ const Join: NextPage = () => {
 					<div className="join-mobile__card">
 						<div className={contentClass}>
 							<div className="join-mobile__header">
-								<h1 className="join-mobile__title">{loginView ? 'Sign In' : 'Register'}</h1>
-								<p className="join-mobile__subtitle">
-									{loginView ? 'Please enter your details below to sign in.' : 'Please enter your details to register.'}
-								</p>
+								<h1 className="join-mobile__title">{loginView ? t('signIn') : t('register')}</h1>
+								<p className="join-mobile__subtitle">{loginView ? t('signInSubtitle') : t('registerSubtitle')}</p>
 							</div>
 
 							<div className="join-mobile__fields">
 								{loginView ? (
 									<div className="join-mobile__field">
 										<label className="join-mobile__label">
-											Nickname <span className="join-mobile__required">*</span>
+											{t('nickname')} <span className="join-mobile__required">*</span>
 										</label>
 										<input
 											className="join-mobile__input"
 											type="text"
-											placeholder="ENTER YOUR NICKNAME"
+											placeholder={t('enterNickname')}
 											value={input.nick}
 											onChange={(e) => handleInput('nick', e.target.value)}
 											onKeyDown={handleKeyDown}
@@ -115,24 +116,24 @@ const Join: NextPage = () => {
 										<div className="join-mobile__field-row">
 											<div className="join-mobile__field">
 												<label className="join-mobile__label">
-													Nickname <span className="join-mobile__required">*</span>
+													{t('nickname')} <span className="join-mobile__required">*</span>
 												</label>
 												<input
 													className="join-mobile__input"
 													type="text"
-													placeholder="NICKNAME"
+													placeholder={t('nickname')}
 													value={input.nick}
 													onChange={(e) => handleInput('nick', e.target.value)}
 												/>
 											</div>
 											<div className="join-mobile__field">
 												<label className="join-mobile__label">
-													Phone <span className="join-mobile__required">*</span>
+													{t('phoneInput')} <span className="join-mobile__required">*</span>
 												</label>
 												<input
 													className="join-mobile__input"
 													type="tel"
-													placeholder="PHONE"
+													placeholder={t('phoneInput')}
 													value={input.phone}
 													onChange={(e) => handleInput('phone', e.target.value)}
 												/>
@@ -140,12 +141,12 @@ const Join: NextPage = () => {
 										</div>
 										<div className="join-mobile__field">
 											<label className="join-mobile__label">
-												Email <span className="join-mobile__required">*</span>
+												{t('emailInput')} <span className="join-mobile__required">*</span>
 											</label>
 											<input
 												className="join-mobile__input"
 												type="email"
-												placeholder="EMAIL"
+												placeholder={t('emailInput')}
 												value={input.email}
 												onChange={(e) => handleInput('email', e.target.value)}
 											/>
@@ -155,13 +156,13 @@ const Join: NextPage = () => {
 
 								<div className="join-mobile__field">
 									<label className="join-mobile__label">
-										Password <span className="join-mobile__required">*</span>
+										{t('password')} <span className="join-mobile__required">*</span>
 									</label>
 									<div className="join-mobile__password-wrap">
 										<input
 											className="join-mobile__input join-mobile__input--password"
 											type={showPassword ? 'text' : 'password'}
-											placeholder="PASSWORD"
+											placeholder={t('passwordInput')}
 											value={input.password}
 											onChange={(e) => handleInput('password', e.target.value)}
 											onKeyDown={handleKeyDown}
@@ -170,12 +171,9 @@ const Join: NextPage = () => {
 											type="button"
 											className="join-mobile__password-toggle"
 											onClick={() => setShowPassword((v) => !v)}
+											aria-label={showPassword ? t('hide') : t('show')}
 										>
-											{showPassword ? (
-												<VisibilityOffIcon fontSize="small" />
-											) : (
-												<span className="join-mobile__show-text">Show</span>
-											)}
+											{showPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
 										</button>
 									</div>
 								</div>
@@ -189,7 +187,7 @@ const Join: NextPage = () => {
 												checked={newsletter}
 												onChange={(e) => setNewsletter(e.target.checked)}
 											/>
-											Sign up for our newsletter
+											{t('newsletter')}
 										</label>
 									</div>
 								)}
@@ -202,15 +200,15 @@ const Join: NextPage = () => {
 									disabled={loginView ? loginDisabled : signupDisabled}
 									onClick={loginView ? doLogin : doSignUp}
 								>
-									{loginView ? 'Login' : 'Register'}
+									{loginView ? t('login') : t('register')}
 								</button>
 								<button type="button" className="join-mobile__btn join-mobile__btn--secondary" onClick={toggleView}>
-									{loginView ? "Don't have an account? Register" : 'Already have an account? Login'}
+									{loginView ? t('noAccount') : t('haveAccount')}
 								</button>
 								{loginView && (
 									<div className="join-mobile__forgot" onClick={handleForgotPassword}>
 										<EmailOutlinedIcon fontSize="small" />
-										<strong>Forgot your password?</strong>
+										<strong>{t('forgotPassword')}</strong>
 									</div>
 								)}
 							</div>
@@ -227,30 +225,26 @@ const Join: NextPage = () => {
 		<Modal open={true} onClose={closeModal}>
 			<div className="join-page">
 				<div className="join-page__card">
-					<button type="button" className="join-page__close" onClick={closeModal}>
+					<button type="button" className="join-page__close" onClick={closeModal} aria-label={t('close')}>
 						✕
 					</button>
 
 					<div className={contentClass}>
 						<div className="join-page__header">
-							<h1 className="join-page__title">{loginView ? 'Sign In' : 'Register'}</h1>
-							<p className="join-page__subtitle">
-								{loginView
-									? 'Please enter your details below to sign in.'
-									: 'Please fill in your details to create an account.'}
-							</p>
+							<h1 className="join-page__title">{loginView ? t('signIn') : t('register')}</h1>
+							<p className="join-page__subtitle">{loginView ? t('signInSubtitle') : t('registerSubtitle')}</p>
 						</div>
 
 						<div className="join-page__fields">
 							{loginView ? (
 								<div className="join-page__field">
 									<label className="join-page__label">
-										Nickname <span className="join-page__required">*</span>
+										{t('nickname')} <span className="join-page__required">*</span>
 									</label>
 									<input
 										className="join-page__input"
 										type="text"
-										placeholder="ENTER YOUR NICKNAME"
+										placeholder={t('enterNickname')}
 										value={input.nick}
 										onChange={(e) => handleInput('nick', e.target.value)}
 										onKeyDown={handleKeyDown}
@@ -261,24 +255,24 @@ const Join: NextPage = () => {
 									<div className="join-page__field-row">
 										<div className="join-page__field">
 											<label className="join-page__label">
-												Nickname <span className="join-page__required">*</span>
+												{t('nickname')} <span className="join-page__required">*</span>
 											</label>
 											<input
 												className="join-page__input"
 												type="text"
-												placeholder="NICKNAME"
+												placeholder={t('nickname')}
 												value={input.nick}
 												onChange={(e) => handleInput('nick', e.target.value)}
 											/>
 										</div>
 										<div className="join-page__field">
 											<label className="join-page__label">
-												Phone <span className="join-page__required">*</span>
+												{t('phoneInput')} <span className="join-page__required">*</span>
 											</label>
 											<input
 												className="join-page__input"
 												type="tel"
-												placeholder="PHONE"
+												placeholder={t('phoneInput')}
 												value={input.phone}
 												onChange={(e) => handleInput('phone', e.target.value)}
 											/>
@@ -286,12 +280,12 @@ const Join: NextPage = () => {
 									</div>
 									<div className="join-page__field">
 										<label className="join-page__label">
-											Email <span className="join-page__required">*</span>
+											{t('emailInput')} <span className="join-page__required">*</span>
 										</label>
 										<input
 											className="join-page__input"
 											type="email"
-											placeholder="EMAIL"
+											placeholder={t('emailInput')}
 											value={input.email}
 											onChange={(e) => handleInput('email', e.target.value)}
 										/>
@@ -301,13 +295,13 @@ const Join: NextPage = () => {
 
 							<div className="join-page__field">
 								<label className="join-page__label">
-									Password <span className="join-page__required">*</span>
+									{t('password')} <span className="join-page__required">*</span>
 								</label>
 								<div className="join-page__password-wrap">
 									<input
 										className="join-page__input join-page__input--password"
 										type={showPassword ? 'text' : 'password'}
-										placeholder="PASSWORD"
+										placeholder={t('passwordInput')}
 										value={input.password}
 										onChange={(e) => handleInput('password', e.target.value)}
 										onKeyDown={handleKeyDown}
@@ -316,17 +310,16 @@ const Join: NextPage = () => {
 										type="button"
 										className="join-page__password-toggle"
 										onClick={() => setShowPassword((v) => !v)}
+										aria-label={showPassword ? t('hide') : t('show')}
 									>
-										{showPassword ? <VisibilityOffIcon fontSize="small" /> : 'Show'}
+										{showPassword ? t('hide') : t('show')}
 									</button>
 								</div>
 							</div>
 
 							{!loginView && (
 								<div className="join-page__privacy">
-									<p className="join-page__privacy-text">
-										By registering, you agree to our Terms of Service and Privacy Policy.
-									</p>
+									<p className="join-page__privacy-text">{t('termsText')}</p>
 									<label className="join-page__checkbox-row">
 										<input
 											className="join-page__checkbox"
@@ -334,7 +327,7 @@ const Join: NextPage = () => {
 											checked={newsletter}
 											onChange={(e) => setNewsletter(e.target.checked)}
 										/>
-										Sign up for our newsletter
+										{t('newsletter')}
 									</label>
 								</div>
 							)}
@@ -347,18 +340,16 @@ const Join: NextPage = () => {
 								disabled={loginView ? loginDisabled : signupDisabled}
 								onClick={loginView ? doLogin : doSignUp}
 							>
-								{loginView ? 'Login' : 'Register'}
+								{loginView ? t('login') : t('register')}
 							</button>
-							<p className="join-page__new-customer">
-								{loginView ? "Don't have an account?" : 'Already have an account?'}
-							</p>
+							<p className="join-page__new-customer">{loginView ? t('noAccount') : t('haveAccount')}</p>
 							<button type="button" className="join-page__btn join-page__btn--secondary" onClick={toggleView}>
-								{loginView ? 'Register' : 'Login'}
+								{loginView ? t('register') : t('login')}
 							</button>
 							{loginView && (
 								<div className="join-page__forgot" onClick={handleForgotPassword}>
 									<EmailOutlinedIcon fontSize="small" />
-									<strong>Forgot your password?</strong>
+									<strong>{t('forgotPassword')}</strong>
 								</div>
 							)}
 						</div>

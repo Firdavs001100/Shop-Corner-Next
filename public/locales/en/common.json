@@ -85,5 +85,50 @@
 	"phone": "+ (555) – 123-6868",
 	"email": "Shop.Co@gmail.com",
 
-	"copyright": "Copyright © 2026 ShopCo. All Rights Reserved."
+	"copyright": "Copyright © 2026 ShopCo. All Rights Reserved.",
+
+	"account": "Account",
+	"content": "Content",
+	"library": "Library",
+	"network": "Network",
+
+	"myProfile": "My Profile",
+	"myOrders": "My Orders",
+	"myArticles": "My Articles",
+	"writeArticle": "Write Article",
+	"favorites": "My Favorites",
+	"recentlyVisited": "Recently Visited",
+
+	"followers": "Followers",
+	"followings": "Followings",
+
+	"adminPanel": "Admin Panel",
+	"administrator": "Administrator",
+
+	"signIn": "Sign In",
+	"register": "Register",
+	"signInSubtitle": "Please enter your details below to sign in.",
+	"registerSubtitle": "Please fill in your details to create an account.",
+
+	"nickname": "Nickname",
+	"password": "Password",
+	"enterNickname": "ENTER YOUR NICKNAME",
+	"phoneInput": "PHONE",
+	"emailInput": "EMAIL",
+	"passwordInput": "PASSWORD",
+
+	"login": "Login",
+	"show": "Show",
+	"hide": "Hide",
+
+	"noAccount": "Don't have an account? Register",
+	"haveAccount": "Already have an account? Login",
+
+	"forgotPassword": "Forgot your password?",
+	"newsletter": "Sign up for our newsletter",
+	"termsText": "By registering, you agree to our Terms of Service and Privacy Policy.",
+
+	"accountCreated": "Account created!",
+	"welcomeBack": "Welcome back!",
+	"passwordResetUnavailable": "Password reset is not available at the moment. Please try again later."
 }
