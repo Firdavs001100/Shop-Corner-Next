@@ -29,7 +29,20 @@ const Join: NextPage = () => {
 		setLoginView(router.query.auth !== 'register');
 	}, [router.query.auth, router.isReady]);
 
-	const closeModal = () => router.push(router.pathname, undefined, { shallow: true });
+	const isOpen = !!router.query.auth;
+
+	const closeModal = () => {
+		const { auth, ...restQuery } = router.query;
+
+		router.push(
+			{
+				pathname: router.pathname,
+				query: restQuery,
+			},
+			undefined,
+			{ shallow: true },
+		);
+	};
 
 	const handleInput = useCallback((name: string, value: string) => {
 		setInput((prev) => ({ ...prev, [name]: value }));
@@ -87,7 +100,7 @@ const Join: NextPage = () => {
 
 	if (device === 'mobile') {
 		return (
-			<Modal open={true} onClose={closeModal}>
+			<Modal open={isOpen} onClose={closeModal}>
 				<div className="join-mobile">
 					<div className="join-mobile__card">
 						<div className={contentClass}>
@@ -222,7 +235,7 @@ const Join: NextPage = () => {
 	// ───────────────── DESKTOP ─────────────────
 
 	return (
-		<Modal open={true} onClose={closeModal}>
+		<Modal open={isOpen} onClose={closeModal}>
 			<div className="join-page">
 				<div className="join-page__card">
 					<button type="button" className="join-page__close" onClick={closeModal} aria-label={t('close')}>

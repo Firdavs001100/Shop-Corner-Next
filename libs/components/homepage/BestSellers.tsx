@@ -118,6 +118,14 @@ const BestSellers = ({ initialInput }: BestSellersProps) => {
 				<Box className="best-sellers__loading">
 					<CircularProgress size={32} />
 				</Box>
+			) : products.length === 0 ? (
+				<Box className="best-sellers__empty">
+					<Box className="empty-content">
+						<img src="/img/icons/icoAlert.svg" alt="empty" className="empty-icon" />
+						<Typography className="empty-title">No Products Found</Typography>
+						<Typography className="empty-desc">There are no best-selling products available at the moment.</Typography>
+					</Box>
+				</Box>
 			) : (
 				<Box className="best-sellers__slider-wrap">
 					<Box

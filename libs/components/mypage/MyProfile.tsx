@@ -153,13 +153,25 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 		try {
 			setSaving(true);
 			if (!user._id) throw new Error(Messages.error2);
-			updateData._id = user._id;
-			updateData.memberPhone = updateData.memberPhone?.replace(/\D/g, '');
-			const result = await updateMember({ variables: { input: updateData } });
-			// @ts-ignore
+
+			const preparedData = {
+				...updateData,
+				_id: user._id,
+				memberPhone: updateData.memberPhone?.replace(/\D/g, ''),
+			};
+
+			const cleanedData = Object.fromEntries(
+				Object.entries(preparedData).filter(([_, v]) => v !== '' && v !== undefined),
+			);
+
+			const result = await updateMember({
+				variables: { input: cleanedData },
+			});
+
 			const jwtToken = result.data.updateMember?.accessToken;
 			await updateStorage({ jwtToken });
 			updateUserInfo(jwtToken);
+
 			toastSmallSuccess('Profile updated!', 1000);
 			setEditing(false);
 		} catch (err) {

@@ -12,5 +12,5 @@ export interface MemberUpdate {
 	memberImage?: string;
 	memberAddress?: string;
 	memberDesc?: string;
-	delatedAt?: Date;
+	deletedAt?: Date;
 }

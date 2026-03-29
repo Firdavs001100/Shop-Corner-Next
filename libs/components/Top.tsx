@@ -25,6 +25,7 @@ import { GET_FAVORITES, GET_NOTIFICATIONS } from '../../apollo/user/query';
 import { MARK_NOTIFICATION_AS_READ, MARK_ALL_NOTIFICATIONS_AS_READ } from '../../apollo/user/mutation';
 import { Notification } from '../types/notification/notification';
 import { NotificationStatus } from '../enums/notification.enum';
+import { toastLoginConfirm } from '../toast';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -417,6 +418,27 @@ export default function Header() {
 		{ label: t('cs'), href: '/cs' },
 	];
 
+	// ── Favorites Handler ──
+
+	const handleFavoritesClick = async () => {
+		if (!user?._id) {
+			const ok = await toastLoginConfirm('Please log in to view favorites');
+
+			if (ok) {
+				router.replace({
+					pathname: router.pathname,
+					query: { ...router.query, auth: 'login' },
+				});
+			}
+			return;
+		}
+
+		router.push({
+			pathname: '/mypage',
+			query: { category: 'myFavorites' },
+		});
+	};
+
 	// ── Lang menu ──
 
 	const langMenu = (
@@ -635,11 +657,7 @@ export default function Header() {
 						{userAuth}
 						{langMenu}
 
-						<IconButton
-							label={t('wishlist')}
-							count={wishlistCount}
-							onClick={() => router.push({ pathname: '/mypage', query: { category: 'myFavorites' } })}
-						>
+						<IconButton label={t('wishlist')} count={wishlistCount} onClick={handleFavoritesClick}>
 							<WishlistIcon />
 						</IconButton>
 

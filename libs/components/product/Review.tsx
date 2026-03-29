@@ -2,15 +2,16 @@ import React from 'react';
 import { Comment } from '../../types/comment/comment';
 import { NEXT_PUBLIC_API_URL } from '../../config';
 import moment from 'moment';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 interface ReviewProps {
 	comment: Comment;
 }
 
 const Review = ({ comment }: ReviewProps) => {
-	const memberImage = comment?.memberData?.memberImage
+	const memberImage = comment?.memberData?.memberImage?.trim()
 		? `${NEXT_PUBLIC_API_URL}/${comment.memberData.memberImage}`
-		: '/img/profile/defaultUser.svg';
+		: null;
 
 	const memberNick = comment?.memberData?.memberNick ?? 'Anonymous';
 	const date = comment?.createdAt ? moment(comment.createdAt).format('MMM D, YYYY') : '';
@@ -19,7 +20,9 @@ const Review = ({ comment }: ReviewProps) => {
 	return (
 		<div className="review-card">
 			<div className="review-card__header">
-				<img className="review-card__avatar" src={memberImage} alt={memberNick} />
+				<div className="review-card__avatar">
+					{memberImage ? <img src={memberImage} alt={memberNick} /> : <AccountCircleIcon />}
+				</div>
 				<div className="review-card__meta">
 					<div className="review-card__meta-top">
 						<span className="review-card__name">{memberNick}</span>

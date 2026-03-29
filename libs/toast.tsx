@@ -1,6 +1,5 @@
 import toast from 'react-hot-toast';
 import { Messages } from './config';
-import { formatSize } from './utils';
 
 /* ==============================
    Error Handling
@@ -97,29 +96,76 @@ export const toastConfirm = (msg: string): Promise<boolean> => {
 
 export const toastLoginConfirm = (msg: string): Promise<boolean> => {
 	return new Promise((resolve) => {
+		let settled = false;
+
+		const safeResolve = (value: boolean) => {
+			if (!settled) {
+				settled = true;
+				resolve(value);
+			}
+		};
+
 		toast(
 			(t) => (
-				<div style={{ textAlign: 'center' }}>
-					<p style={{ marginBottom: '10px' }}>{msg}</p>
-					<button
-						onClick={() => {
-							toast.dismiss(t.id);
-							resolve(true);
-						}}
-						style={{
-							backgroundColor: '#e92C28',
-							color: '#fff',
-							border: 'none',
-							padding: '6px 14px',
-							borderRadius: '6px',
-							cursor: 'pointer',
-						}}
-					>
-						Login
-					</button>
+				<div style={{ textAlign: 'center', minWidth: '220px' }}>
+					<p style={{ marginBottom: '12px', fontSize: '14px' }}>{msg}</p>
+
+					<div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+						{/* Cancel */}
+						<button
+							onClick={(e) => {
+								e.stopPropagation();
+								toast.dismiss(t.id);
+								safeResolve(false);
+							}}
+							style={{
+								backgroundColor: '#eee',
+								color: '#333',
+								border: 'none',
+								padding: '6px 14px',
+								borderRadius: '6px',
+								cursor: 'pointer',
+								fontSize: '13px',
+								transition: '0.2s',
+							}}
+							onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#ddd')}
+							onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#eee')}
+						>
+							Cancel
+						</button>
+
+						{/* Login */}
+						<button
+							onClick={(e) => {
+								e.stopPropagation();
+								toast.dismiss(t.id);
+								safeResolve(true);
+							}}
+							style={{
+								backgroundColor: '#e92C28',
+								color: '#fff',
+								border: 'none',
+								padding: '6px 14px',
+								borderRadius: '6px',
+								cursor: 'pointer',
+								fontSize: '13px',
+								transition: '0.2s',
+							}}
+							onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#c62828')}
+							onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#e92C28')}
+						>
+							Login
+						</button>
+					</div>
 				</div>
 			),
-			{ duration: Infinity },
+			{
+				duration: Infinity,
+				style: {
+					padding: '14px 16px',
+					borderRadius: '10px',
+				},
+			},
 		);
 	});
 };

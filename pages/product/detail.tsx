@@ -14,8 +14,7 @@ import { Product } from '../../libs/types/product/product';
 import { Comment } from '../../libs/types/comment/comment';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { CommentGroup } from '../../libs/enums/comment.enum';
-import { Direction, Message } from '../../libs/enums/common.enum';
-import { T } from '../../libs/types/common';
+import { Direction } from '../../libs/enums/common.enum';
 import { NEXT_PUBLIC_API_URL } from '../../libs/config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { toastErrorHandling, toastSmallSuccess, toastLoginConfirm } from '../../libs/toast';
@@ -207,7 +206,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 	const createCommentHandler = async () => {
 		try {
 			if (!user?._id) {
-				const ok = await toastLoginConfirm('Please log in to leave a comment');
+				const ok = await toastLoginConfirm('Please log in to leave a review');
 				if (ok) {
 					router.push({ pathname: router.pathname, query: { ...router.query, auth: 'login' } }, undefined, {
 						shallow: true,
@@ -547,7 +546,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 						/>
 						<button
 							className="pdm-reviews__submit"
-							disabled={insertCommentData.commentContent === '' || user?._id === ''}
+							disabled={insertCommentData.commentContent === ''}
 							onClick={createCommentHandler}
 						>
 							Submit Review →
@@ -899,7 +898,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 								/>
 								<button
 									className="pd-reviews__submit"
-									disabled={insertCommentData.commentContent === '' || user?._id === ''}
+									disabled={insertCommentData.commentContent === ''}
 									onClick={createCommentHandler}
 								>
 									Submit Review →

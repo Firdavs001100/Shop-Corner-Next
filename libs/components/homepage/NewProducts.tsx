@@ -11,7 +11,7 @@ import { Product } from '../../types/product/product';
 import { ProductsInquiry } from '../../types/product/product.input';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
 import { Message } from '../../enums/common.enum';
-import { toastErrorHandling, toastSmallSuccess } from '../../toast';
+import { toastErrorHandling, toastLoginConfirm, toastSmallSuccess } from '../../toast';
 import { useRouter } from 'next/router';
 
 interface NewProductsProps {
@@ -44,14 +44,20 @@ const NewProducts = ({ initialInput }: NewProductsProps) => {
 
 	const likeProductHandler = async (user: T, id: string) => {
 		try {
-			if (!id) return;
-			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
-
+			if (!user?._id) {
+				const ok = await toastLoginConfirm('Please log in to like this product');
+				if (ok) {
+					router.push({ pathname: router.pathname, query: { ...router.query, auth: 'login' } }, undefined, {
+						shallow: true,
+					});
+				}
+				return;
+			}
 			await likeTargetProduct({ variables: { input: id } });
 			await getProductsRefetch({ input: initialInput });
 			toastSmallSuccess('Success', 800);
 		} catch (err: any) {
-			toastErrorHandling(err.message);
+			toastErrorHandling(err);
 		}
 	};
 
@@ -59,7 +65,13 @@ const NewProducts = ({ initialInput }: NewProductsProps) => {
 		await router.push({ pathname: '/product' });
 	};
 
-	const renderEmptyState = () => <Box className="empty-list">Products aren't available</Box>;
+	const renderEmptyState = () => (
+		<Box className="empty-list">
+			<img src="/img/icons/icoAlert.svg" alt="empty" className="empty-list__icon" />
+			<h3 className="empty-list__title">No Products Yet</h3>
+			<p className="empty-list__desc">New arrivals will appear here soon. Stay tuned!</p>
+		</Box>
+	);
 
 	if (device === 'mobile') {
 		return (
@@ -76,21 +88,23 @@ const NewProducts = ({ initialInput }: NewProductsProps) => {
 						</Box>
 					) : (
 						<>
-							<Swiper
-								slidesPerView={1.2}
-								spaceBetween={20}
-								centeredSlides
-								autoplay={{ delay: 3000 }}
-								modules={[Autoplay]}
-							>
-								{products.length > 0
-									? products.map((product) => (
-											<SwiperSlide key={product._id}>
-												<ProductCard product={product} likeProductHandler={likeProductHandler} />
-											</SwiperSlide>
-									  ))
-									: renderEmptyState()}
-							</Swiper>
+							{products.length > 0 ? (
+								<Swiper
+									slidesPerView={1.2}
+									spaceBetween={20}
+									centeredSlides
+									autoplay={{ delay: 3000 }}
+									modules={[Autoplay]}
+								>
+									{products.map((product) => (
+										<SwiperSlide key={product._id}>
+											<ProductCard product={product} likeProductHandler={likeProductHandler} />
+										</SwiperSlide>
+									))}
+								</Swiper>
+							) : (
+								renderEmptyState()
+							)}
 
 							<Box className="bottom-box">
 								<Button className="view-all-btn" onClick={() => pushAllProductsHandler()}>
