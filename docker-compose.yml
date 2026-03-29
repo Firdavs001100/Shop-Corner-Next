@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   shop-corner-next:
     container_name: shop-corner-next
