@@ -84,7 +84,7 @@ class LoggingWebSocket {
 		};
 	}
 
-	send(data: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
+	send(data: string | Blob | BufferSource) {
 		this.socket.send(data);
 	}
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, CircularProgress } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay } from 'swiper';
+import { Autoplay } from 'swiper/modules';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '../../../apollo/user/query';

@@ -190,10 +190,13 @@ const Chat = () => {
 	}, []);
 
 	const handleSend = () => {
-		if (!messageInput.trim()) {
-			toastErrorHandling(Messages.error4);
+		if (!messageInput.trim()) return;
+
+		if (!socket || socket.readyState !== WebSocket.OPEN) {
+			console.error('Socket not ready');
 			return;
 		}
+
 		socket.send(JSON.stringify({ event: 'message', data: messageInput }));
 		setMessageInput('');
 	};

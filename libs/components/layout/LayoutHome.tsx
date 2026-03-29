@@ -11,10 +11,6 @@ import { getJwtToken, updateUserInfo } from '../../auth';
 import { ChevronLeftIcon } from '../icons/ChevronLeftIcon';
 import { ChevronRightIcon } from '../icons/ChevronRightIcon';
 import { useRouter } from 'next/router';
-
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 import { useTranslation } from 'next-i18next';
 
 /* ───────────── Slides ───────────── */

@@ -10,9 +10,6 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Join from '../../components/account/join';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 
 // ─── Page config ─────────────────────────────────────────
 
