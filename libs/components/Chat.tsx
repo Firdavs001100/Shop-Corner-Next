@@ -119,6 +119,7 @@ const Chat = () => {
 	const [open, setOpen] = useState(false);
 	const [visible, setVisible] = useState(false);
 	const [unread, setUnread] = useState(0);
+	const isProductPage = router.pathname.startsWith('/product');
 
 	const inputRef = useRef<HTMLInputElement>(null);
 	const openRef = useRef(false);
@@ -228,7 +229,7 @@ const Chat = () => {
 	if (!visible) return null;
 
 	return (
-		<div className="chat-widget">
+		<div className={`chat-widget${isProductPage ? ' chat-widget--products' : ''}`}>
 			{/* Mobile backdrop */}
 			{open && <div className="chat-backdrop" onClick={() => setOpen(false)} />}
 
