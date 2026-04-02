@@ -141,19 +141,26 @@
 					width: 100%;
 					margin: 0;
 				}
+
+				&:hover .mp-my-articles__card-actions {
+					opacity: 1;
+					pointer-events: auto;
+				}
 			}
 
 			// ── Edit / Delete — always visible on mobile (no hover) ───────────
 
 			&__card-actions {
 				position: absolute;
-				top: 10px;
+				bottom: 14px;
 				right: 10px;
+				top: unset;
 				display: flex;
 				gap: 5px;
 				z-index: 10;
-				opacity: 1; // always visible on mobile
-				pointer-events: auto;
+				opacity: 0;
+				pointer-events: none;
+				transition: opacity 0.18s ease;
 			}
 
 			&__action-btn {
@@ -169,6 +176,23 @@
 				backdrop-filter: blur(4px);
 				color: #5a6a7e;
 				box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+
+				&--edit {
+					color: #2563eb;
+					&:hover {
+						background: #e8f0fe;
+						color: #1a4fc4;
+					}
+				}
+
+				&--delete {
+					color: #e53935;
+
+					&:hover {
+						background: #ffe8e8;
+						color: #c62828;
+					}
+				}
 
 				&--delete {
 					color: #e53935;

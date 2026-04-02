@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useReactiveVar, useMutation } from '@apollo/client';
@@ -15,7 +15,6 @@ import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlined';
 
@@ -44,6 +43,7 @@ const CheckoutPage: NextPage = () => {
 	const [submitting, setSubmitting] = useState(false);
 	const [addressMode, setAddressMode] = useState<AddressMode>('saved');
 	const [customAddress, setCustomAddress] = useState('');
+	const customInputRef = useRef<HTMLInputElement>(null);
 
 	const [createOrder] = useMutation(CREATE_ORDER);
 
@@ -89,6 +89,14 @@ const CheckoutPage: NextPage = () => {
 		}
 	};
 
+	const handleSaveInProfile = () => {
+		if (!user?._id) {
+			router.push({ pathname: router.pathname, query: { ...router.query, auth: 'login' } });
+		} else {
+			router.push({ pathname: '/mypage', query: { category: 'myProfile' } });
+		}
+	};
+
 	const isValid = isAddressValid && cartItems.length > 0;
 
 	// ── Address section ──────────────────────────────────────────────────────
@@ -108,7 +116,10 @@ const CheckoutPage: NextPage = () => {
 				)}
 				<button
 					className={`co-address-tab ${effectiveMode === 'custom' ? 'co-address-tab--active' : ''}`}
-					onClick={() => setAddressMode('custom')}
+					onClick={() => {
+						setAddressMode('custom');
+						setTimeout(() => customInputRef.current?.focus(), 0);
+					}}
 				>
 					<AddLocationAltOutlinedIcon sx={{ fontSize: 15 }} />
 					{hasSavedAddress ? 'Use Different Address' : 'Enter Address'}
@@ -131,10 +142,7 @@ const CheckoutPage: NextPage = () => {
 							<WarningAmberOutlinedIcon sx={{ fontSize: 16 }} />
 							<span>
 								No saved address found. You can enter one below or{' '}
-								<button
-									className="co-no-address-hint__link"
-									onClick={() => router.push({ pathname: '/mypage', query: { category: 'myProfile' } })}
-								>
+								<button className="co-no-address-hint__link" onClick={handleSaveInProfile}>
 									save it in your profile
 								</button>
 								.

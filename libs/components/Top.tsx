@@ -557,6 +557,7 @@ export default function Header() {
 						</Link>
 
 						<div className="navbar-mobile__actions">
+							{userAuth}
 							{notifBlock}
 							<IconButton label={t('cart')} count={isClient ? cartCount : 0} onClick={() => setIsBasketOpen(true)}>
 								<CartIcon />
@@ -577,10 +578,7 @@ export default function Header() {
 									))}
 								</ul>
 							</nav>
-							<div className="mobile-drawer__footer">
-								{userAuth}
-								{langMenu}
-							</div>
+							<div className="mobile-drawer__footer">{langMenu}</div>
 						</div>
 					)}
 				</div>

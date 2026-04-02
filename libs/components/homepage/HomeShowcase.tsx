@@ -1,11 +1,13 @@
 import React from 'react';
 import { Stack, Typography, Button, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { useRouter } from 'next/router';
 
 // ── Main Component ────────────────────────────────────────
 
 export default function HomeShowcase() {
 	const device = useDeviceDetect();
+	const router = useRouter();
 
 	const showcaseContent = (
 		<Stack className="home-showcase">
@@ -30,7 +32,7 @@ export default function HomeShowcase() {
 							Whether you're shopping our latest seasonal drops or freshening up your wardrobe staples, our aim is to
 							make the experience seamless and enjoyable with responsive customer service.
 						</Typography>
-						<Button className="home-showcase__btn">
+						<Button className="home-showcase__btn" onClick={() => router.push('/product')}>
 							<span className="home-showcase__btn-text">Shop Now</span>
 						</Button>
 					</Stack>

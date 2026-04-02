@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Top from '../Top';
 import Footer from '../Footer';
 import Join from '../account/join';
-import { Link, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import { userVar } from '../../../apollo/store';
 import { useReactiveVar } from '@apollo/client';
 import { getJwtToken, updateUserInfo } from '../../auth';
@@ -61,6 +61,13 @@ const Hero = () => {
 		return () => clearInterval(timer);
 	}, [goToNext]);
 
+	useEffect(() => {
+		SLIDES.forEach((slide) => {
+			const img = new Image();
+			img.src = slide.image;
+		});
+	}, []);
+
 	const { eyebrow, heading, subtext, cta, image, align } = SLIDES[activeSlide];
 
 	return (
@@ -87,13 +94,18 @@ const Hero = () => {
 				</Link> */}
 			</div>
 
-			<div className="hero__dots">
-				{SLIDES.map((_, i) => (
-					<button
+			<div className="hero__backdrops">
+				{SLIDES.map((slide, i) => (
+					<div
 						key={i}
-						className={`hero__dot${i === activeSlide ? ' hero__dot--active' : ''}`}
-						onClick={() => setActiveSlide(i)}
-						aria-label={`Go to slide ${i + 1}`}
+						className="hero__backdrop"
+						style={{
+							backgroundImage: `url(${slide.image})`,
+							opacity: i === activeSlide ? 1 : 0,
+							transition: 'opacity 0.7s ease-in-out',
+							position: 'absolute',
+							inset: 0,
+						}}
 					/>
 				))}
 			</div>

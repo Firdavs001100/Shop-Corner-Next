@@ -251,6 +251,19 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 		}
 	};
 
+	const shareHandler = async () => {
+		const url = `https://shopcorner.site/product/detail?id=${productId}`;
+
+		if (navigator.share) {
+			// mobile native share sheet
+			await navigator.share({ title: product?.productName, url });
+		} else {
+			// desktop fallback → copy to clipboard
+			await navigator.clipboard.writeText(url);
+			toastSmallSuccess('Link copied to clipboard!', 1500);
+		}
+	};
+
 	const paginationHandler = (_: ChangeEvent<unknown>, value: number) => {
 		commentInquiry.page = value;
 		setCommentInquiry({ ...commentInquiry });
@@ -314,14 +327,10 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 								{product?.meLiked?.[0]?.myFavorite ? (
 									<FavoriteIcon fontSize="small" style={{ color: '#e53935' }} />
 								) : (
-									<FavoriteBorderIcon fontSize="small" />
+									<FavoriteBorder-Icon fontSize="small" />
 								)}
 							</button>
-							<button
-								className="pdm-topbar__btn"
-								aria-label="Share"
-								onClick={() => navigator.share?.({ title: product?.productName, url: window.location.href })}
-							>
+							<button className="pdm-topbar__btn" aria-label="Share" onClick={shareHandler}>
 								<ShareIcon fontSize="small" />
 							</button>
 						</div>

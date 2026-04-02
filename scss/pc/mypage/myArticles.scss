@@ -149,8 +149,9 @@
 
 			&__card-actions {
 				position: absolute;
-				top: 14px;
-				right: 14px;
+				bottom: 14px;
+				right: 10px;
+				top: unset;
 				display: flex;
 				gap: 6px;
 				opacity: 0;
@@ -180,9 +181,21 @@
 					box-shadow: 0 2px 12px rgba(0, 0, 0, 0.14);
 				}
 
-				&--delete:hover {
-					background: #ffe8e8;
+				&--edit {
+					color: #2563eb;
+					&:hover {
+						background: #e8f0fe;
+						color: #1a4fc4;
+					}
+				}
+
+				&--delete {
 					color: #e53935;
+
+					&:hover {
+						background: #ffe8e8;
+						color: #c62828;
+					}
 				}
 			}
 

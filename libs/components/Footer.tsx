@@ -142,24 +142,24 @@ export default function Footer() {
 	const { t } = useTranslation('common');
 
 	const helpLinks: NavLink[] = [
-		{ label: t('helpCenter'), href: '#' },
-		{ label: t('trackOrder'), href: '#' },
-		{ label: t('cancelOrder'), href: '#' },
-		{ label: t('returnOrder'), href: '#' },
+		{ label: t('helpCenter'), href: '/cs' },
+		{ label: t('trackOrder'), href: '/mypage' },
+		{ label: t('cancelOrder'), href: '/mypage' },
+		{ label: t('returnOrder'), href: '/cs' },
 	];
 
 	const categoryLinks: NavLink[] = [
-		{ label: t('categoryJacket'), href: '#' },
-		{ label: t('categoryPants'), href: '#' },
-		{ label: t('categoryTshirt'), href: '#' },
-		{ label: t('categoryBagShoes'), href: '#' },
+		{ label: t('categoryJacket'), href: '/product?category=jacket' },
+		{ label: t('categoryPants'), href: '/product?category=pants' },
+		{ label: t('categoryTshirt'), href: '/product?category=tshirt' },
+		{ label: t('categoryBagShoes'), href: '/product?category=bag-shoes' },
 	];
 
 	const policyLinks: NavLink[] = [
-		{ label: t('shippingDelivery'), href: '#' },
-		{ label: t('returnsPolicy'), href: '#' },
-		{ label: t('termsConditions'), href: '#' },
-		{ label: t('privacyPolicy'), href: '#' },
+		{ label: t('shippingDelivery'), href: '/cs' },
+		{ label: t('returnsPolicy'), href: '/cs' },
+		{ label: t('termsConditions'), href: '/cs' },
+		{ label: t('privacyPolicy'), href: '/cs' },
 	];
 
 	const socialLinks: SocialLink[] = [

@@ -56,7 +56,16 @@ export default function Basket({ isOpen, onClose }: BasketProps) {
 							<Typography className="basket__empty-subtitle">
 								Your cart is currently empty. Let us help you find the perfect item!
 							</Typography>
-							<Button className="basket__btn basket__btn--outline" onClick={onClose} disableRipple>
+							<Button
+								className="basket__btn basket__btn--outline"
+								onClick={() => {
+									onClose();
+									if (router.pathname !== '/product') {
+										router.push('/product');
+									}
+								}}
+								disableRipple
+							>
 								Continue Shopping
 							</Button>
 						</Box>

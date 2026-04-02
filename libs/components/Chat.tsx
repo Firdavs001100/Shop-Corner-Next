@@ -208,11 +208,30 @@ const Chat = () => {
 		}
 	};
 
+	const touchStartX = useRef<number>(0);
+
+	const onSwipeStart = (e: React.TouchEvent) => {
+		touchStartX.current = e.touches[0].clientX;
+	};
+
+	const onSwipeEnd = (e: React.TouchEvent) => {
+		const diff = e.changedTouches[0].clientX - touchStartX.current;
+		if (diff > 60) setOpen(false); // swipe right to close
+	};
+
 	if (!visible) return null;
 
 	return (
 		<div className="chat-widget">
-			<div className={`chat-panel${open ? ' chat-panel--open' : ''}`}>
+			{/* Mobile backdrop */}
+			{open && <div className="chat-backdrop" onClick={() => setOpen(false)} />}
+
+			{/* Chat panel */}
+			<div
+				className={`chat-panel${open ? ' chat-panel--open' : ''}`}
+				onTouchStart={onSwipeStart}
+				onTouchEnd={onSwipeEnd}
+			>
 				{/* Header */}
 				<div className="chat-panel__header">
 					<div className="chat-panel__header-left">
@@ -238,7 +257,6 @@ const Chat = () => {
 									</div>
 									<p>Welcome to Live Chat! Say hello 👋</p>
 								</div>
-
 								{messagesList.map((msg, i) => (
 									<MessageBubble key={i} msg={msg} isOwn={msg.memberData?._id === user?._id} />
 								))}
@@ -249,56 +267,47 @@ const Chat = () => {
 
 				{/* Input */}
 				<div className="chat-panel__footer">
-					{user?._id ? (
-						<div className="chat-panel__input-row">
-							{/* User's own avatar next to input */}
-							<div className="chat-panel__input-avatar">
-								{user.memberImage ? (
-									<img src={`${NEXT_PUBLIC_API_URL}/${user.memberImage}`} alt={user.memberNick} />
-								) : (
-									<span>{user.memberNick?.[0]?.toUpperCase() ?? 'A'}</span>
-								)}
-							</div>
-							<div className="chat-panel__input-wrap">
-								<input
-									ref={inputRef}
-									className="chat-panel__input"
-									type="text"
-									placeholder="Type a message..."
-									value={messageInput}
-									onChange={handleInput}
-									onKeyDown={handleKeyDown}
-									maxLength={500}
-								/>
-								<button
-									className="chat-panel__send-btn"
-									onClick={handleSend}
-									disabled={!messageInput.trim()}
-									aria-label="Send message"
-								>
-									<SendIcon />
-								</button>
-							</div>
+					<div className="chat-panel__input-row">
+						<div className="chat-panel__input-avatar">
+							{user?.memberImage ? (
+								<img src={`${NEXT_PUBLIC_API_URL}/${user.memberImage}`} alt={user.memberNick} />
+							) : (
+								<span>{user?.memberNick?.[0]?.toUpperCase() ?? '?'}</span>
+							)}
 						</div>
-					) : (
-						<div className="chat-panel__login-prompt">
-							<span>Please log in to chat</span>
+						<div className="chat-panel__input-wrap">
+							<input
+								ref={inputRef}
+								className="chat-panel__input"
+								type="text"
+								placeholder="Type a message..."
+								value={messageInput}
+								onChange={handleInput}
+								onKeyDown={handleKeyDown}
+								maxLength={500}
+							/>
 							<button
-								className="chat-panel__login-btn"
-								onClick={() =>
-									router.push({ pathname: router.pathname, query: { ...router.query, auth: 'login' } }, undefined, {
-										shallow: true,
-									})
-								}
+								className="chat-panel__send-btn"
+								onClick={handleSend}
+								disabled={!messageInput.trim()}
+								aria-label="Send message"
 							>
-								Log in
+								<SendIcon />
 							</button>
 						</div>
-					)}
+					</div>
 				</div>
 			</div>
 
-			{/* Toggle button */}
+			{/* Pull tab — mobile only, shown when closed */}
+			{!open && (
+				<button className="chat-pull-tab" onClick={() => setOpen(true)} aria-label="Open chat">
+					<ChatIcon />
+					{unread > 0 && <span className="chat-pull-tab__badge">{unread > 9 ? '9+' : unread}</span>}
+				</button>
+			)}
+
+			{/* Toggle button — desktop only */}
 			<button
 				className={`chat-toggle${open ? ' chat-toggle--open' : ''}`}
 				onClick={handleToggle}
