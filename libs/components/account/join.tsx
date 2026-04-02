@@ -103,6 +103,9 @@ const Join: NextPage = () => {
 			<Modal open={isOpen} onClose={closeModal}>
 				<div className="join-mobile">
 					<div className="join-mobile__card">
+						<button type="button" className="join-page__close" onClick={closeModal} aria-label={t('close')}>
+							✕
+						</button>
 						<div className={contentClass}>
 							<div className="join-mobile__header">
 								<h1 className="join-mobile__title">{loginView ? t('signIn') : t('register')}</h1>

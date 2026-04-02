@@ -119,7 +119,7 @@ const Chat = () => {
 	const [open, setOpen] = useState(false);
 	const [visible, setVisible] = useState(false);
 	const [unread, setUnread] = useState(0);
-	const isProductPage = router.pathname.startsWith('/product');
+	const isProductPage = router.pathname.startsWith('/product/detail');
 
 	const inputRef = useRef<HTMLInputElement>(null);
 	const openRef = useRef(false);
@@ -309,16 +309,7 @@ const Chat = () => {
 					</div>
 				</div>
 			</div>
-
-			{/* Pull tab — mobile only */}
-			{!open && (
-				<button className="chat-pull-tab" onClick={() => setOpen(true)} aria-label="Open chat">
-					<ChatIcon />
-					{unread > 0 && <span className="chat-pull-tab__badge">{unread > 9 ? '9+' : unread}</span>}
-				</button>
-			)}
-
-			{/* Toggle button — desktop only */}
+			{/* Toggle button */}
 			<button
 				className={`chat-toggle${open ? ' chat-toggle--open' : ''}`}
 				onClick={handleToggle}

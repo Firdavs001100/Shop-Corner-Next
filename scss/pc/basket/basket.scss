@@ -34,9 +34,18 @@ $duration: 0.22s;
 	transition: right 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
 	visibility: visible !important;
 
+	@media (max-width: 768px) {
+		width: 100% !important;
+		right: -100% !important;
+	}
+
 	&.MuiDrawer-paperAnchorDockedRight,
 	&[class*='paperAnchorRight'] {
 		right: -390px !important;
+
+		@media (max-width: 768px) {
+			right: -100% !important;
+		}
 	}
 }
 
@@ -55,7 +64,6 @@ $duration: 0.22s;
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	width: 100%;
 	font-family: 'DM Sans', 'Helvetica Neue', sans-serif;
 	color: $navy;
 

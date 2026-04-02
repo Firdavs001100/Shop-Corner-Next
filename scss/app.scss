@@ -87,6 +87,17 @@ $font-body: 'DM Sans', sans-serif;
 	gap: 12px;
 	font-family: $font-body;
 	pointer-events: none;
+
+	@media (max-width: 768px) {
+		bottom: 28px;
+		right: 16px;
+	}
+}
+
+.chat-widget--products {
+	@media (max-width: 768px) {
+		bottom: 80px;
+	}
 }
 
 .chat-panel {
@@ -107,6 +118,11 @@ $font-body: 'DM Sans', sans-serif;
 	transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
 		filter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 	pointer-events: none;
+
+	@media (max-width: 768px) {
+		width: calc(100vw - 32px);
+		height: 420px;
+	}
 
 	&--open {
 		opacity: 1;
@@ -467,6 +483,12 @@ $font-body: 'DM Sans', sans-serif;
 		color: #94a3b8;
 		padding-left: 4px;
 		font-family: $font-body;
+
+		&--own {
+			text-align: right;
+			padding-right: 4px;
+			padding-left: 0;
+		}
 	}
 
 	&__bubble {
@@ -637,93 +659,5 @@ $font-body: 'DM Sans', sans-serif;
 		justify-content: center;
 		padding: 0 3px;
 		border: 2px solid #fff;
-	}
-}
-
-// ─── Chat widget mobile overrides ─────────────────────────────────────────────
-.chat-widget {
-	@media (max-width: 768px) {
-		bottom: 0;
-		right: 0;
-		gap: 0;
-
-		// hide the round toggle button on mobile
-		.chat-toggle {
-			display: none;
-		}
-	}
-}
-
-// ─── Mobile backdrop ──────────────────────────────────────────────────────────
-.chat-backdrop {
-	display: none;
-
-	@media (max-width: 768px) {
-		display: block;
-		position: fixed;
-		inset: 0;
-		background: rgba(0, 0, 0, 0.35);
-		z-index: 898;
-		backdrop-filter: blur(2px);
-	}
-}
-
-// ─── Pull tab (mobile only) ───────────────────────────────────────────────────
-.chat-pull-tab {
-	display: none;
-
-	@media (max-width: 768px) {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: fixed;
-		right: 0;
-		bottom: 120px;
-		width: 44px;
-		height: 44px;
-		background: #0e7490;
-		border: none;
-		border-radius: 12px 0 0 12px;
-		color: #fff;
-		cursor: pointer;
-		z-index: 901;
-		pointer-events: all;
-		box-shadow: -3px 4px 16px rgba(14, 116, 144, 0.35);
-		transition: width 0.2s ease, background 0.2s ease;
-
-		&:active {
-			background: #0891b2;
-			width: 40px;
-		}
-	}
-
-	&__badge {
-		position: absolute;
-		top: -4px;
-		right: 4px;
-		min-width: 17px;
-		height: 17px;
-		background: #ef4444;
-		color: #fff;
-		border-radius: 999px;
-		font-size: 9px;
-		font-weight: 700;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0 3px;
-		border: 2px solid #fff;
-	}
-}
-
-// ─── Mobile — same as desktop, products page gets higher bottom ───────────────
-@media (max-width: 768px) {
-	.chat-widget {
-		bottom: 28px;
-		right: 16px;
-	}
-
-	.chat-widget--products {
-		bottom: 85px;
 	}
 }

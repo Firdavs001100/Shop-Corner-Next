@@ -268,6 +268,45 @@ const NotifDropdown: React.FC<NotifDropdownProps> = ({
 	);
 };
 
+const GuestNotifDropdown = ({ onClose, onLogin }: { onClose: () => void; onLogin: () => void }) => {
+	const ref = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const handler = (e: MouseEvent) => {
+			if (ref.current && !ref.current.contains(e.target as Node)) onClose();
+		};
+		document.addEventListener('mousedown', handler);
+		return () => document.removeEventListener('mousedown', handler);
+	}, [onClose]);
+
+	return (
+		<div className="notif-dropdown" ref={ref}>
+			<div className="notif-dropdown__header">
+				<span className="notif-dropdown__title">Notifications</span>
+			</div>
+			<div className="notif-dropdown__empty">
+				<svg
+					width="32"
+					height="32"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="#cbd5e1"
+					strokeWidth="1.5"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+				>
+					<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+					<path d="M13.73 21a2 2 0 0 1-3.46 0" />
+				</svg>
+				<p>Sign in to see your notifications</p>
+				<button className="notif-dropdown__mark-all" onClick={onLogin}>
+					Sign in
+				</button>
+			</div>
+		</div>
+	);
+};
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function Header() {
@@ -293,6 +332,7 @@ export default function Header() {
 	const [searchText, setSearchText] = useState('');
 
 	const searchRef = useRef<HTMLDivElement>(null);
+	const notifGuestRef = useRef<HTMLDivElement>(null);
 	const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 	const langOpen = Boolean(langAnchor);
 	const logoutOpen = Boolean(logoutAnchor);
@@ -503,20 +543,21 @@ export default function Header() {
 
 	// ── Notification block ──
 
-	const notifBlock = user?._id ? (
+	const notifBlock = (
 		<div className="notif-wrap">
 			<button
 				className="toolbar__btn"
 				aria-label={t('notifications')}
 				onClick={() => {
 					setNotifOpen((v) => !v);
-					if (!notifOpen) refetchNotifs();
+					if (user?._id && !notifOpen) refetchNotifs();
 				}}
 			>
 				<NotificationsOutlinedIcon fontSize="small" />
 				{unreadCount > 0 && <span className="toolbar__badge">{unreadCount}</span>}
 			</button>
-			{notifOpen && (
+
+			{notifOpen && user?._id && (
 				<NotifDropdown
 					t={t}
 					notifications={notifications}
@@ -526,8 +567,20 @@ export default function Header() {
 					onClose={() => setNotifOpen(false)}
 				/>
 			)}
+
+			{notifOpen && !user?._id && (
+				<GuestNotifDropdown
+					onClose={() => setNotifOpen(false)}
+					onLogin={() => {
+						setNotifOpen(false);
+						router.push({ pathname: router.pathname, query: { ...router.query, auth: 'login' } }, undefined, {
+							shallow: true,
+						});
+					}}
+				/>
+			)}
 		</div>
-	) : null;
+	);
 
 	// ─────────────────────────────────────────────────────────────────────────────
 	// MOBILE
@@ -544,20 +597,22 @@ export default function Header() {
 					<div className="announcement-bar">{t('freeShipping')}</div>
 
 					<header className="navbar-mobile">
-						<button
-							className="navbar-mobile__menu-btn"
-							onClick={() => setMobileMenuOpen((v) => !v)}
-							aria-label={t('toggleMenu')}
-						>
-							{mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
-						</button>
+						<div className="navbar-mobile__left">
+							<button
+								className="navbar-mobile__menu-btn"
+								onClick={() => setMobileMenuOpen((v) => !v)}
+								aria-label={t('toggleMenu')}
+							>
+								{mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
+							</button>
+							{userAuth}
+						</div>
 
 						<Link href="/" className="navbar-mobile__logo">
 							SHOP.CO
 						</Link>
 
 						<div className="navbar-mobile__actions">
-							{userAuth}
 							{notifBlock}
 							<IconButton label={t('cart')} count={isClient ? cartCount : 0} onClick={() => setIsBasketOpen(true)}>
 								<CartIcon />

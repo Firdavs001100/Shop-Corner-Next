@@ -405,12 +405,13 @@ body::-webkit-scrollbar {
 		}
 
 		&__avatar {
-			width: 25px;
-			height: 25px;
-			background: white;
+			width: 30px;
+			height: 30px;
+			background: transparent;
 			border-radius: 50%;
 			object-fit: cover;
 			display: block;
+			border: 2px solid rgba(255, 255, 255, 0.4);
 		}
 
 		&__badge {
