@@ -327,7 +327,7 @@ const ProductDetail: NextPage = ({ initialComment }: any) => {
 								{product?.meLiked?.[0]?.myFavorite ? (
 									<FavoriteIcon fontSize="small" style={{ color: '#e53935' }} />
 								) : (
-									<FavoriteBorder-Icon fontSize="small" />
+									<FavoriteBorderIcon fontSize="small" />
 								)}
 							</button>
 							<button className="pdm-topbar__btn" aria-label="Share" onClick={shareHandler}>
