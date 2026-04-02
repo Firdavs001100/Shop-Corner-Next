@@ -3,12 +3,10 @@ import ScrollableFeed from 'react-scrollable-feed';
 import { useReactiveVar } from '@apollo/client';
 import { socketVar, userVar } from '../../apollo/store';
 import { Member } from '../types/member/member';
-import { Messages, NEXT_PUBLIC_API_URL } from '../config';
-import { toastErrorHandling } from '../toast';
+import { NEXT_PUBLIC_API_URL } from '../config';
 import { useRouter } from 'next/router';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-
 interface MessagePayload {
 	event: string;
 	text: string;
@@ -16,7 +14,6 @@ interface MessagePayload {
 }
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
-
 const SendIcon = () => (
 	<svg
 		width="16"
@@ -80,7 +77,6 @@ const MinimizeIcon = () => (
 );
 
 // ─── Message Bubble ───────────────────────────────────────────────────────────
-
 const MessageBubble = ({ msg, isOwn }: { msg: MessagePayload; isOwn: boolean }) => {
 	const memberImage = msg.memberData?.memberImage ? `${NEXT_PUBLIC_API_URL}/${msg.memberData.memberImage}` : null;
 	const initials = msg.memberData?.memberNick?.[0]?.toUpperCase() ?? 'A';
@@ -112,7 +108,6 @@ const MessageBubble = ({ msg, isOwn }: { msg: MessagePayload; isOwn: boolean }) 
 };
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-
 const Chat = () => {
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
@@ -124,6 +119,7 @@ const Chat = () => {
 	const [open, setOpen] = useState(false);
 	const [visible, setVisible] = useState(false);
 	const [unread, setUnread] = useState(0);
+
 	const inputRef = useRef<HTMLInputElement>(null);
 	const openRef = useRef(false);
 
@@ -131,33 +127,45 @@ const Chat = () => {
 		openRef.current = open;
 	}, [open]);
 
-	// ── Socket ──
-
+	// ── Socket Message Handler ──
 	useEffect(() => {
 		if (!socket) return;
 
 		socket.onmessage = (msg: MessageEvent) => {
-			const data = JSON.parse(msg.data);
-			switch (data.event) {
-				case 'info':
-					setOnlineUsers(data.totalClients);
-					break;
-				case 'getMessages':
-					setMessagesList(data.list ?? []);
-					break;
-				case 'message':
-					setMessagesList((prev) => [...prev, data]);
-					// only increment unread if chat is closed
-					if (!openRef.current) setUnread((prev) => prev + 1);
-					break;
+			try {
+				const data = JSON.parse(msg.data);
+
+				switch (data.event) {
+					case 'info':
+						setOnlineUsers(data.totalClients);
+						break;
+
+					case 'getMessages':
+						setMessagesList(data.list ?? []);
+						break;
+
+					case 'message':
+						// Fix for "Anonymous" + missing avatar on own messages
+						const receivedMsg: MessagePayload = {
+							...data,
+							memberData: data.memberData || user || ({ _id: '', memberNick: 'Anonymous', memberImage: null } as any),
+						};
+						setMessagesList((prev) => [...prev, receivedMsg]);
+
+						if (!openRef.current) setUnread((prev) => prev + 1);
+						break;
+				}
+			} catch (e) {
+				console.error('Failed to parse WebSocket message', e);
 			}
 		};
 
 		return () => {
 			socket.onmessage = null;
 		};
-	}, [socket]);
+	}, [socket, user]);
 
+	// Other effects (unchanged)
 	useEffect(() => {
 		const t = setTimeout(() => setVisible(true), 150);
 		return () => clearTimeout(t);
@@ -182,7 +190,6 @@ const Chat = () => {
 	}, [messagesList]);
 
 	// ── Handlers ──
-
 	const handleToggle = () => setOpen((v) => !v);
 
 	const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -208,15 +215,14 @@ const Chat = () => {
 		}
 	};
 
+	// Mobile swipe to close
 	const touchStartX = useRef<number>(0);
-
 	const onSwipeStart = (e: React.TouchEvent) => {
 		touchStartX.current = e.touches[0].clientX;
 	};
-
 	const onSwipeEnd = (e: React.TouchEvent) => {
 		const diff = e.changedTouches[0].clientX - touchStartX.current;
-		if (diff > 60) setOpen(false); // swipe right to close
+		if (diff > 60) setOpen(false);
 	};
 
 	if (!visible) return null;
@@ -258,7 +264,11 @@ const Chat = () => {
 									<p>Welcome to Live Chat! Say hello 👋</p>
 								</div>
 								{messagesList.map((msg, i) => (
-									<MessageBubble key={i} msg={msg} isOwn={msg.memberData?._id === user?._id} />
+									<MessageBubble
+										key={i}
+										msg={msg}
+										isOwn={!!user && !!msg.memberData && msg.memberData._id === user._id}
+									/>
 								))}
 							</div>
 						</ScrollableFeed>
@@ -299,7 +309,7 @@ const Chat = () => {
 				</div>
 			</div>
 
-			{/* Pull tab — mobile only, shown when closed */}
+			{/* Pull tab — mobile only */}
 			{!open && (
 				<button className="chat-pull-tab" onClick={() => setOpen(true)} aria-label="Open chat">
 					<ChatIcon />
