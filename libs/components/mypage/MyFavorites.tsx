@@ -58,7 +58,7 @@ const MyFavorites: NextPage = () => {
 				</div>
 
 				{myFavorites.length === 0 ? (
-					<div className="mp-favorites__empty">
+					<div className="mp-favorites--mobile__empty">
 						<FavoriteBorderIcon sx={{ fontSize: 44 }} />
 						<p>No favorites yet.</p>
 						<span>Products you like will appear here.</span>

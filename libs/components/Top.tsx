@@ -326,13 +326,14 @@ export default function Header() {
 	const [langAnchor, setLangAnchor] = useState<null | HTMLElement>(null);
 	const [logoutAnchor, setLogoutAnchor] = useState<null | HTMLElement>(null);
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const [drawerVisible, setDrawerVisible] = useState(false);
+	const [drawerClosing, setDrawerClosing] = useState(false);
 	const [notifOpen, setNotifOpen] = useState(false);
 	const [notifications, setNotifications] = useState<Notification[]>([]);
 	const [searchOpen, setSearchOpen] = useState(false);
 	const [searchText, setSearchText] = useState('');
 
 	const searchRef = useRef<HTMLDivElement>(null);
-	const notifGuestRef = useRef<HTMLDivElement>(null);
 	const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 	const langOpen = Boolean(langAnchor);
 	const logoutOpen = Boolean(logoutAnchor);
@@ -457,6 +458,26 @@ export default function Header() {
 		...(user?._id ? [{ label: t('mypage'), href: '/mypage' }] : []),
 		{ label: t('cs'), href: '/cs' },
 	];
+
+	// ── Menu Handler ──
+
+	const handleMenuToggle = () => {
+		if (mobileMenuOpen) {
+			setDrawerClosing(true);
+			setTimeout(() => {
+				setDrawerVisible(false);
+				setDrawerClosing(false);
+				setMobileMenuOpen(false);
+				setColorChange(window.scrollY >= window.innerHeight * 0.8);
+				document.body.style.overflow = '';
+			}, 250);
+		} else {
+			setMobileMenuOpen(true);
+			setDrawerVisible(true);
+			setColorChange(true);
+			document.body.style.overflow = 'hidden';
+		}
+	};
 
 	// ── Favorites Handler ──
 
@@ -598,11 +619,7 @@ export default function Header() {
 
 					<header className="navbar-mobile">
 						<div className="navbar-mobile__left">
-							<button
-								className="navbar-mobile__menu-btn"
-								onClick={() => setMobileMenuOpen((v) => !v)}
-								aria-label={t('toggleMenu')}
-							>
+							<button className="navbar-mobile__menu-btn" onClick={handleMenuToggle} aria-label={t('toggleMenu')}>
 								{mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
 							</button>
 							{userAuth}
@@ -620,8 +637,8 @@ export default function Header() {
 						</div>
 					</header>
 
-					{mobileMenuOpen && (
-						<div className="mobile-drawer">
+					{drawerVisible && (
+						<div className={`mobile-drawer${drawerClosing ? ' mobile-drawer--closing' : ''}`}>
 							<nav className="mobile-drawer__nav">
 								<ul className="mobile-drawer__list">
 									{navItems.map((item) => (

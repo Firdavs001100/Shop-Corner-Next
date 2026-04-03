@@ -229,96 +229,97 @@ const Chat = () => {
 	if (!visible) return null;
 
 	return (
-		<div className={`chat-widget${isProductPage ? ' chat-widget--products' : ''}`}>
+		<>
 			{/* Mobile backdrop */}
 			{open && <div className="chat-backdrop" onClick={() => setOpen(false)} />}
-
-			{/* Chat panel */}
-			<div
-				className={`chat-panel${open ? ' chat-panel--open' : ''}`}
-				onTouchStart={onSwipeStart}
-				onTouchEnd={onSwipeEnd}
-			>
-				{/* Header */}
-				<div className="chat-panel__header">
-					<div className="chat-panel__header-left">
-						<div className="chat-panel__online-dot" />
-						<span className="chat-panel__title">Live Chat</span>
-						<span className="chat-panel__online-count">{onlineUsers} online</span>
-					</div>
-					<div className="chat-panel__header-actions">
-						<button className="chat-panel__header-btn" onClick={() => setOpen(false)} aria-label="Minimize">
-							<MinimizeIcon />
-						</button>
-					</div>
-				</div>
-
-				{/* Messages */}
-				<div className="chat-panel__body">
-					<div className="chat-panel__scroll">
-						<ScrollableFeed>
-							<div className="chat-panel__messages">
-								<div className="chat-panel__welcome">
-									<div className="chat-panel__welcome-icon">
-										<ChatIcon />
-									</div>
-									<p>Welcome to Live Chat! Say hello 👋</p>
-								</div>
-								{messagesList.map((msg, i) => (
-									<MessageBubble
-										key={i}
-										msg={msg}
-										isOwn={!!user && !!msg.memberData && msg.memberData._id === user._id}
-									/>
-								))}
-							</div>
-						</ScrollableFeed>
-					</div>
-				</div>
-
-				{/* Input */}
-				<div className="chat-panel__footer">
-					<div className="chat-panel__input-row">
-						<div className="chat-panel__input-avatar">
-							{user?.memberImage ? (
-								<img src={`${NEXT_PUBLIC_API_URL}/${user.memberImage}`} alt={user.memberNick} />
-							) : (
-								<span>{user?.memberNick?.[0]?.toUpperCase() ?? '?'}</span>
-							)}
+			<div className={`chat-widget${isProductPage ? ' chat-widget--products' : ''}`}>
+				{/* Chat panel */}
+				<div
+					className={`chat-panel${open ? ' chat-panel--open' : ''}`}
+					onTouchStart={onSwipeStart}
+					onTouchEnd={onSwipeEnd}
+				>
+					{/* Header */}
+					<div className="chat-panel__header">
+						<div className="chat-panel__header-left">
+							<div className="chat-panel__online-dot" />
+							<span className="chat-panel__title">Live Chat</span>
+							<span className="chat-panel__online-count">{onlineUsers} online</span>
 						</div>
-						<div className="chat-panel__input-wrap">
-							<input
-								ref={inputRef}
-								className="chat-panel__input"
-								type="text"
-								placeholder="Type a message..."
-								value={messageInput}
-								onChange={handleInput}
-								onKeyDown={handleKeyDown}
-								maxLength={500}
-							/>
-							<button
-								className="chat-panel__send-btn"
-								onClick={handleSend}
-								disabled={!messageInput.trim()}
-								aria-label="Send message"
-							>
-								<SendIcon />
+						<div className="chat-panel__header-actions">
+							<button className="chat-panel__header-btn" onClick={() => setOpen(false)} aria-label="Minimize">
+								<MinimizeIcon />
 							</button>
 						</div>
 					</div>
+
+					{/* Messages */}
+					<div className="chat-panel__body">
+						<div className="chat-panel__scroll">
+							<ScrollableFeed>
+								<div className="chat-panel__messages">
+									<div className="chat-panel__welcome">
+										<div className="chat-panel__welcome-icon">
+											<ChatIcon />
+										</div>
+										<p>Welcome to Live Chat! Say hello 👋</p>
+									</div>
+									{messagesList.map((msg, i) => (
+										<MessageBubble
+											key={i}
+											msg={msg}
+											isOwn={!!user && !!msg.memberData && msg.memberData._id === user._id}
+										/>
+									))}
+								</div>
+							</ScrollableFeed>
+						</div>
+					</div>
+
+					{/* Input */}
+					<div className="chat-panel__footer">
+						<div className="chat-panel__input-row">
+							<div className="chat-panel__input-avatar">
+								{user?.memberImage ? (
+									<img src={`${NEXT_PUBLIC_API_URL}/${user.memberImage}`} alt={user.memberNick} />
+								) : (
+									<span>{user?.memberNick?.[0]?.toUpperCase() ?? '?'}</span>
+								)}
+							</div>
+							<div className="chat-panel__input-wrap">
+								<input
+									ref={inputRef}
+									className="chat-panel__input"
+									type="text"
+									placeholder="Type a message..."
+									value={messageInput}
+									onChange={handleInput}
+									onKeyDown={handleKeyDown}
+									maxLength={500}
+								/>
+								<button
+									className="chat-panel__send-btn"
+									onClick={handleSend}
+									disabled={!messageInput.trim()}
+									aria-label="Send message"
+								>
+									<SendIcon />
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
+				{/* Toggle button */}
+				<button
+					className={`chat-toggle${open ? ' chat-toggle--open' : ''}`}
+					onClick={handleToggle}
+					aria-label="Toggle chat"
+				>
+					{open ? <CloseIcon /> : <ChatIcon />}
+					{!open && unread > 0 && <span className="chat-toggle__badge">{unread > 9 ? '9+' : unread}</span>}
+				</button>
 			</div>
-			{/* Toggle button */}
-			<button
-				className={`chat-toggle${open ? ' chat-toggle--open' : ''}`}
-				onClick={handleToggle}
-				aria-label="Toggle chat"
-			>
-				{open ? <CloseIcon /> : <ChatIcon />}
-				{!open && unread > 0 && <span className="chat-toggle__badge">{unread > 9 ? '9+' : unread}</span>}
-			</button>
-		</div>
+		</>
 	);
 };
 

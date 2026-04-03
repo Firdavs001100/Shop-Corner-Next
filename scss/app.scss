@@ -40,11 +40,44 @@ body {
 		box-shadow: none;
 	}
 }
+
 hr {
 	border-width: 0;
 	border-bottom-width: thin;
 	border-color: #eee;
 	margin: auto;
+}
+
+// Prevent iOS auto-zoom on input focus
+@media (max-width: 768px) {
+	input,
+	textarea,
+	select {
+		font-size: 16px !important;
+	}
+}
+
+// Remove persistent focus ring on click/tap (global)
+*:focus:not(:focus-visible) {
+	outline: none;
+	box-shadow: none;
+	border-color: inherit;
+}
+
+// Remove tap highlight on mobile (global)
+* {
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+}
+
+// Remove active state lingering on buttons and links
+button,
+a {
+	-webkit-tap-highlight-color: transparent;
+
+	&:active {
+		opacity: 1;
+	}
 }
 
 /** VERSION: PC **/
@@ -118,6 +151,7 @@ $font-body: 'DM Sans', sans-serif;
 	transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
 		filter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 	pointer-events: none;
+	z-index: 899;
 
 	@media (max-width: 768px) {
 		width: calc(100vw - 32px);
@@ -327,10 +361,6 @@ $font-body: 'DM Sans', sans-serif;
 
 		&::placeholder {
 			color: #94a3b8;
-		}
-
-		@media (max-width: 768px) {
-			font-size: 16px;
 		}
 	}
 
@@ -600,9 +630,11 @@ $font-body: 'DM Sans', sans-serif;
 	}
 }
 
-// ─── Mobile backdrop ──────────────────────────────────────────────────────────
 .chat-backdrop {
-	display: none;
+	position: fixed;
+	inset: 0;
+	z-index: 898;
+	backdrop-filter: blur(0px);
 
 	@media (max-width: 768px) {
 		display: block;
@@ -611,53 +643,5 @@ $font-body: 'DM Sans', sans-serif;
 		background: rgba(0, 0, 0, 0.35);
 		z-index: 898;
 		backdrop-filter: blur(2px);
-	}
-}
-
-// ─── Pull tab (mobile only) ───────────────────────────────────────────────────
-.chat-pull-tab {
-	display: none;
-
-	@media (max-width: 768px) {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: fixed;
-		right: 0;
-		bottom: 120px;
-		width: 44px;
-		height: 44px;
-		background: #0e7490;
-		border: none;
-		border-radius: 12px 0 0 12px;
-		color: #fff;
-		cursor: pointer;
-		z-index: 901;
-		pointer-events: all;
-		box-shadow: -3px 4px 16px rgba(14, 116, 144, 0.35);
-		transition: width 0.2s ease, background 0.2s ease;
-
-		&:active {
-			background: #0891b2;
-			width: 40px;
-		}
-	}
-
-	&__badge {
-		position: absolute;
-		top: -4px;
-		right: 4px;
-		min-width: 17px;
-		height: 17px;
-		background: #ef4444;
-		color: #fff;
-		border-radius: 999px;
-		font-size: 9px;
-		font-weight: 700;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0 3px;
-		border: 2px solid #fff;
 	}
 }

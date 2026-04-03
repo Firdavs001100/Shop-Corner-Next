@@ -125,10 +125,10 @@ export default function Testimonials() {
 				<div className="container">
 					<Box className="testimonials__wrap">
 						<Box className="testimonials__inner">
-							{leftContent}
 							<Box className="testimonials__right">
 								<img src="/img/banner/ts1.jpg" alt="Testimonial" className="testimonials__img" />
 							</Box>
+							{leftContent}
 						</Box>
 					</Box>
 				</div>

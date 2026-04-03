@@ -102,6 +102,10 @@
 			border-bottom: 1.5px solid #e8edf3;
 			scrollbar-width: none;
 			-webkit-overflow-scrolling: touch;
+			scroll-snap-type: x mandatory;
+			touch-action: pan-x;
+			overscroll-behavior-x: contain;
+
 			&::-webkit-scrollbar {
 				display: none;
 			}
@@ -125,6 +129,7 @@
 			transition: all 0.15s;
 			flex-shrink: 0;
 			margin-bottom: -1.5px;
+			scroll-snap-align: start;
 
 			svg {
 				font-size: 20px !important;
